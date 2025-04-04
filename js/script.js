@@ -26,15 +26,27 @@ const kmlFiles = [
 
 let currentLayer = null; // Текущий загруженный KML
 
+// Обработка ошибок загрузки KML
+currentLayer = omnivore.kml(path)
+    .on('error', () => {
+        document.getElementById('current-kml').textContent = 'Ошибка загрузки';
+    })
+
+
 // Функция загрузки KML + обновление текста (в строке с текущим названием)
 function loadKmlFile(path, name) {
     if (currentLayer) map.removeLayer(currentLayer);
-    currentLayer = omnivore.kml(path)
-        .on('ready', () => map.fitBounds(currentLayer.getBounds()))
-        .addTo(map);
     
-    // Обновляем текст выбранного файла
-    document.querySelector('#selected-kml-name span').textContent = name || 'Неизвестно';
+    // Обновляем текст выбранного файла ДО загрузки
+    document.getElementById('current-kml').textContent = name || 'Загрузка...';
+    
+    currentLayer = omnivore.kml(path)
+        .on('ready', () => {
+            map.fitBounds(currentLayer.getBounds());
+            // Подтверждаем успешную загрузку
+            if (name) document.getElementById('current-kml').textContent = name;
+        })
+        .addTo(map);
 }
 
 
@@ -57,7 +69,7 @@ function renderKmlButtons(filesToShow = kmlFiles) {
         btn.className = 'kml-btn';
         btn.textContent = file.name;
         btn.onclick = () => {
-            loadKmlFile(file.path);
+            loadKmlFile(file.path, file.name);
             // Подсвечиваем активную кнопку
             document.querySelectorAll('.kml-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -68,18 +80,25 @@ function renderKmlButtons(filesToShow = kmlFiles) {
 
 // Поиск по KML-файлам (показываем все, если строка пустая)
 document.getElementById('search-input').addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase().trim();
+    const searchTerm = e.target.value.toLowerCase();
+    const container = document.getElementById('kml-files-container');
+    container.innerHTML = '';
     
-    if (searchTerm === '') {
-        // Если поиск пуст — показываем ВСЕ файлы
-        renderKmlButtons();
-    } else {
-        // Иначе — фильтруем
-        const filteredFiles = kmlFiles.filter(file => 
-            file.name.toLowerCase().includes(searchTerm)
-        );
-        renderKmlButtons(filteredFiles);
-    }
+    const filesToShow = searchTerm ? 
+        kmlFiles.filter(f => f.name.toLowerCase().includes(searchTerm)) : 
+        kmlFiles;
+    
+    filesToShow.forEach(file => {
+        const btn = document.createElement('button');
+        btn.className = 'kml-btn';
+        btn.textContent = file.name;
+        btn.onclick = () => {
+            loadKmlFile(file.path, file.name);
+            document.querySelectorAll('.kml-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        };
+        container.appendChild(btn);
+    });
 });
 
 // Кнопки "Вперед/Назад" для карусели
@@ -93,9 +112,11 @@ document.getElementById('next-btn').addEventListener('click', () => {
 
 // В обработчике клика по кнопке передаём имя файла
 btn.onclick = () => {
-    loadKmlFile(file.path, file.name); // <- Добавляем file.name
-    document.querySelectorAll('.kml-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    renderAllKmlButtons(); // Показываем все файлы сразу
+    document.getElementById('current-kml').textContent = 
+        kmlFiles.length ? "Выберите файл" : "Нет доступных файлов";
+    // document.querySelectorAll('.kml-btn').forEach(b => b.classList.remove('active'));
+    // btn.classList.add('active');
 };
 
 // Инициализация (показываем все файлы при загрузке)
