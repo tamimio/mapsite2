@@ -103,3 +103,7 @@ document.getElementById('search-input').addEventListener('input', function(e) {
     );
     renderKmlButtons(filteredFiles);
 });
+
+
+// Инициализация (показываем все файлы при загрузке)
+renderKmlButtons(kmlFiles);
