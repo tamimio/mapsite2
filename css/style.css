@@ -16,10 +16,12 @@ body {
     align-items: center;
     gap: 5px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .date-selector {
-    flex-grow: 1;
+    width: 120px; /* Фиксированная ширина для календаря */
+    flex-shrink: 0;
 }
 
 #date-picker {
@@ -29,15 +31,19 @@ body {
     font-size: 16px;
     width: 100%;
     text-align: center;
+    box-sizing: border-box;
 }
 
 .nav-btn {
-    padding: 10px 15px;
+    padding: 10px 12px; /* Уменьшенный padding */
     background: #f0f0f0;
     border: 1px solid #ccc;
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
+    flex-shrink: 0;
+    min-width: 40px; /* Минимальная ширина кнопок */
+    text-align: center;
 }
 
 .nav-btn:hover {
@@ -48,4 +54,20 @@ body {
     background: #f8f8f8;
     color: #aaa;
     cursor: not-allowed;
+}
+
+/* Для мобильных устройств */
+@media (max-width: 600px) {
+    .date-navigator {
+        gap: 3px;
+    }
+    
+    .date-selector {
+        width: 100px;
+    }
+    
+    .nav-btn {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
 }
