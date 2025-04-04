@@ -9,6 +9,9 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!-- Плагин для KML (Omnivore) -->
     <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
+	<!-- Flatpickr для календаря -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <!-- Наши стили -->
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -17,16 +20,14 @@
     
 	<!-- Карта -->
     <div id="map"></div>
-
-    <br>
-    <!-- Название текущего элемента -->
-    <div id="selected-kml-name">Текущий файл: <span id="current-kml">Ничего не выбрано</span></div>
-    
-    <br>
 	
-    <!-- Поисковая строка -->    
-    <div class="search-container">
-        <input type="text" id="search-input" placeholder="Поиск KML файлов..." />
+    <br>
+    <div id="selected-kml-date">Выбранная дата: <span id="current-date">не выбрана</span></div>
+	<br>
+	
+    <div class="date-selector">
+        <label for="date-picker">Выберите дату:</label>
+        <input type="text" id="date-picker" placeholder="DD.MM.YY">
     </div>
     
     <!-- Карусель с KML-файлами -->

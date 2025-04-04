@@ -11,24 +11,24 @@ body {
     border-radius: 8px;
 }
 
-.search-container {
+.date-selector {
     margin-bottom: 15px;
 }
 
-#search-input {
-    width: 100%;
+#date-picker {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
+    width: 150px;
 }
 
-#selected-kml-name {
+#selected-kml-date {
     margin: 10px 0;
     font-size: 16px;
 }
 
-#selected-kml-name span {
+#selected-kml-date span {
     font-weight: bold;
     color: #4CAF50;
 }

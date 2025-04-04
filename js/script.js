@@ -9,23 +9,32 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 /////////////////
 
 const kmlFiles = [
-    { name: "Файл 1", path: "kml/file1.kml" },
-    { name: "Файл 2", path: "kml/file2.kml" },
-	{ name: "Файл 3", path: "kml/file2.kml" },
-	{ name: "Файл 4", path: "kml/file2.kml" },
-	{ name: "Файл 5", path: "kml/file2.kml" },
-	{ name: "Файл 6", path: "kml/file2.kml" },
-	{ name: "Файл 7", path: "kml/file2.kml" },
-	{ name: "Файл 8", path: "kml/file2.kml" },
-	{ name: "Файл 9", path: "kml/file2.kml" },
-	{ name: "Файл 10", path: "kml/file2.kml" },
-	{ name: "Файл 11", path: "kml/file2.kml" },
-	{ name: "Файл 12", path: "kml/file2.kml" },
+    { name: "04.04.25", path: "kml/file1.kml" },
+    { name: "03.04.25", path: "kml/file2.kml" },
+	{ name: "02.04.25", path: "kml/file2.kml" },
+	{ name: "01.04.25", path: "kml/file2.kml" },
+	{ name: "31.03.25", path: "kml/file2.kml" },
+	{ name: "30.03.25", path: "kml/file2.kml" },
+	{ name: "29.03.25", path: "kml/file2.kml" },
+	{ name: "28.03.25", path: "kml/file2.kml" },
+	{ name: "27.03.25", path: "kml/file2.kml" },
+	{ name: "26.03.25", path: "kml/file2.kml" },
+	{ name: "25.03.25", path: "kml/file2.kml" },
+	{ name: "24.03.25", path: "kml/file2.kml" },
     // ... добавьте остальные файлы
 ];
 
 let currentLayer = null; // Текущий загруженный KML
 let currentSelectedFile = null;
+
+// Инициализация календаря
+const datePicker = flatpickr("#date-picker", {
+    dateFormat: "d.m.y",
+    allowInput: true,
+    onChange: function(selectedDates, dateStr) {
+        filterByDate(dateStr);
+    }
+});
 
 // Функция загрузки KML
 function loadKmlFile(file) {
@@ -33,14 +42,67 @@ function loadKmlFile(file) {
         map.removeLayer(currentLayer);
     }
     
-    document.getElementById('current-kml').textContent = file.name;
-    currentSelectedFile = file;
+    document.getElementById('current-date').textContent = file.name;
+    currentSelectedDate = file;
     
     currentLayer = omnivore.kml(file.path)
         .on('ready', () => {
             map.fitBounds(currentLayer.getBounds());
         })
         .addTo(map);
+}
+
+// Функция фильтрации по дате
+function filterByDate(dateStr) {
+    const container = document.getElementById('kml-files-container');
+    container.innerHTML = '';
+    
+    // Если дата не выбрана - показываем все
+    if (!dateStr) {
+        renderAllKmlButtons();
+        document.getElementById('current-date').textContent = "не выбрана";
+        return;
+    }
+    
+    // Ищем точное совпадение даты
+    const foundFile = kmlFiles.find(file => file.name === dateStr);
+    
+    if (foundFile) {
+        const btn = createDateButton(foundFile);
+        container.appendChild(btn);
+        loadKmlFile(foundFile);
+        btn.classList.add('active');
+    } else {
+        document.getElementById('current-date').textContent = "данные не найдены";
+    }
+}
+/ Создание кнопки даты
+function createDateButton(file) {
+    const btn = document.createElement('button');
+    btn.className = 'kml-btn';
+    btn.textContent = file.name;
+    
+    btn.onclick = () => {
+        document.querySelectorAll('.kml-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        loadKmlFile(file);
+    };
+    
+    return btn;
+}
+
+// Показ всех дат
+function renderAllKmlButtons() {
+    const container = document.getElementById('kml-files-container');
+    container.innerHTML = '';
+    
+    kmlFiles.forEach(file => {
+        const btn = createDateButton(file);
+        if (currentSelectedDate && file.path === currentSelectedDate.path) {
+            btn.classList.add('active');
+        }
+        container.appendChild(btn);
+    });
 }
 
 // Функция отрисовки кнопок
