@@ -1,43 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KML Viewer 2</title>
-    <!-- Leaflet CSS & JS -->
+    <title>KML Viewer by Date</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Плагин для KML (Omnivore) -->
     <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
-	<!-- Flatpickr для календаря -->
+    <!-- Добавляем Flatpickr для календаря -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <!-- Наши стили -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Название карты</h1>
+    <h1>KML Viewer by Date</h1>
     
-	<!-- Карта -->
-    <div id="map"></div>
-	
-    <br>
-    <div id="selected-kml-date">Выбранная дата: <span id="current-date">не выбрана</span></div>
-	<br>
-	
     <div class="date-selector">
         <label for="date-picker">Выберите дату:</label>
         <input type="text" id="date-picker" placeholder="DD.MM.YY">
     </div>
     
-    <!-- Карусель с KML-файлами -->
+    <div id="selected-kml-date">Выбранная дата: <span id="current-date">не выбрана</span></div>
+    
     <div class="kml-carousel">
         <button id="prev-btn">❮</button>
         <div class="kml-files-container" id="kml-files-container"></div>
         <button id="next-btn">❯</button>
     </div>
     
-    <!-- Наш скрипт -->
+    <div id="map"></div>
+    
     <script src="js/script.js"></script>
 </body>
 </html>

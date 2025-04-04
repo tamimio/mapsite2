@@ -1,31 +1,21 @@
-// Инициализация карты (центр и масштаб можно настроить)
-const map = L.map('map').setView([55.751244, 37.618423], 5); // Центр на Москве, масштаб 5
-
-// Добавляем слой карты (можно использовать OpenStreetMap, Яндекс.Карты и др.)
+// Инициализация карты
+const map = L.map('map').setView([55.751244, 37.618423], 5);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: '© OpenStreetMap'
 }).addTo(map);
 
-/////////////////
-
+// Данные KML-файлов в формате DD.MM.YY
 const kmlFiles = [
-    { name: "04.04.25", path: "kml/file1.kml" },
-    { name: "03.04.25", path: "kml/file2.kml" },
-	{ name: "02.04.25", path: "kml/file2.kml" },
-	{ name: "01.04.25", path: "kml/file2.kml" },
-	{ name: "31.03.25", path: "kml/file2.kml" },
-	{ name: "30.03.25", path: "kml/file2.kml" },
-	{ name: "29.03.25", path: "kml/file2.kml" },
-	{ name: "28.03.25", path: "kml/file2.kml" },
-	{ name: "27.03.25", path: "kml/file2.kml" },
-	{ name: "26.03.25", path: "kml/file2.kml" },
-	{ name: "25.03.25", path: "kml/file2.kml" },
-	{ name: "24.03.25", path: "kml/file2.kml" },
-    // ... добавьте остальные файлы
+    { name: "15.03.25", path: "kml/file1.kml" },
+    { name: "20.03.25", path: "kml/file2.kml" },
+    { name: "25.03.25", path: "kml/file3.kml" },
+    { name: "01.04.25", path: "kml/file4.kml" },
+    { name: "05.04.25", path: "kml/file5.kml" },
+    { name: "10.04.25", path: "kml/file6.kml" }
 ];
 
-let currentLayer = null; // Текущий загруженный KML
-let currentSelectedFile = null;
+let currentLayer = null;
+let currentSelectedDate = null;
 
 // Инициализация календаря
 const datePicker = flatpickr("#date-picker", {
@@ -76,7 +66,8 @@ function filterByDate(dateStr) {
         document.getElementById('current-date').textContent = "данные не найдены";
     }
 }
-/ Создание кнопки даты
+
+// Создание кнопки даты
 function createDateButton(file) {
     const btn = document.createElement('button');
     btn.className = 'kml-btn';
@@ -105,39 +96,6 @@ function renderAllKmlButtons() {
     });
 }
 
-// Функция отрисовки кнопок
-function renderKmlButtons(files) {
-    const container = document.getElementById('kml-files-container');
-    container.innerHTML = '';
-    
-    files.forEach(file => {
-        const btn = document.createElement('button');
-        btn.className = 'kml-btn';
-        btn.textContent = file.name;
-        
-        if (currentSelectedFile && file.path === currentSelectedFile.path) {
-            btn.classList.add('active');
-        }
-        
-        btn.onclick = () => {
-            document.querySelectorAll('.kml-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            loadKmlFile(file);
-        };
-        
-        container.appendChild(btn);
-    });
-}
-
-// Обработчик поиска
-document.getElementById('search-input').addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    const filteredFiles = searchTerm ? 
-        kmlFiles.filter(file => file.name.toLowerCase().includes(searchTerm)) : 
-        kmlFiles;
-    renderKmlButtons(filteredFiles);
-});
-
 // Кнопки навигации
 document.getElementById('prev-btn').addEventListener('click', () => {
     document.getElementById('kml-files-container').scrollBy({ left: -200, behavior: 'smooth' });
@@ -149,12 +107,5 @@ document.getElementById('next-btn').addEventListener('click', () => {
 
 // Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
-    renderKmlButtons(kmlFiles); // Показываем все файлы сразу
-    
-    // Автоматически выбираем первый файл (опционально)
-    if (kmlFiles.length > 0) {
-        const firstFile = kmlFiles[0];
-        loadKmlFile(firstFile);
-        document.querySelector('.kml-btn')?.classList.add('active');
-    }
+    renderAllKmlButtons();
 });
