@@ -1,8 +1,6 @@
-/* Основные стили */
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
-    padding: 0;
 }
 
 #map {
@@ -13,7 +11,6 @@ body {
     border-radius: 8px;
 }
 
-/* Стили для поиска */
 .search-container {
     margin-bottom: 15px;
 }
@@ -26,7 +23,16 @@ body {
     font-size: 16px;
 }
 
-/* Стили для карусели */
+#selected-kml-name {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+#selected-kml-name span {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
 .kml-carousel {
     display: flex;
     align-items: center;
@@ -74,15 +80,4 @@ body {
 
 #prev-btn:hover, #next-btn:hover {
     background: #ccc;
-}
-
-#selected-kml-name {
-    margin: 10px 0;
-    font-size: 16px;
-    color: #333;
-}
-
-#selected-kml-name span {
-    font-weight: bold;
-    color: #4CAF50;
 }

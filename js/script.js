@@ -25,83 +25,58 @@ const kmlFiles = [
 ];
 
 let currentLayer = null; // Текущий загруженный KML
+let currentSelectedFile = null;
 
-// Обработка ошибок загрузки KML
-currentLayer = omnivore.kml(path)
-    .on('error', () => {
-        document.getElementById('current-kml').textContent = 'Ошибка загрузки';
-    })
-
-
-// Функция загрузки KML + обновление текста (в строке с текущим названием)
-function loadKmlFile(path, name) {
-    if (currentLayer) map.removeLayer(currentLayer);
+// Функция загрузки KML
+function loadKmlFile(file) {
+    if (currentLayer) {
+        map.removeLayer(currentLayer);
+    }
     
-    // Обновляем текст выбранного файла ДО загрузки
-    document.getElementById('current-kml').textContent = name || 'Загрузка...';
+    document.getElementById('current-kml').textContent = file.name;
+    currentSelectedFile = file;
     
-    currentLayer = omnivore.kml(path)
+    currentLayer = omnivore.kml(file.path)
         .on('ready', () => {
             map.fitBounds(currentLayer.getBounds());
-            // Подтверждаем успешную загрузку
-            if (name) document.getElementById('current-kml').textContent = name;
         })
         .addTo(map);
 }
 
-
-// Поиск по KML-файлам
-document.getElementById('search-input').addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    const filteredFiles = kmlFiles.filter(file => 
-        file.name.toLowerCase().includes(searchTerm)
-    );
-    renderKmlButtons(filteredFiles);
-});
-
-// Рендер кнопок в карусели (показываем все файлы, если searchTerm = '')
-function renderKmlButtons(filesToShow = kmlFiles) {
+// Функция отрисовки кнопок
+function renderKmlButtons(files) {
     const container = document.getElementById('kml-files-container');
     container.innerHTML = '';
     
-    filesToShow.forEach(file => {
+    files.forEach(file => {
         const btn = document.createElement('button');
         btn.className = 'kml-btn';
         btn.textContent = file.name;
+        
+        if (currentSelectedFile && file.path === currentSelectedFile.path) {
+            btn.classList.add('active');
+        }
+        
         btn.onclick = () => {
-            loadKmlFile(file.path, file.name);
-            // Подсвечиваем активную кнопку
             document.querySelectorAll('.kml-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+            loadKmlFile(file);
         };
+        
         container.appendChild(btn);
     });
 }
 
-// Поиск по KML-файлам (показываем все, если строка пустая)
+// Обработчик поиска
 document.getElementById('search-input').addEventListener('input', function(e) {
     const searchTerm = e.target.value.toLowerCase();
-    const container = document.getElementById('kml-files-container');
-    container.innerHTML = '';
-    
-    const filesToShow = searchTerm ? 
-        kmlFiles.filter(f => f.name.toLowerCase().includes(searchTerm)) : 
+    const filteredFiles = searchTerm ? 
+        kmlFiles.filter(file => file.name.toLowerCase().includes(searchTerm)) : 
         kmlFiles;
-    
-    filesToShow.forEach(file => {
-        const btn = document.createElement('button');
-        btn.className = 'kml-btn';
-        btn.textContent = file.name;
-        btn.onclick = () => {
-            loadKmlFile(file.path, file.name);
-            document.querySelectorAll('.kml-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        };
-        container.appendChild(btn);
-    });
+    renderKmlButtons(filteredFiles);
 });
 
-// Кнопки "Вперед/Назад" для карусели
+// Кнопки навигации
 document.getElementById('prev-btn').addEventListener('click', () => {
     document.getElementById('kml-files-container').scrollBy({ left: -200, behavior: 'smooth' });
 });
@@ -110,14 +85,14 @@ document.getElementById('next-btn').addEventListener('click', () => {
     document.getElementById('kml-files-container').scrollBy({ left: 200, behavior: 'smooth' });
 });
 
-// В обработчике клика по кнопке передаём имя файла
-btn.onclick = () => {
-    renderAllKmlButtons(); // Показываем все файлы сразу
-    document.getElementById('current-kml').textContent = 
-        kmlFiles.length ? "Выберите файл" : "Нет доступных файлов";
-    // document.querySelectorAll('.kml-btn').forEach(b => b.classList.remove('active'));
-    // btn.classList.add('active');
-};
-
-// Инициализация (показываем все файлы при загрузке)
-renderKmlButtons();  
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', () => {
+    renderKmlButtons(kmlFiles); // Показываем все файлы сразу
+    
+    // Автоматически выбираем первый файл (опционально)
+    if (kmlFiles.length > 0) {
+        const firstFile = kmlFiles[0];
+        loadKmlFile(firstFile);
+        document.querySelector('.kml-btn')?.classList.add('active');
+    }
+});
