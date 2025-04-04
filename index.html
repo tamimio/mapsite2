@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KML Viewer with Leaflet</title>
+    <!-- Подключаем Leaflet CSS и JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Подключаем плагин для работы с KML (leaflet-omnivore) -->
+    <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
+    <!-- Наши стили (опционально) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>KML Viewer</h1>
+    <div id="map"></div>
+    <div id="kml-selector">
+        <label for="kml-files">Выберите KML-файл:</label>
+        <select id="kml-files">
+            <option value="">-- Выберите файл --</option>
+            <option value="kml/file1.kml">Файл 1</option>
+            <option value="kml/file2.kml">Файл 2</option>
+            <!-- Добавьте другие KML-файлы -->
+        </select>
+    </div>
+    <!-- Наш скрипт -->
+    <script src="js/script.js"></script>
+</body>
+</html>
