@@ -4,19 +4,25 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap'
 }).addTo(map);
 
-// Данные KML-файлов в формате DD.MM.YY
+// Основные KML-файлы
 const kmlFiles = [
     { name: "15.03.25", path: "kml/file1.kml" },
     { name: "20.03.25", path: "kml/file2.kml" },
-    { name: "25.03.25", path: "kml/file3.kml" },
     { name: "01.04.25", path: "kml/file4.kml" },
     { name: "05.04.25", path: "kml/file5.kml" },
     { name: "10.04.25", path: "kml/file6.kml" }
 ];
 
+// Постоянный слой
+const permanentLayerData = {
+    name: "25.03.25",
+    path: "kml/file3.kml"
+};
+
 let currentLayer = null;
-let currentIndex = kmlFiles.length - 1; // По умолчанию последний элемент
-let preserveZoom = false; // Флаг для сохранения масштаба
+let permanentLayer = null;
+let currentIndex = kmlFiles.length - 1;
+let preserveZoom = false;
 
 // Инициализация календаря
 const datePicker = flatpickr("#date-picker", {
@@ -31,6 +37,19 @@ const datePicker = flatpickr("#date-picker", {
         }
     }
 });
+
+// Загрузка постоянного KML-слоя
+function loadPermanentKml() {
+    permanentLayer = omnivore.kml(permanentLayerData.path)
+        .on('ready', function() {
+            permanentLayer.eachLayer(function(layer) {
+                if (layer.setStyle) {
+                    layer.setStyle(window.permanentLayerStyle);
+                }
+            });
+        })
+        .addTo(map);
+}
 
 // Функция загрузки KML (сохраняет текущий масштаб)
 function loadKmlFile(file) {
@@ -97,9 +116,13 @@ document.getElementById('last-btn').addEventListener('click', () => {
     navigateTo(kmlFiles.length - 1);
 });
 
+
 // Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
-    // Первая загрузка - масштабируем под данные
+    // Загружаем постоянный слой
+    loadPermanentKml();
+    
+    // Загружаем последний файл по умолчанию
     preserveZoom = false; // true - Всегда сохранять масштаб (если нужно полностью отключить автоматическое масштабирование)
     navigateTo(kmlFiles.length - 1);
 });

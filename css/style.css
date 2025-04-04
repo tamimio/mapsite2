@@ -71,3 +71,21 @@ body {
         font-size: 14px;
     }
 }
+
+/* Стили для постоянного KML-слоя */
+:root {
+    --permanent-layer-color: #FF0000;
+    --permanent-layer-weight: 3;
+    --permanent-layer-opacity: 0.7;
+    --permanent-layer-fill: #FF9999;
+    --permanent-layer-fill-opacity: 0.3;
+}
+
+/* Стиль для постоянного слоя (доступен в JS через window.permanentLayerStyle) */
+.permanent-layer-style {
+    color: var(--permanent-layer-color);
+    weight: var(--permanent-layer-weight);
+    opacity: var(--permanent-layer-opacity);
+    fillColor: var(--permanent-layer-fill);
+    fillOpacity: var(--permanent-layer-fill-opacity);
+}
