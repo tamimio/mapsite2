@@ -16,6 +16,7 @@ const kmlFiles = [
 
 let currentLayer = null;
 let currentIndex = kmlFiles.length - 1; // По умолчанию последний элемент
+let preserveZoom = false; // Флаг для сохранения масштаба
 
 // Инициализация календаря
 const datePicker = flatpickr("#date-picker", {
@@ -31,15 +32,25 @@ const datePicker = flatpickr("#date-picker", {
     }
 });
 
-// Функция загрузки KML
+// Функция загрузки KML (сохраняет текущий масштаб)
 function loadKmlFile(file) {
     if (currentLayer) {
         map.removeLayer(currentLayer);
     }
     
+    // Сохраняем текущий центр и зум перед загрузкой
+    const currentCenter = map.getCenter();
+    const currentZoom = map.getZoom();
+    
     currentLayer = omnivore.kml(file.path)
         .on('ready', () => {
-            map.fitBounds(currentLayer.getBounds());
+            if (!preserveZoom) {
+                map.fitBounds(currentLayer.getBounds());
+            } else {
+                // Восстанавливаем предыдущий центр и зум
+                map.setView(currentCenter, currentZoom);
+            }
+            preserveZoom = true; // После первой загрузки сохраняем масштаб
         })
         .addTo(map);
 }
@@ -88,6 +99,7 @@ document.getElementById('last-btn').addEventListener('click', () => {
 
 // Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
-    // Загружаем последний файл по умолчанию
+    // Первая загрузка - масштабируем под данные
+    preserveZoom = false; // true - Всегда сохранять масштаб (если нужно полностью отключить автоматическое масштабирование)
     navigateTo(kmlFiles.length - 1);
 });
