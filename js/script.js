@@ -32,6 +32,16 @@ document.getElementById('kml-files').addEventListener('change', function(e) {
 const kmlFiles = [
     { name: "Файл 1", path: "kml/file1.kml" },
     { name: "Файл 2", path: "kml/file2.kml" },
+	{ name: "Файл 3", path: "kml/file2.kml" },
+	{ name: "Файл 4", path: "kml/file2.kml" },
+	{ name: "Файл 5", path: "kml/file2.kml" },
+	{ name: "Файл 6", path: "kml/file2.kml" },
+	{ name: "Файл 7", path: "kml/file2.kml" },
+	{ name: "Файл 8", path: "kml/file2.kml" },
+	{ name: "Файл 9", path: "kml/file2.kml" },
+	{ name: "Файл 10", path: "kml/file2.kml" },
+	{ name: "Файл 11", path: "kml/file2.kml" },
+	{ name: "Файл 12", path: "kml/file2.kml" },
     // ... добавьте остальные файлы
 ];
 
