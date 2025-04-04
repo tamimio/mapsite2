@@ -34,12 +34,21 @@ function loadKmlFile(path) {
         .addTo(map);
 }
 
-// Рендер кнопок в карусели
-function renderKmlButtons(files) {
+// Поиск по KML-файлам
+document.getElementById('search-input').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const filteredFiles = kmlFiles.filter(file => 
+        file.name.toLowerCase().includes(searchTerm)
+    );
+    renderKmlButtons(filteredFiles);
+});
+
+// Рендер кнопок в карусели (показываем все файлы, если searchTerm = '')
+function renderKmlButtons(filesToShow = kmlFiles) {
     const container = document.getElementById('kml-files-container');
     container.innerHTML = '';
     
-    files.forEach(file => {
+    filesToShow.forEach(file => {
         const btn = document.createElement('button');
         btn.className = 'kml-btn';
         btn.textContent = file.name;
@@ -53,13 +62,20 @@ function renderKmlButtons(files) {
     });
 }
 
-// Поиск по KML-файлам
+// Поиск по KML-файлам (показываем все, если строка пустая)
 document.getElementById('search-input').addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    const filteredFiles = kmlFiles.filter(file => 
-        file.name.toLowerCase().includes(searchTerm)
-    );
-    renderKmlButtons(filteredFiles);
+    const searchTerm = e.target.value.toLowerCase().trim();
+    
+    if (searchTerm === '') {
+        // Если поиск пуст — показываем ВСЕ файлы
+        renderKmlButtons();
+    } else {
+        // Иначе — фильтруем
+        const filteredFiles = kmlFiles.filter(file => 
+            file.name.toLowerCase().includes(searchTerm)
+        );
+        renderKmlButtons(filteredFiles);
+    }
 });
 
 // Кнопки "Вперед/Назад" для карусели
@@ -72,4 +88,4 @@ document.getElementById('next-btn').addEventListener('click', () => {
 });
 
 // Инициализация (показываем все файлы при загрузке)
-renderKmlButtons(kmlFiles);
+renderKmlButtons();  
