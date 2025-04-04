@@ -75,3 +75,14 @@ body {
 #prev-btn:hover, #next-btn:hover {
     background: #ccc;
 }
+
+#selected-kml-name {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+#selected-kml-name span {
+    font-weight: bold;
+    color: #4CAF50;
+}

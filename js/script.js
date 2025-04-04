@@ -26,13 +26,17 @@ const kmlFiles = [
 
 let currentLayer = null; // Текущий загруженный KML
 
-// Загрузка KML-файла
-function loadKmlFile(path) {
+// Функция загрузки KML + обновление текста (в строке с текущим названием)
+function loadKmlFile(path, name) {
     if (currentLayer) map.removeLayer(currentLayer);
     currentLayer = omnivore.kml(path)
         .on('ready', () => map.fitBounds(currentLayer.getBounds()))
         .addTo(map);
+    
+    // Обновляем текст выбранного файла
+    document.querySelector('#selected-kml-name span').textContent = name || 'Неизвестно';
 }
+
 
 // Поиск по KML-файлам
 document.getElementById('search-input').addEventListener('input', function(e) {
@@ -86,6 +90,13 @@ document.getElementById('prev-btn').addEventListener('click', () => {
 document.getElementById('next-btn').addEventListener('click', () => {
     document.getElementById('kml-files-container').scrollBy({ left: 200, behavior: 'smooth' });
 });
+
+// В обработчике клика по кнопке передаём имя файла
+btn.onclick = () => {
+    loadKmlFile(file.path, file.name); // <- Добавляем file.name
+    document.querySelectorAll('.kml-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+};
 
 // Инициализация (показываем все файлы при загрузке)
 renderKmlButtons();  
