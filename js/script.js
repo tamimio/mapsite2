@@ -9,6 +9,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 let currentLayer = null; // Текущий слой KML
 
 // Обработчик изменения выбора файла
+/*
 document.getElementById('kml-files').addEventListener('change', function(e) {
     const kmlFile = e.target.value;
     
@@ -26,3 +27,44 @@ document.getElementById('kml-files').addEventListener('change', function(e) {
             .addTo(map);
     }
 });
+*/
+
+const kmlFiles = [
+    { name: "Файл 1", path: "kml/file1.kml" },
+    { name: "Файл 2", path: "kml/file2.kml" },
+    // ... добавьте остальные файлы
+];
+
+const container = document.querySelector('.kml-files-container');
+
+// Создаём кнопки для каждого KML-файла
+kmlFiles.forEach(file => {
+    const btn = document.createElement('button');
+    btn.className = 'kml-btn';
+    btn.textContent = file.name;
+    btn.onclick = () => loadKmlFile(file.path);
+    container.appendChild(btn);
+});
+
+// Прокрутка слайдера
+document.getElementById('prev-btn').addEventListener('click', () => {
+    container.scrollBy({ left: -200, behavior: 'smooth' });
+});
+
+document.getElementById('next-btn').addEventListener('click', () => {
+    container.scrollBy({ left: 200, behavior: 'smooth' });
+});
+
+// Функция загрузки KML (аналогично предыдущему варианту)
+function loadKmlFile(path) {
+    if (currentLayer) map.removeLayer(currentLayer);
+    currentLayer = omnivore.kml(path)
+        .on('ready', () => map.fitBounds(currentLayer.getBounds()))
+        .addTo(map);
+    
+    // Подсветка активной кнопки
+    document.querySelectorAll('.kml-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+}

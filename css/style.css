@@ -13,3 +13,43 @@ body {
 #kml-selector {
     margin-bottom: 20px;
 }
+
+.kml-carousel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding: 10px 0;
+}
+
+.kml-files-container {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 5px;
+}
+
+.kml-btn {
+    padding: 8px 12px;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.kml-btn.active {
+    background: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
+#prev-btn, #next-btn {
+    padding: 8px 12px;
+    background: #ddd;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}

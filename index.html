@@ -15,15 +15,24 @@
 <body>
     <h1>KML Viewer</h1>
     <div id="map"></div>
+	<!--
     <div id="kml-selector">
         <label for="kml-files">Выберите KML-файл:</label>
         <select id="kml-files">
             <option value="">-- Выберите файл --</option>
             <option value="kml/file1.kml">Файл 1</option>
             <option value="kml/file2.kml">Файл 2</option>
-            <!-- Добавьте другие KML-файлы -->
+            
         </select>
     </div>
+	-->
+	<div class="kml-carousel">
+		<button id="prev-btn">←</button>
+		<div class="kml-files-container">
+			<!-- Кнопки будут добавляться через JS -->
+		</div>
+		<button id="next-btn">→</button>
+	</div>
     <!-- Наш скрипт -->
     <script src="js/script.js"></script>
 </body>
