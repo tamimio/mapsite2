@@ -15,14 +15,19 @@ const kmlFiles = [
 ];
 
 let currentLayer = null;
-let currentSelectedDate = null;
+let currentIndex = kmlFiles.length - 1; // По умолчанию последний элемент
 
 // Инициализация календаря
 const datePicker = flatpickr("#date-picker", {
     dateFormat: "d.m.y",
     allowInput: true,
+    locale: "ru",
+    defaultDate: kmlFiles[kmlFiles.length - 1].name,
     onChange: function(selectedDates, dateStr) {
-        filterByDate(dateStr);
+        const index = kmlFiles.findIndex(file => file.name === dateStr);
+        if (index !== -1) {
+            navigateTo(index);
+        }
     }
 });
 
@@ -32,9 +37,6 @@ function loadKmlFile(file) {
         map.removeLayer(currentLayer);
     }
     
-    document.getElementById('current-date').textContent = file.name;
-    currentSelectedDate = file;
-    
     currentLayer = omnivore.kml(file.path)
         .on('ready', () => {
             map.fitBounds(currentLayer.getBounds());
@@ -42,70 +44,50 @@ function loadKmlFile(file) {
         .addTo(map);
 }
 
-// Функция фильтрации по дате
-function filterByDate(dateStr) {
-    const container = document.getElementById('kml-files-container');
-    container.innerHTML = '';
+// Навигация к определенному индексу
+function navigateTo(index) {
+    if (index < 0 || index >= kmlFiles.length) return;
     
-    // Если дата не выбрана - показываем все
-    if (!dateStr) {
-        renderAllKmlButtons();
-        document.getElementById('current-date').textContent = "не выбрана";
-        return;
-    }
+    currentIndex = index;
+    const file = kmlFiles[currentIndex];
     
-    // Ищем точное совпадение даты
-    const foundFile = kmlFiles.find(file => file.name === dateStr);
+    // Обновляем календарь
+    datePicker.setDate(file.name, false);
     
-    if (foundFile) {
-        const btn = createDateButton(foundFile);
-        container.appendChild(btn);
-        loadKmlFile(foundFile);
-        btn.classList.add('active');
-    } else {
-        document.getElementById('current-date').textContent = "данные не найдены";
-    }
+    // Загружаем файл
+    loadKmlFile(file);
+    
+    // Обновляем состояние кнопок
+    updateButtons();
 }
 
-// Создание кнопки даты
-function createDateButton(file) {
-    const btn = document.createElement('button');
-    btn.className = 'kml-btn';
-    btn.textContent = file.name;
-    
-    btn.onclick = () => {
-        document.querySelectorAll('.kml-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        loadKmlFile(file);
-    };
-    
-    return btn;
+// Обновление состояния кнопок
+function updateButtons() {
+    document.getElementById('first-btn').disabled = currentIndex === 0;
+    document.getElementById('prev-btn').disabled = currentIndex === 0;
+    document.getElementById('next-btn').disabled = currentIndex === kmlFiles.length - 1;
+    document.getElementById('last-btn').disabled = currentIndex === kmlFiles.length - 1;
 }
 
-// Показ всех дат
-function renderAllKmlButtons() {
-    const container = document.getElementById('kml-files-container');
-    container.innerHTML = '';
-    
-    kmlFiles.forEach(file => {
-        const btn = createDateButton(file);
-        if (currentSelectedDate && file.path === currentSelectedDate.path) {
-            btn.classList.add('active');
-        }
-        container.appendChild(btn);
-    });
-}
+// Обработчики кнопок
+document.getElementById('first-btn').addEventListener('click', () => {
+    navigateTo(0);
+});
 
-// Кнопки навигации
 document.getElementById('prev-btn').addEventListener('click', () => {
-    document.getElementById('kml-files-container').scrollBy({ left: -200, behavior: 'smooth' });
+    navigateTo(currentIndex - 1);
 });
 
 document.getElementById('next-btn').addEventListener('click', () => {
-    document.getElementById('kml-files-container').scrollBy({ left: 200, behavior: 'smooth' });
+    navigateTo(currentIndex + 1);
+});
+
+document.getElementById('last-btn').addEventListener('click', () => {
+    navigateTo(kmlFiles.length - 1);
 });
 
 // Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
-    renderAllKmlButtons();
+    // Загружаем последний файл по умолчанию
+    navigateTo(kmlFiles.length - 1);
 });

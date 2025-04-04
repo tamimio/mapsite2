@@ -5,31 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KML Viewer by Date</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
-    <!-- Добавляем Flatpickr для календаря -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <h1>KML Viewer by Date</h1>
     
-    <div class="date-selector">
-        <label for="date-picker">Выберите дату:</label>
-        <input type="text" id="date-picker" placeholder="DD.MM.YY">
-    </div>
-    
-    <div id="selected-kml-date">Выбранная дата: <span id="current-date">не выбрана</span></div>
-    
-    <div class="kml-carousel">
-        <button id="prev-btn">❮</button>
-        <div class="kml-files-container" id="kml-files-container"></div>
-        <button id="next-btn">❯</button>
+    <div class="date-navigator">
+        <button id="first-btn" class="nav-btn" title="Первый">❮❮</button>
+        <button id="prev-btn" class="nav-btn" title="Предыдущий">❮</button>
+        
+        <div class="date-selector">
+            <input type="text" id="date-picker" placeholder="DD.MM.YY">
+        </div>
+        
+        <button id="next-btn" class="nav-btn" title="Следующий">❯</button>
+        <button id="last-btn" class="nav-btn" title="Последний">❯❯</button>
     </div>
     
     <div id="map"></div>
     
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
