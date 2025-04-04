@@ -1,26 +1,37 @@
+/* Основные стили */
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
+    padding: 0;
 }
 
 #map {
     height: 600px;
     width: 100%;
-    margin-bottom: 20px;
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+/* Стили для поиска */
+.search-container {
+    margin-bottom: 15px;
+}
+
+#search-input {
+    width: 100%;
+    padding: 10px;
     border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
-#kml-selector {
-    margin-bottom: 20px;
-}
-
+/* Стили для карусели */
 .kml-carousel {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 20px;
-    overflow-x: auto;
-    padding: 10px 0;
 }
 
 .kml-files-container {
@@ -29,6 +40,7 @@ body {
     overflow-x: auto;
     scroll-behavior: smooth;
     padding: 5px;
+    flex-grow: 1;
 }
 
 .kml-btn {
@@ -38,6 +50,11 @@ body {
     border-radius: 4px;
     cursor: pointer;
     white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.kml-btn:hover {
+    background: #e0e0e0;
 }
 
 .kml-btn.active {
@@ -52,4 +69,9 @@ body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    flex-shrink: 0;
+}
+
+#prev-btn:hover, #next-btn:hover {
+    background: #ccc;
 }

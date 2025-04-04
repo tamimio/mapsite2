@@ -6,31 +6,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-let currentLayer = null; // Текущий слой KML
-
-/////////////////
-
-// Обработчик изменения выбора файла
-/*
-document.getElementById('kml-files').addEventListener('change', function(e) {
-    const kmlFile = e.target.value;
-    
-    // Удаляем предыдущий слой, если он есть
-    if (currentLayer) {
-        map.removeLayer(currentLayer);
-    }
-    
-    // Если файл выбран, загружаем его
-    if (kmlFile) {
-        currentLayer = omnivore.kml(kmlFile)
-            .on('ready', function() {
-                map.fitBounds(currentLayer.getBounds()); // Автоматически масштабируем карту
-            })
-            .addTo(map);
-    }
-});
-*/
-
 /////////////////
 
 const kmlFiles = [
@@ -49,7 +24,15 @@ const kmlFiles = [
     // ... добавьте остальные файлы
 ];
 
-const container = document.querySelector('.kml-files-container');
+let currentLayer = null; // Текущий загруженный KML
+
+// Загрузка KML-файла
+function loadKmlFile(path) {
+    if (currentLayer) map.removeLayer(currentLayer);
+    currentLayer = omnivore.kml(path)
+        .on('ready', () => map.fitBounds(currentLayer.getBounds()))
+        .addTo(map);
+}
 
 // Рендер кнопок в карусели
 function renderKmlButtons(files) {
@@ -70,31 +53,6 @@ function renderKmlButtons(files) {
     });
 }
 
-// Прокрутка слайдера
-document.getElementById('prev-btn').addEventListener('click', () => {
-    container.scrollBy({ left: -200, behavior: 'smooth' });
-});
-
-document.getElementById('next-btn').addEventListener('click', () => {
-    container.scrollBy({ left: 200, behavior: 'smooth' });
-});
-
-// Функция загрузки KML (аналогично предыдущему варианту)
-function loadKmlFile(path) {
-    if (currentLayer) map.removeLayer(currentLayer);
-    currentLayer = omnivore.kml(path)
-        .on('ready', () => map.fitBounds(currentLayer.getBounds()))
-        .addTo(map);
-    
-    // Подсветка активной кнопки
-    document.querySelectorAll('.kml-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-}
-
-/////////////////
-
 // Поиск по KML-файлам
 document.getElementById('search-input').addEventListener('input', function(e) {
     const searchTerm = e.target.value.toLowerCase();
@@ -104,6 +62,14 @@ document.getElementById('search-input').addEventListener('input', function(e) {
     renderKmlButtons(filteredFiles);
 });
 
+// Кнопки "Вперед/Назад" для карусели
+document.getElementById('prev-btn').addEventListener('click', () => {
+    document.getElementById('kml-files-container').scrollBy({ left: -200, behavior: 'smooth' });
+});
+
+document.getElementById('next-btn').addEventListener('click', () => {
+    document.getElementById('kml-files-container').scrollBy({ left: 200, behavior: 'smooth' });
+});
 
 // Инициализация (показываем все файлы при загрузке)
 renderKmlButtons(kmlFiles);

@@ -4,40 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KML Viewer 2</title>
-    <!-- Подключаем Leaflet CSS и JS -->
+    <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Подключаем плагин для работы с KML (leaflet-omnivore) -->
+    <!-- Плагин для KML (Omnivore) -->
     <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
-    <!-- Наши стили (опционально) -->
+    <!-- Наши стили -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <h1>Название карты</h1>
-    <div id="map"></div>
-	<!--
-    <div id="kml-selector">
-        <label for="kml-files">Выберите KML-файл:</label>
-        <select id="kml-files">
-            <option value="">-- Выберите файл --</option>
-            <option value="kml/file1.kml">Файл 1</option>
-            <option value="kml/file2.kml">Файл 2</option>
-            
-        </select>
-    </div>
-	-->
-	<!-- Поиск -->
+    
+    <!-- Поисковая строка -->
     <div class="search-container">
         <input type="text" id="search-input" placeholder="Search KML files..." />
-    </div>>
-	<!-- Слайдер -->
-	<div class="kml-carousel">
-		<button id="prev-btn">←</button>
-		<div class="kml-files-container">
-			<!-- Кнопки будут добавляться через JS -->
-		</div>
-		<button id="next-btn">→</button>
-	</div>
+    </div>
+    
+    <!-- Карусель с KML-файлами -->
+    <div class="kml-carousel">
+        <button id="prev-btn">❮</button>
+        <div class="kml-files-container" id="kml-files-container"></div>
+        <button id="next-btn">❯</button>
+    </div>
+    
+    <!-- Карта -->
+    <div id="map"></div>
+    
     <!-- Наш скрипт -->
     <script src="js/script.js"></script>
 </body>
