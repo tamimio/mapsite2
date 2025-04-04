@@ -8,6 +8,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 let currentLayer = null; // Текущий слой KML
 
+/////////////////
+
 // Обработчик изменения выбора файла
 /*
 document.getElementById('kml-files').addEventListener('change', function(e) {
@@ -29,6 +31,8 @@ document.getElementById('kml-files').addEventListener('change', function(e) {
 });
 */
 
+/////////////////
+
 const kmlFiles = [
     { name: "Файл 1", path: "kml/file1.kml" },
     { name: "Файл 2", path: "kml/file2.kml" },
@@ -47,14 +51,24 @@ const kmlFiles = [
 
 const container = document.querySelector('.kml-files-container');
 
-// Создаём кнопки для каждого KML-файла
-kmlFiles.forEach(file => {
-    const btn = document.createElement('button');
-    btn.className = 'kml-btn';
-    btn.textContent = file.name;
-    btn.onclick = () => loadKmlFile(file.path);
-    container.appendChild(btn);
-});
+// Рендер кнопок в карусели
+function renderKmlButtons(files) {
+    const container = document.getElementById('kml-files-container');
+    container.innerHTML = '';
+    
+    files.forEach(file => {
+        const btn = document.createElement('button');
+        btn.className = 'kml-btn';
+        btn.textContent = file.name;
+        btn.onclick = () => {
+            loadKmlFile(file.path);
+            // Подсвечиваем активную кнопку
+            document.querySelectorAll('.kml-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        };
+        container.appendChild(btn);
+    });
+}
 
 // Прокрутка слайдера
 document.getElementById('prev-btn').addEventListener('click', () => {
@@ -78,3 +92,14 @@ function loadKmlFile(path) {
     });
     event.target.classList.add('active');
 }
+
+/////////////////
+
+// Поиск по KML-файлам
+document.getElementById('search-input').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const filteredFiles = kmlFiles.filter(file => 
+        file.name.toLowerCase().includes(searchTerm)
+    );
+    renderKmlButtons(filteredFiles);
+});

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KML Viewer with Leaflet</title>
+    <title>KML Viewer 2</title>
     <!-- Подключаем Leaflet CSS и JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>KML Viewer</h1>
+    <h1>Название карты</h1>
     <div id="map"></div>
 	<!--
     <div id="kml-selector">
@@ -26,6 +26,12 @@
         </select>
     </div>
 	-->
+	<!-- Поиск -->
+	<div class="kml-search">
+		<input type="text" id="kml-search" placeholder="Поиск KML...">
+		<div id="kml-results"></div>
+	</div>
+	<!-- Слайдер -->
 	<div class="kml-carousel">
 		<button id="prev-btn">←</button>
 		<div class="kml-files-container">
