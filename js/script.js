@@ -115,6 +115,11 @@ copyCoordsBtn.addEventListener('click', function() {
 function centerMap(lat, lng) {
     const currentZoom = map.getZoom();
     map.setView([lat, lng], currentZoom);
+    
+    // Обновляем поле ввода, если координаты изменились
+    if (coordsInput.value !== `${lat}, ${lng}`) {
+        coordsInput.value = `${lat}, ${lng}`;
+    }
 }
 
 // Загрузка постоянного KML-слоя
@@ -195,28 +200,26 @@ document.getElementById('last-btn').addEventListener('click', () => {
     navigateTo(kmlFiles.length - 1);
 });
 
-// Обработчики событий для полей ввода координат
-document.getElementById('latitude-input').addEventListener('change', function() {
-    const latInput = this.value;
-    const lngInput = document.getElementById('longitude-input').value;
+
+const coordsInput = document.getElementById('coords-input');
+
+// Обработчик ввода координат
+coordsInput.addEventListener('change', function() {
+    const coords = this.value.split(',').map(coord => coord.trim());
     
-    if (isValidCoordinate(latInput, true)) {
-        if (isValidCoordinate(lngInput, false)) {
-            centerMap(parseFloat(latInput), parseFloat(lngInput));
+    if (coords.length === 2) {
+        const lat = parseFloat(coords[0]);
+        const lng = parseFloat(coords[1]);
+        
+        if (!isNaN(lat) && !isNaN(lng) {
+            centerMap(lat, lng);
         }
     }
 });
 
-document.getElementById('longitude-input').addEventListener('change', function() {
-    const lngInput = this.value;
-    const latInput = document.getElementById('latitude-input').value;
-    
-    if (isValidCoordinate(lngInput, false)) {
-        if (isValidCoordinate(latInput, true)) {
-            centerMap(parseFloat(latInput), parseFloat(lngInput));
-        }
-    }
-});
+
+
+
 
 // Заполнение выпадающего списка городов
 const citiesDropdown = document.getElementById('cities-dropdown');
@@ -228,6 +231,22 @@ cities.forEach(city => {
 });
 
 // Обработчик выбора города
+
+citiesDropdown.addEventListener('change', function() {
+    const selectedCityName = this.value;
+    if (!selectedCityName) return;
+    
+    const city = cities.find(c => c.name === selectedCityName);
+    if (city) {
+        // Заполняем поле координат
+        coordsInput.value = `${city.lat}, ${city.lng}`;
+        centerMap(city.lat, city.lng);
+        
+        // Сбрасываем выбор
+        this.value = "";
+    }
+});
+
 // Обработчик кнопки копирования координат
 copyCoordsBtn.addEventListener('click', function() {
     const coords = currentCenterCoordsElement.textContent;
@@ -262,13 +281,5 @@ document.addEventListener('DOMContentLoaded', () => {
     navigateTo(kmlFiles.length - 1);
 	
     // Инициализируем отображение центра
-    updateCurrentCenterDisplay();
-    
-    // Заполняем список городов
-    cities.forEach(city => {
-        const option = document.createElement('option');
-        option.value = city.name;
-        option.textContent = city.name;
-        citiesDropdown.appendChild(option);
-    });
+    updateCurrentCenterDisplay();    
 });

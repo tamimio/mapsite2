@@ -118,7 +118,7 @@ body {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: 120px;
+    width: 300px; 
 }
 
 #cities-dropdown {
