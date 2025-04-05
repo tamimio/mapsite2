@@ -171,7 +171,7 @@ document.getElementById('latitude-input').addEventListener('change', function() 
     const latInput = this.value;
     const lngInput = document.getElementById('longitude-input').value;
     
-    if (isValidCoordinate(latInput, true) {
+    if (isValidCoordinate(latInput, true)) {
         if (isValidCoordinate(lngInput, false)) {
             centerMap(parseFloat(latInput), parseFloat(lngInput));
         }
