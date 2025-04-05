@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KML Viewer by Date</title>
+    <title id="page-title">KML Viewer by Date</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div class="language-switcher">
+        <button id="lang-ru" class="lang-btn" title="Переключить на Русский">🇷🇺</button>
+        <button id="lang-en" class="lang-btn" title="Switch to English">🇬🇧</button>
+    </div>
+	
     <h1>KML Viewer by Date</h1>
     
     <div class="date-navigator">
@@ -23,19 +28,19 @@
         <button id="last-btn" class="nav-btn" title="Последний">❯❯</button>
     </div>
 	
-	<div class="coordinates-search">
-		<label>Центрировать на:</label>
-		<input type="text" id="coords-input" placeholder="Широта, Долгота (например: 55.7558, 37.6173)" class="coord-input">
-		<select id="cities-dropdown">
-			<option value="" selected disabled>Выберите город</option>
-			<!-- Города будут добавлены через JS -->
-		</select>
-		<div class="current-center">
-			<span>Текущий центр: </span>
-			<span id="current-center-coords">не определен</span>
-			<button id="copy-coords-btn" title="Копировать координаты">⎘</button>
-		</div>
-	</div>
+    <div class="coordinates-search">
+        <label id="center-label">Центрировать на:</label>
+        <input type="text" id="coords-input" placeholder="Широта, Долгота (например: 55.7558, 37.6173)" class="coord-input">
+        <select id="cities-dropdown">
+            <option value="" selected disabled id="select-city-default">Выберите город</option>
+            <!-- Города будут добавлены через JS -->
+        </select>
+        <div class="current-center">
+            <span id="current-center-label">Текущий центр: </span>
+            <span id="current-center-coords">не определен</span>
+            <button id="copy-coords-btn" title="Копировать координаты">⎘</button>
+        </div>
+    </div>
     
     <div id="map"></div>
     
