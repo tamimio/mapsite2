@@ -205,9 +205,15 @@ citiesDropdown.addEventListener('change', function() {
     
     const city = cities.find(c => c.name === selectedCityName);
     if (city) {
+        // Всегда обновляем значения полей ввода
         document.getElementById('latitude-input').value = city.lat;
         document.getElementById('longitude-input').value = city.lng;
+        
+        // Центрируем карту независимо от того, был ли город уже выбран
         centerMap(city.lat, city.lng);
+        
+        // Сохраняем текущий выбранный город
+        this.dataset.lastSelected = selectedCityName;
     }
 });
 
