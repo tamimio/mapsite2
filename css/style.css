@@ -89,3 +89,18 @@ body {
     fillColor: var(--permanent-layer-fill);
     fillOpacity: var(--permanent-layer-fill-opacity);
 }
+
+/* Стили для календаря */
+.flatpickr-day {
+    transition: all 0.2s;
+}
+
+.flatpickr-day.available {
+    background-color: #e6f7ff;
+    font-weight: bold;
+}
+
+.flatpickr-day.disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}

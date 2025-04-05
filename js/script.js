@@ -24,16 +24,41 @@ let permanentLayer = null;
 let currentIndex = kmlFiles.length - 1;
 let preserveZoom = false;
 
-// Инициализация календаря
+// Получаем массив доступных дат из kmlFiles
+const availableDates = kmlFiles.map(file => file.name);
+
+// Функция для преобразования даты из формата DD.MM.YY в объект Date
+function parseCustomDate(dateStr) {
+    const [day, month, year] = dateStr.split('.').map(Number);
+    return new Date(2000 + year, month - 1, day);
+}
+
+// Инициализация календаря с ограничением доступных дат
 const datePicker = flatpickr("#date-picker", {
     dateFormat: "d.m.y",
     allowInput: true,
     locale: "ru",
     defaultDate: kmlFiles[kmlFiles.length - 1].name,
+    enable: [
+        // Разрешаем только даты, которые есть в kmlFiles
+        function(date) {
+            const dateStr = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth()+1).toString().padStart(2, '0')}.${date.getFullYear().toString().slice(-2)}`;
+            return availableDates.includes(dateStr);
+        }
+    ],
     onChange: function(selectedDates, dateStr) {
         const index = kmlFiles.findIndex(file => file.name === dateStr);
         if (index !== -1) {
             navigateTo(index);
+        }
+    },
+    onDayCreate: function(dObj, dStr, fp, dayElem) {
+        // Подсвечиваем доступные даты
+        const dateStr = `${dayElem.dateObj.getDate().toString().padStart(2, '0')}.${(dayElem.dateObj.getMonth()+1).toString().padStart(2, '0')}.${dayElem.dateObj.getFullYear().toString().slice(-2)}`;
+        
+        if (availableDates.includes(dateStr)) {
+            dayElem.style.backgroundColor = '#e6f7ff';
+            dayElem.style.fontWeight = 'bold';
         }
     }
 });

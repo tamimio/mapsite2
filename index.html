@@ -32,19 +32,24 @@
     <script src="js/script.js"></script>
 	
 	<script>
-    // Делаем стиль permanent доступным в JavaScript
-    window.permanentLayerStyle = {
-        color: getComputedStyle(document.documentElement)
-            .getPropertyValue('--permanent-layer-color').trim(),
-        weight: parseInt(getComputedStyle(document.documentElement)
-            .getPropertyValue('--permanent-layer-weight').trim()),
-        opacity: parseFloat(getComputedStyle(document.documentElement)
-            .getPropertyValue('--permanent-layer-opacity').trim()),
-        fillColor: getComputedStyle(document.documentElement)
-            .getPropertyValue('--permanent-layer-fill').trim(),
-        fillOpacity: parseFloat(getComputedStyle(document.documentElement)
-            .getPropertyValue('--permanent-layer-fill-opacity').trim())
-    };
+		// Делаем стиль permanent доступным в JavaScript
+		window.permanentLayerStyle = {
+			color: getComputedStyle(document.documentElement)
+				.getPropertyValue('--permanent-layer-color').trim(),
+			weight: parseInt(getComputedStyle(document.documentElement)
+				.getPropertyValue('--permanent-layer-weight').trim()),
+			opacity: parseFloat(getComputedStyle(document.documentElement)
+				.getPropertyValue('--permanent-layer-opacity').trim()),
+			fillColor: getComputedStyle(document.documentElement)
+				.getPropertyValue('--permanent-layer-fill').trim(),
+			fillOpacity: parseFloat(getComputedStyle(document.documentElement)
+				.getPropertyValue('--permanent-layer-fill-opacity').trim())
+		};
+	</script>
+	
+	<script>
+		// Делаем доступные даты глобально доступными
+		window.availableDates = kmlFiles.map(file => file.name);
 	</script>
 	
 </body>
