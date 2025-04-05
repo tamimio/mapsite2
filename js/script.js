@@ -19,6 +19,17 @@ const permanentLayerData = {
     path: "kml/file3.kml"
 };
 
+// Список городов с координатами
+const cities = [
+    { name: "Москва", lat: 55.7558, lng: 37.6173 },
+    { name: "Санкт-Петербург", lat: 59.9343, lng: 30.3351 },
+    { name: "Новосибирск", lat: 55.0084, lng: 82.9357 },
+    { name: "Екатеринбург", lat: 56.8389, lng: 60.6057 },
+    { name: "Казань", lat: 55.7961, lng: 49.1064 },
+    { name: "Нижний Новгород", lat: 56.3269, lng: 44.0256 },
+    { name: "Сочи", lat: 43.5855, lng: 39.7231 }
+];
+
 let currentLayer = null;
 let permanentLayer = null;
 let currentIndex = kmlFiles.length - 1;
@@ -62,6 +73,20 @@ const datePicker = flatpickr("#date-picker", {
         }
     }
 });
+
+// Функция для проверки валидности координат
+function isValidCoordinate(value, isLatitude) {
+    const num = parseFloat(value);
+    if (isNaN(num)) return false;
+    if (isLatitude) return num >= -90 && num <= 90;
+    return num >= -180 && num <= 180;
+}
+
+// Функция центрирования карты по координатам
+function centerMap(lat, lng) {
+    const currentZoom = map.getZoom();
+    map.setView([lat, lng], currentZoom);
+}
 
 // Загрузка постоянного KML-слоя
 function loadPermanentKml() {
@@ -139,6 +164,51 @@ document.getElementById('next-btn').addEventListener('click', () => {
 
 document.getElementById('last-btn').addEventListener('click', () => {
     navigateTo(kmlFiles.length - 1);
+});
+
+// Обработчики событий для полей ввода координат
+document.getElementById('latitude-input').addEventListener('change', function() {
+    const latInput = this.value;
+    const lngInput = document.getElementById('longitude-input').value;
+    
+    if (isValidCoordinate(latInput, true) {
+        if (isValidCoordinate(lngInput, false)) {
+            centerMap(parseFloat(latInput), parseFloat(lngInput));
+        }
+    }
+});
+
+document.getElementById('longitude-input').addEventListener('change', function() {
+    const lngInput = this.value;
+    const latInput = document.getElementById('latitude-input').value;
+    
+    if (isValidCoordinate(lngInput, false)) {
+        if (isValidCoordinate(latInput, true)) {
+            centerMap(parseFloat(latInput), parseFloat(lngInput));
+        }
+    }
+});
+
+// Заполнение выпадающего списка городов
+const citiesDropdown = document.getElementById('cities-dropdown');
+cities.forEach(city => {
+    const option = document.createElement('option');
+    option.value = city.name;
+    option.textContent = city.name;
+    citiesDropdown.appendChild(option);
+});
+
+// Обработчик выбора города
+citiesDropdown.addEventListener('change', function() {
+    const selectedCityName = this.value;
+    if (!selectedCityName) return;
+    
+    const city = cities.find(c => c.name === selectedCityName);
+    if (city) {
+        document.getElementById('latitude-input').value = city.lat;
+        document.getElementById('longitude-input').value = city.lng;
+        centerMap(city.lat, city.lng);
+    }
 });
 
 

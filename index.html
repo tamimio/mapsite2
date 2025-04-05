@@ -22,6 +22,16 @@
         <button id="next-btn" class="nav-btn" title="Следующий">❯</button>
         <button id="last-btn" class="nav-btn" title="Последний">❯❯</button>
     </div>
+	
+	<div class="coordinates-search">
+		<label>Центрировать на:</label>
+		<input type="text" id="latitude-input" placeholder="Широта" class="coord-input">
+		<input type="text" id="longitude-input" placeholder="Долгота" class="coord-input">
+		<select id="cities-dropdown">
+			<option value="" selected disabled>Выберите город</option>
+			<!-- Города будут добавлены через JS -->
+		</select>
+	</div>	
     
     <div id="map"></div>
     
