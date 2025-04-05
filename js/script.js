@@ -35,6 +35,10 @@ let permanentLayer = null;
 let currentIndex = kmlFiles.length - 1;
 let preserveZoom = false;
 
+let lastSelectedCity = null;
+let currentCenterCoordsElement = document.getElementById('current-center-coords');
+let copyCoordsBtn = document.getElementById('copy-coords-btn');
+
 // Получаем массив доступных дат из kmlFiles
 const availableDates = kmlFiles.map(file => file.name);
 
@@ -81,6 +85,31 @@ function isValidCoordinate(value, isLatitude) {
     if (isLatitude) return num >= -90 && num <= 90;
     return num >= -180 && num <= 180;
 }
+
+// Функция обновления отображения текущего центра
+function updateCurrentCenterDisplay() {
+    const center = map.getCenter();
+    currentCenterCoordsElement.textContent = `${center.lat.toFixed(6)}, ${center.lng.toFixed(6)}`;
+}
+
+// Обработчик кнопки копирования координат
+copyCoordsBtn.addEventListener('click', function() {
+    const coords = currentCenterCoordsElement.textContent;
+    if (coords && coords !== 'не определен') {
+        navigator.clipboard.writeText(coords)
+            .then(() => {
+                const originalText = this.textContent;
+                this.textContent = 'Скопировано!';
+                setTimeout(() => {
+                    this.textContent = originalText;
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Ошибка копирования: ', err);
+            });
+    }
+});
+
 
 // Функция центрирования карты по координатам
 function centerMap(lat, lng) {
@@ -199,16 +228,27 @@ cities.forEach(city => {
 });
 
 // Обработчик выбора города
-citiesDropdown.addEventListener('change', function() {
-    const selectedCityName = this.value;
-    if (!selectedCityName) return;
-    
-    const city = cities.find(c => c.name === selectedCityName);
-    if (city) {
-        document.getElementById('latitude-input').value = city.lat;
-        document.getElementById('longitude-input').value = city.lng;
-        centerMap(city.lat, city.lng);
+// Обработчик кнопки копирования координат
+copyCoordsBtn.addEventListener('click', function() {
+    const coords = currentCenterCoordsElement.textContent;
+    if (coords && coords !== 'не определен') {
+        navigator.clipboard.writeText(coords)
+            .then(() => {
+                const originalText = this.textContent;
+                this.textContent = 'Скопировано!';
+                setTimeout(() => {
+                    this.textContent = originalText;
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Ошибка копирования: ', err);
+            });
     }
+});
+
+// обработчик перемещения карты
+map.on('moveend', function() {
+    updateCurrentCenterDisplay();
 });
 
 
@@ -220,4 +260,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Загружаем последний файл по умолчанию
     preserveZoom = false; // true - Всегда сохранять масштаб (если нужно полностью отключить автоматическое масштабирование)
     navigateTo(kmlFiles.length - 1);
+	
+    // Инициализируем отображение центра
+    updateCurrentCenterDisplay();
+    
+    // Заполняем список городов
+    cities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city.name;
+        option.textContent = city.name;
+        citiesDropdown.appendChild(option);
+    });
 });
