@@ -211,7 +211,7 @@ coordsInput.addEventListener('change', function() {
         const lat = parseFloat(coords[0]);
         const lng = parseFloat(coords[1]);
         
-        if (!isNaN(lat) && !isNaN(lng) {
+        if (!isNaN(lat) && !isNaN(lng)) {
             centerMap(lat, lng);
         }
     }
