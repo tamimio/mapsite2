@@ -212,8 +212,13 @@ citiesDropdown.addEventListener('change', function() {
         // Центрируем карту независимо от того, был ли город уже выбран
         centerMap(city.lat, city.lng);
         
-        // Сохраняем текущий выбранный город
-        this.dataset.lastSelected = selectedCityName;
+        // Если это повторный выбор того же города - сбрасываем выбор в dropdown
+        if (lastSelectedCity === selectedCityName) {
+            this.value = "";
+        }
+        
+        // Запоминаем последний выбранный город
+        lastSelectedCity = selectedCityName;
     }
 });
 
@@ -226,4 +231,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Загружаем последний файл по умолчанию
     preserveZoom = false; // true - Всегда сохранять масштаб (если нужно полностью отключить автоматическое масштабирование)
     navigateTo(kmlFiles.length - 1);
+	 
+    // Заполняем список городов, но не выбираем ничего по умолчанию
+    cities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city.name;
+        option.textContent = city.name;
+        citiesDropdown.appendChild(option);
+    });
 });
