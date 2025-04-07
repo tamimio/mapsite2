@@ -56,6 +56,7 @@ function parseCustomDate(dateStr) {
 let datePicker;
 function initDatePicker() {
     datePicker = flatpickr("#date-picker", {
+		locale: currentLang === 'ru' ? 'ru' : 'default',
         dateFormat: "d.m.y",
         allowInput: true,
         locale: currentLang, // Используем текущий язык
