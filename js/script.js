@@ -291,7 +291,7 @@ const translations = {
         lastBtnTitle: "Последний"
     },
     en: {
-        title: "Creamy caprice dataviewer",
+        title: "  dataviewer",
         centerLabel: "Center on:",
         coordsPlaceholder: "Latitude, Longitude (e.g.: 55.7558, 37.6173)",
         selectCity: "Select city",
