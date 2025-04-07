@@ -38,6 +38,8 @@ let currentIndex = kmlFiles.length - 1;
 let preserveZoom = false;
 
 let lastSelectedCity = null;
+const citiesDropdown = document.getElementById('cities-dropdown');
+const coordsInput = document.getElementById('coords-input');
 let currentCenterCoordsElement = document.getElementById('current-center-coords');
 let copyCoordsBtn = document.getElementById('copy-coords-btn');
 
@@ -127,7 +129,6 @@ copyCoordsBtn.addEventListener('click', function() {
 
 // функция заполнения списка городов
 function populateCitiesDropdown() {
-    const citiesDropdown = document.getElementById('cities-dropdown');
     // Очищаем список, кроме первого элемента
     while (citiesDropdown.options.length > 1) {
         citiesDropdown.remove(1);
@@ -231,8 +232,6 @@ document.getElementById('last-btn').addEventListener('click', () => {
     navigateTo(kmlFiles.length - 1);
 });
 
-
-const coordsInput = document.getElementById('coords-input');
 
 // Обработчик ввода координат
 coordsInput.addEventListener('change', function() {
