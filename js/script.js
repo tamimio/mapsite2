@@ -314,7 +314,7 @@ function setLanguage(lang) {
     
     // Обновляем текст элементов
     document.getElementById('page-title').textContent = t.title;
-    document.getElementById('main-title').textContent = t.title;
+    // document.getElementById('main-title').textContent = t.title;
     document.getElementById('center-label').textContent = t.centerLabel;
     document.getElementById('coords-input').placeholder = t.coordsPlaceholder;
     document.getElementById('select-city-default').textContent = t.selectCity;
