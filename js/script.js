@@ -53,47 +53,47 @@ function parseCustomDate(dateStr) {
 }
 
 // Инициализация календаря с ограничением доступных дат
-const datePicker = flatpickr("#date-picker", {
-    dateFormat: "d.m.y",
-    allowInput: true,
-    locale: "ru",
-    defaultDate: kmlFiles[kmlFiles.length - 1].name,
-    enable: [
-        function(date) {
-            const dateStr = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth()+1).toString().padStart(2, '0')}.${date.getFullYear().toString().slice(-2)}`;
-            return availableDates.includes(dateStr);
-        }
-    ],
-    onChange: function(selectedDates, dateStr) {
-        const index = kmlFiles.findIndex(file => file.name === dateStr);
-        if (index !== -1) {
-            navigateTo(index);
-        }
-    },
-    onDayCreate: function(dObj, dStr, fp, dayElem) {
-        // Сегодняшняя дата
-        const today = new Date();
-        const isToday = dayElem.dateObj.getDate() === today.getDate() && 
-                       dayElem.dateObj.getMonth() === today.getMonth() && 
-                       dayElem.dateObj.getFullYear() === today.getFullYear();
-        
-        if (isToday) {
-            dayElem.classList.add('today');
-        }
-        
-        // Доступные даты
-        const dateStr = `${dayElem.dateObj.getDate().toString().padStart(2, '0')}.${(dayElem.dateObj.getMonth()+1).toString().padStart(2, '0')}.${dayElem.dateObj.getFullYear().toString().slice(-2)}`;
-        
-        if (availableDates.includes(dateStr)) {
-            dayElem.classList.add('available');
+let datePicker;
+function initDatePicker() {
+    datePicker = flatpickr("#date-picker", {
+        dateFormat: "d.m.y",
+        allowInput: true,
+        locale: currentLang, // Используем текущий язык
+        defaultDate: kmlFiles[kmlFiles.length - 1].name,
+        enable: [
+            function(date) {
+                const dateStr = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth()+1).toString().padStart(2, '0')}.${date.getFullYear().toString().slice(-2)}`;
+                return availableDates.includes(dateStr);
+            }
+        ],
+        onChange: function(selectedDates, dateStr) {
+            const index = kmlFiles.findIndex(file => file.name === dateStr);
+            if (index !== -1) {
+                navigateTo(index);
+            }
+        },
+        onDayCreate: function(dObj, dStr, fp, dayElem) {
+            const today = new Date();
+            const isToday = dayElem.dateObj.getDate() === today.getDate() && 
+                           dayElem.dateObj.getMonth() === today.getMonth() && 
+                           dayElem.dateObj.getFullYear() === today.getFullYear();
             
-            // Если это выбранная дата
-            if (dateStr === kmlFiles[currentIndex].name) {
-                dayElem.classList.add('selected');
+            if (isToday) {
+                dayElem.classList.add('today');
+            }
+            
+            const dateStr = `${dayElem.dateObj.getDate().toString().padStart(2, '0')}.${(dayElem.dateObj.getMonth()+1).toString().padStart(2, '0')}.${dayElem.dateObj.getFullYear().toString().slice(-2)}`;
+            
+            if (availableDates.includes(dateStr)) {
+                dayElem.classList.add('available');
+                
+                if (dateStr === kmlFiles[currentIndex].name) {
+                    dayElem.classList.add('selected');
+                }
             }
         }
-    }
-});
+    });
+}
 
 // Функция для проверки валидности координат
 function isValidCoordinate(value, isLatitude) {
@@ -370,6 +370,12 @@ function setLanguage(lang) {
     
     // Обновляем список городов
     populateCitiesDropdown();
+	    
+    // Пересоздаем календарь с новым языком
+    if (datePicker) {
+        datePicker.destroy();
+    }
+    initDatePicker();
     
     // Если координаты не определены, обновляем текст
     if (document.getElementById('current-center-coords').textContent === 'не определен' || 
@@ -392,6 +398,9 @@ document.getElementById('lang-en').addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', () => {
     // Загружаем постоянный слой
     loadPermanentKml();
+		
+    // Инициализируем календарь
+    initDatePicker();
     
     // Загружаем последний файл по умолчанию
     preserveZoom = false; // true - Всегда сохранять масштаб (если нужно полностью отключить автоматическое масштабирование)
