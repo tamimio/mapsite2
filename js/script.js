@@ -6,28 +6,30 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // Основные KML-файлы
 const kmlFiles = [
-    { name: "15.03.25", path: "kml/file1.kml" },
-    { name: "20.03.25", path: "kml/file2.kml" },
-    { name: "01.04.25", path: "kml/file4.kml" },
-    { name: "05.04.25", path: "kml/file5.kml" },
-    { name: "10.04.25", path: "kml/file6.kml" }
+    { name: "01.10.24", path: "kml/Line_24_10_01.kml" },
+    { name: "01.11.24", path: "kml/Line_24_11_01.kml" },
+    { name: "01.12.24", path: "kml/Line_24_12_01.kml" },
+    { name: "01.01.25", path: "kml/Line_25_01_01.kml" }, 
+    { name: "01.02.25", path: "kml/Line_25_02_01.kml" },
+    { name: "01.03.25", path: "kml/Line_25_03_01.kml" },
+    { name: "03.04.25", path: "kml/Line_25_04_03.kml" }
+    
 ];
 
 // Постоянный слой
 const permanentLayerData = {
-    name: "25.03.25",
-    path: "kml/file3.kml"
+    name: "24.02.22", path: "kml/Line_start_LDNR.kml"
 };
 
 // Список городов с координатами
 const cities = [
-    { name: "Москва", lat: 55.7558, lng: 37.6173 },
-    { name: "Санкт-Петербург", lat: 59.9343, lng: 30.3351 },
-    { name: "Новосибирск", lat: 55.0084, lng: 82.9357 },
-    { name: "Екатеринбург", lat: 56.8389, lng: 60.6057 },
-    { name: "Казань", lat: 55.7961, lng: 49.1064 },
-    { name: "Нижний Новгород", lat: 56.3269, lng: 44.0256 },
-    { name: "Сочи", lat: 43.5855, lng: 39.7231 }
+    { name: "Суджа", lat: 51.19055, lng: 35.27082 },
+    { name: "Волчанск", lat: 50.288107, lng: 36.946217 },
+    { name: "Купянск", lat: 49.706396, lng: 37.616586 },
+    { name: "Боровая", lat: 49.38417, lng: 37.62086 },
+    { name: "Северск", lat: 48.868709, lng: 38.106425 },
+    { name: "Часов Яр", lat: 48.591656, lng: 37.820354 },
+    { name: "Дзержинск", lat: 48.398329, lng:  37.836634 }
 ];
 
 let currentLayer = null;
@@ -276,7 +278,7 @@ map.on('moveend', function() {
 // Добавьте объект с переводами
 const translations = {
     ru: {
-        title: "Просмотр KML по дате",
+        title: "Сливочный каприз dataviewer",
         centerLabel: "Центрировать на:",
         coordsPlaceholder: "Широта, Долгота (например: 55.7558, 37.6173)",
         selectCity: "Выберите город",
@@ -289,7 +291,7 @@ const translations = {
         lastBtnTitle: "Последний"
     },
     en: {
-        title: "KML Viewer by Date",
+        title: "Creamy caprice dataviewer",
         centerLabel: "Center on:",
         coordsPlaceholder: "Latitude, Longitude (e.g.: 55.7558, 37.6173)",
         selectCity: "Select city",
