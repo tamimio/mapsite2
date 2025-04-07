@@ -113,10 +113,10 @@ body {
     border: 1px solid #bbdefb;
 }
 
-/* .flatpickr-day.disabled { */
-    /* color: #ccc; */
-    /* cursor: not-allowed; */
-/* } */
+.flatpickr-day.disabled {
+    color: #a3a3a3;
+    cursor: not-allowed;
+}
 
 /* Текущая выбранная дата */
 .flatpickr-day.selected {
