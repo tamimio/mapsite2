@@ -23,13 +23,13 @@ const permanentLayerData = {
 
 // Список городов с координатами
 const cities = [
-    { name: "Суджа", lat: 51.19055, lng: 35.27082 },
-    { name: "Волчанск", lat: 50.288107, lng: 36.946217 },
-    { name: "Купянск", lat: 49.706396, lng: 37.616586 },
-    { name: "Боровая", lat: 49.38417, lng: 37.62086 },
-    { name: "Северск", lat: 48.868709, lng: 38.106425 },
-    { name: "Часов Яр", lat: 48.591656, lng: 37.820354 },
-    { name: "Дзержинск", lat: 48.398329, lng:  37.836634 }
+    { name: { ru: "Суджа",     en: "Sudzha"     }, lat: 51.19055,  lng: 35.27082   },
+    { name: { ru: "Волчанск",  en: "Volchansk"  }, lat: 50.288107, lng: 36.946217  },
+    { name: { ru: "Купянск",   en: "Kupyansk"   }, lat: 49.706396, lng: 37.616586  },
+    { name: { ru: "Боровая",   en: "Borovaya"   }, lat: 49.38417,  lng: 37.62086   },
+    { name: { ru: "Северск",   en: "Seversk"    }, lat: 48.868709, lng: 38.106425  },
+    { name: { ru: "Часов Яр",  en: "Chasov Yar" }, lat: 48.591656, lng: 37.820354  },
+    { name: { ru: "Дзержинск", en: "Dzerzhinsk" }, lat: 48.398329, lng:  37.836634 }
 ];
 
 let currentLayer = null;
@@ -125,6 +125,22 @@ copyCoordsBtn.addEventListener('click', function() {
     }
 });
 
+// функция заполнения списка городов
+function populateCitiesDropdown() {
+    const citiesDropdown = document.getElementById('cities-dropdown');
+    // Очищаем список, кроме первого элемента
+    while (citiesDropdown.options.length > 1) {
+        citiesDropdown.remove(1);
+    }
+    
+    // Добавляем города на текущем языке
+    cities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city.name.ru; // Сохраняем русское название как значение
+        option.textContent = city.name[currentLang];
+        citiesDropdown.appendChild(option);
+    });
+}
 
 // Функция центрирования карты по координатам
 function centerMap(lat, lng) {
@@ -237,12 +253,17 @@ coordsInput.addEventListener('change', function() {
 
 
 // Заполнение выпадающего списка городов
-const citiesDropdown = document.getElementById('cities-dropdown');
-cities.forEach(city => {
-    const option = document.createElement('option');
-    option.value = city.name;
-    option.textContent = city.name;
-    citiesDropdown.appendChild(option);
+document.getElementById('cities-dropdown').addEventListener('change', function() {
+    const selectedCityName = this.value;
+    if (!selectedCityName) return;
+    
+    // Ищем город по русскому названию (которое в value)
+    const city = cities.find(c => c.name.ru === selectedCityName);
+    if (city) {
+        document.getElementById('coords-input').value = `${city.lat}, ${city.lng}`;
+        centerMap(city.lat, city.lng);
+        this.value = "";
+    }
 });
 
 // Обработчик выбора города
@@ -347,6 +368,9 @@ function setLanguage(lang) {
     // Обновляем классы активности
     document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
     document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+    
+    // Обновляем список городов
+    populateCitiesDropdown();
     
     // Если координаты не определены, обновляем текст
     if (document.getElementById('current-center-coords').textContent === 'не определен' || 
