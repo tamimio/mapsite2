@@ -91,19 +91,74 @@ body {
 }
 
 /* Стили для календаря */
+.flatpickr-calendar {
+    background: #fff;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
 .flatpickr-day {
+    color: #333;
+    border-radius: 4px;
+    font-weight: 500;
     transition: all 0.2s;
 }
 
+/* Доступные даты */
 .flatpickr-day.available {
-    background-color: #e6f7ff;
+    background: #e3f2fd;
+    color: #1976d2;
+    font-weight: 600;
+    border: 1px solid #bbdefb;
+}
+
+/* .flatpickr-day.disabled { */
+    /* color: #ccc; */
+    /* cursor: not-allowed; */
+/* } */
+
+/* Текущая выбранная дата */
+.flatpickr-day.selected {
+    background: #1976d2;
+    color: white;
+    border-color: #1976d2;
     font-weight: bold;
 }
 
-.flatpickr-day.disabled {
-    color: #ccc;
-    cursor: not-allowed;
+/* Сегодняшняя дата */
+.flatpickr-day.today {
+    background: #ffeb3b;
+    color: #333;
+    border-color: #ffeb3b;
+    font-weight: bold;
 }
+
+/* Наведение на дату */
+.flatpickr-day:hover {
+    background: #bbdefb;
+    color: #0d47a1;
+}
+
+/* Заголовок календаря */
+.flatpickr-current-month {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Кнопки навигации */
+.flatpickr-prev-month, 
+.flatpickr-next-month {
+    color: #1976d2;
+    fill: #1976d2;
+}
+
+.flatpickr-prev-month:hover, 
+.flatpickr-next-month:hover {
+    color: #0d47a1;
+}
+
 
 /* Стили для блока поиска по координатам */
 .coordinates-search {
