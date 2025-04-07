@@ -105,7 +105,16 @@ body {
     transition: all 0.2s;
 }
 
-/* Доступные даты */
+/* Неактивные дни (из других месяцев) */
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay {
+    color: #999 !important;
+    background: #f5f5f5;
+    opacity: 1 !important;
+}
+
+/* Доступные даты (текущий месяц) */
 .flatpickr-day.available {
     background: #e3f2fd;
     color: #1976d2;
@@ -113,16 +122,16 @@ body {
     border: 1px solid #bbdefb;
 }
 
-.flatpickr-day.disabled {
-    color: #a3a3a3;
-    cursor: not-allowed;
-}
+/* .flatpickr-day.disabled { */
+    /* color: #a3a3a3; */
+    /* cursor: not-allowed; */
+/* } */
 
 /* Текущая выбранная дата */
 .flatpickr-day.selected {
-    background: #1976d2;
-    color: white;
-    border-color: #1976d2;
+    background: #1976d2 !important;
+    color: white !important;
+    border-color: #1976d2 !important;
     font-weight: bold;
 }
 
@@ -145,6 +154,19 @@ body {
     font-size: 1.1em;
     font-weight: 600;
     color: #333;
+}
+
+/* Дни недели */
+.flatpickr-weekday {
+    color: #555;
+    font-weight: 600;
+}
+
+/* Месяцы и годы в заголовке */
+.flatpickr-monthDropdown-months,
+.numInputWrapper span {
+    color: #333;
+    font-weight: 600;
 }
 
 /* Кнопки навигации */
