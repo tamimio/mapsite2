@@ -278,7 +278,7 @@ map.on('moveend', function() {
 // Добавьте объект с переводами
 const translations = {
     ru: {
-        title: "Сливочный каприз dataviewer",
+        title: "  dataviewer",
         centerLabel: "Центрировать на:",
         coordsPlaceholder: "Широта, Долгота (например: 55.7558, 37.6173)",
         selectCity: "Выберите город",
