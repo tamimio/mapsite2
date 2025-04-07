@@ -57,7 +57,6 @@ const datePicker = flatpickr("#date-picker", {
     locale: "ru",
     defaultDate: kmlFiles[kmlFiles.length - 1].name,
     enable: [
-        // Разрешаем только даты, которые есть в kmlFiles
         function(date) {
             const dateStr = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth()+1).toString().padStart(2, '0')}.${date.getFullYear().toString().slice(-2)}`;
             return availableDates.includes(dateStr);
@@ -70,12 +69,26 @@ const datePicker = flatpickr("#date-picker", {
         }
     },
     onDayCreate: function(dObj, dStr, fp, dayElem) {
-        // Подсвечиваем доступные даты
+        // Сегодняшняя дата
+        const today = new Date();
+        const isToday = dayElem.dateObj.getDate() === today.getDate() && 
+                       dayElem.dateObj.getMonth() === today.getMonth() && 
+                       dayElem.dateObj.getFullYear() === today.getFullYear();
+        
+        if (isToday) {
+            dayElem.classList.add('today');
+        }
+        
+        // Доступные даты
         const dateStr = `${dayElem.dateObj.getDate().toString().padStart(2, '0')}.${(dayElem.dateObj.getMonth()+1).toString().padStart(2, '0')}.${dayElem.dateObj.getFullYear().toString().slice(-2)}`;
         
         if (availableDates.includes(dateStr)) {
-            dayElem.style.backgroundColor = '#e6f7ff';
-            dayElem.style.fontWeight = 'bold';
+            dayElem.classList.add('available');
+            
+            // Если это выбранная дата
+            if (dateStr === kmlFiles[currentIndex].name) {
+                dayElem.classList.add('selected');
+            }
         }
     }
 });
