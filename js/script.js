@@ -157,15 +157,15 @@ function centerMap(lat, lng) {
 
 // Загрузка постоянного KML-слоя
 function loadPermanentKml() {
-    permanentLayer = omnivore.kml(permanentLayerData.path)
-        .on('ready', function() {
-            permanentLayer.eachLayer(function(layer) {
-                if (layer.setStyle) {
-                    layer.setStyle(window.permanentLayerStyle);
-                }
-            });
-        })
-        .addTo(map);
+    permanentLayer = omnivore.kml(permanentLayerData.path, null, {
+        style: function(feature) {
+            return window.permanentLayerStyle;
+        }
+    })
+    .on('ready', function() {
+        // Дополнительная обработка не требуется
+    })
+    .addTo(map);
 }
 
 // Функция загрузки KML (сохраняет текущий масштаб)
@@ -178,7 +178,12 @@ function loadKmlFile(file) {
     const currentCenter = map.getCenter();
     const currentZoom = map.getZoom();
     
-    currentLayer = omnivore.kml(file.path)
+    currentLayer = omnivore.kml(file.path, null, {
+			style: function(feature) {
+				// Возвращаем null, чтобы сохранить оригинальные стили из KML
+				return null;
+			}
+		})
         .on('ready', () => {
             if (!preserveZoom) {
                 map.fitBounds(currentLayer.getBounds());
