@@ -156,48 +156,50 @@ function centerMap(lat, lng) {
 }
 
 // Загрузка постоянного KML-слоя
-function loadPermanentKml() {
-    permanentLayer = omnivore.kml(permanentLayerData.path, null, {
-        style: function(feature) {
-            return window.permanentLayerStyle;
-        }
-    })
-    .on('ready', function() {
-        // Дополнительная обработка не требуется
-    })
-    .addTo(map);
+async function loadPermanentKml() {
+    try {
+        permanentLayer = await omnivore.kml(permanentLayerData.path, null, {
+            style: function(feature) {
+                return window.permanentLayerStyle; // Применяем красный стиль
+            }
+        });
+        permanentLayer.addTo(map);
+    } catch (error) {
+        console.error("Ошибка загрузки постоянного KML:", error);
+    }
 }
 
-// Функция загрузки KML (сохраняет текущий масштаб)
-function loadKmlFile(file) {
+// Функция загрузки основного KML (с сохранением оригинальных стилей)
+async function loadKmlFile(file) {
     if (currentLayer) {
         map.removeLayer(currentLayer);
     }
     
-    // Сохраняем текущий центр и зум перед загрузкой
     const currentCenter = map.getCenter();
     const currentZoom = map.getZoom();
     
-    currentLayer = omnivore.kml(file.path, null, {
-			style: function(feature) {
-				// Возвращаем null, чтобы сохранить оригинальные стили из KML
-				return null;
-			}
-		})
-        .on('ready', () => {
-            if (!preserveZoom) {
-                map.fitBounds(currentLayer.getBounds());
-            } else {
-                // Восстанавливаем предыдущий центр и зум
-                map.setView(currentCenter, currentZoom);
+    try {
+        currentLayer = await omnivore.kml(file.path, null, {
+            style: function(feature) {
+                return null; // Сохраняем оригинальные стили из KML
             }
-            preserveZoom = true; // После первой загрузки сохраняем масштаб
-        })
-        .addTo(map);
+        });
+        
+        currentLayer.addTo(map);
+        
+        if (!preserveZoom) {
+            map.fitBounds(currentLayer.getBounds());
+        } else {
+            map.setView(currentCenter, currentZoom);
+        }
+        preserveZoom = true;
+    } catch (error) {
+        console.error("Ошибка загрузки KML:", error);
+    }
 }
 
 // Навигация к определенному индексу
-function navigateTo(index) {
+async function navigateTo(index) {
     if (index < 0 || index >= kmlFiles.length) return;
     
     currentIndex = index;
@@ -223,19 +225,19 @@ function updateButtons() {
 
 // Обработчики кнопок
 document.getElementById('first-btn').addEventListener('click', () => {
-    navigateTo(0);
+    await navigateTo(0);
 });
 
 document.getElementById('prev-btn').addEventListener('click', () => {
-    navigateTo(currentIndex - 1);
+    await navigateTo(currentIndex - 1);
 });
 
 document.getElementById('next-btn').addEventListener('click', () => {
-    navigateTo(currentIndex + 1);
+    await navigateTo(currentIndex + 1);
 });
 
 document.getElementById('last-btn').addEventListener('click', () => {
-    navigateTo(kmlFiles.length - 1);
+    await navigateTo(kmlFiles.length - 1);
 });
 
 
@@ -410,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Загружаем последний файл по умолчанию
     preserveZoom = false; // true - Всегда сохранять масштаб (если нужно полностью отключить автоматическое масштабирование)
-    navigateTo(kmlFiles.length - 1);
+    await navigateTo(kmlFiles.length - 1);
 	
     // Инициализируем отображение центра
     updateCurrentCenterDisplay();    
