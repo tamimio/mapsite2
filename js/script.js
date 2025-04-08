@@ -149,7 +149,7 @@ function populateCitiesDropdown() {
     // const currentZoom = map.getZoom();
     // map.setView([lat, lng], currentZoom);
     
-    Обновляем поле ввода, если координаты изменились
+    // // Обновляем поле ввода, если координаты изменились
     // if (document.getElementById('coords-input').value !== `${lat}, ${lng}`) {
         // document.getElementById('coords-input').value = `${lat}, ${lng}`;
     // }
