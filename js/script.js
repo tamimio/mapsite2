@@ -145,13 +145,13 @@ function populateCitiesDropdown() {
 }
 
 // Функция центрирования карты по координатам
-function centerMap(lat, lng) {
+async function centerMap(lat, lng) {
     const currentZoom = map.getZoom();
     map.setView([lat, lng], currentZoom);
     
     // Обновляем поле ввода, если координаты изменились
-    if (coordsInput.value !== `${lat}, ${lng}`) {
-        coordsInput.value = `${lat}, ${lng}`;
+    if (document.getElementById('coords-input').value !== `${lat}, ${lng}`) {
+        document.getElementById('coords-input').value = `${lat}, ${lng}`;
     }
 }
 
@@ -223,20 +223,20 @@ function updateButtons() {
     document.getElementById('last-btn').disabled = currentIndex === kmlFiles.length - 1;
 }
 
-// Обработчики кнопок
-document.getElementById('first-btn').addEventListener('click', () => {
+// Обработчики кнопок навигации
+document.getElementById('first-btn').addEventListener('click', async () => {
     await navigateTo(0);
 });
 
-document.getElementById('prev-btn').addEventListener('click', () => {
+document.getElementById('prev-btn').addEventListener('click', async () => {
     await navigateTo(currentIndex - 1);
 });
 
-document.getElementById('next-btn').addEventListener('click', () => {
+document.getElementById('next-btn').addEventListener('click', async () => {
     await navigateTo(currentIndex + 1);
 });
 
-document.getElementById('last-btn').addEventListener('click', () => {
+document.getElementById('last-btn').addEventListener('click', async () => {
     await navigateTo(kmlFiles.length - 1);
 });
 
@@ -260,15 +260,15 @@ coordsInput.addEventListener('change', function() {
 
 
 // Заполнение выпадающего списка городов
-document.getElementById('cities-dropdown').addEventListener('change', function() {
+// Обработчик выбора города
+document.getElementById('cities-dropdown').addEventListener('change', async function() {
     const selectedCityName = this.value;
     if (!selectedCityName) return;
     
-    // Ищем город по русскому названию (которое в value)
     const city = cities.find(c => c.name.ru === selectedCityName);
     if (city) {
         document.getElementById('coords-input').value = `${city.lat}, ${city.lng}`;
-        centerMap(city.lat, city.lng);
+        await centerMap(city.lat, city.lng);
         this.value = "";
     }
 });
@@ -401,22 +401,26 @@ document.getElementById('lang-en').addEventListener('click', () => {
     if (currentLang !== 'en') setLanguage('en');
 });
 
+async function init() {
+    try {
+        // Загружаем постоянный слой
+        await loadPermanentKml();
+        
+        // Загружаем последний файл по умолчанию
+        preserveZoom = false;
+        await navigateTo(kmlFiles.length - 1);
+        
+        // Инициализируем календарь
+        initDatePicker();
+        
+        // Устанавливаем русский язык по умолчанию
+        setLanguage('ru');
+    } catch (error) {
+        console.error("Ошибка инициализации:", error);
+    }
+}
 
 // Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
-    // Загружаем постоянный слой
-    loadPermanentKml();
-		
-    // Инициализируем календарь
-    initDatePicker();
-    
-    // Загружаем последний файл по умолчанию
-    preserveZoom = false; // true - Всегда сохранять масштаб (если нужно полностью отключить автоматическое масштабирование)
-    await navigateTo(kmlFiles.length - 1);
-	
-    // Инициализируем отображение центра
-    updateCurrentCenterDisplay();    
-	
-	// Устанавливаем русский язык по умолчанию
-    setLanguage('ru');
+    init();
 });
