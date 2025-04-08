@@ -145,24 +145,32 @@ function populateCitiesDropdown() {
 }
 
 // Функция центрирования карты по координатам
-async function centerMap(lat, lng) {
+// async function centerMap(lat, lng) {
+    // const currentZoom = map.getZoom();
+    // map.setView([lat, lng], currentZoom);
+    
+    Обновляем поле ввода, если координаты изменились
+    // if (document.getElementById('coords-input').value !== `${lat}, ${lng}`) {
+        // document.getElementById('coords-input').value = `${lat}, ${lng}`;
+    // }
+// }
+function centerMap(lat, lng) {
     const currentZoom = map.getZoom();
     map.setView([lat, lng], currentZoom);
-    
-    // Обновляем поле ввода, если координаты изменились
-    if (document.getElementById('coords-input').value !== `${lat}, ${lng}`) {
-        document.getElementById('coords-input').value = `${lat}, ${lng}`;
-    }
+    document.getElementById('coords-input').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
 }
 
 // Загрузка постоянного KML-слоя
 async function loadPermanentKml() {
     try {
-        permanentLayer = await omnivore.kml(permanentLayerData.path, null, {
-            style: function(feature) {
-                return window.permanentLayerStyle; // Применяем красный стиль
+        const layer = await omnivore.kml(permanentLayerData.path);
+        layer.eachLayer(function(featureLayer) {
+            if (featureLayer.setStyle) {
+                featureLayer.setStyle(window.permanentLayerStyle);
             }
         });
+        
+        permanentLayer = layer;
         permanentLayer.addTo(map);
     } catch (error) {
         console.error("Ошибка загрузки постоянного KML:", error);
@@ -179,12 +187,18 @@ async function loadKmlFile(file) {
     const currentZoom = map.getZoom();
     
     try {
-        currentLayer = await omnivore.kml(file.path, null, {
-            style: function(feature) {
-                return null; // Сохраняем оригинальные стили из KML
+        const layer = await omnivore.kml(file.path);
+        layer.eachLayer(function(featureLayer) {
+            // Сохраняем оригинальные стили из KML
+            if (featureLayer.setStyle) {
+                featureLayer.setStyle({
+                    color: featureLayer.feature?.properties?.color || null,
+                    fillColor: featureLayer.feature?.properties?.fillColor || null
+                });
             }
         });
         
+        currentLayer = layer;
         currentLayer.addTo(map);
         
         if (!preserveZoom) {
@@ -209,7 +223,7 @@ async function navigateTo(index) {
     datePicker.setDate(file.name, false);
     
     // Загружаем файл
-    loadKmlFile(file);
+    await loadKmlFile(file);
     
     // Обновляем состояние кнопок
     updateButtons();
@@ -225,19 +239,19 @@ function updateButtons() {
 
 // Обработчики кнопок навигации
 document.getElementById('first-btn').addEventListener('click', async () => {
-    await navigateTo(0);
+    await navigateTo(0).catch(console.error);
 });
 
 document.getElementById('prev-btn').addEventListener('click', async () => {
-    await navigateTo(currentIndex - 1);
+    await navigateTo(currentIndex - 1).catch(console.error);
 });
 
 document.getElementById('next-btn').addEventListener('click', async () => {
-    await navigateTo(currentIndex + 1);
+    await navigateTo(currentIndex + 1).catch(console.error);
 });
 
 document.getElementById('last-btn').addEventListener('click', async () => {
-    await navigateTo(kmlFiles.length - 1);
+    await navigateTo(kmlFiles.length - 1).catch(console.error);
 });
 
 
@@ -268,7 +282,7 @@ document.getElementById('cities-dropdown').addEventListener('change', async func
     const city = cities.find(c => c.name.ru === selectedCityName);
     if (city) {
         document.getElementById('coords-input').value = `${city.lat}, ${city.lng}`;
-        await centerMap(city.lat, city.lng);
+        centerMap(city.lat, city.lng);
         this.value = "";
     }
 });
@@ -421,6 +435,7 @@ async function init() {
 }
 
 // Инициализация при загрузке
-document.addEventListener('DOMContentLoaded', () => {
-    init();
-});
+// document.addEventListener('DOMContentLoaded', () => {
+    // init();
+// });
+document.addEventListener('DOMContentLoaded', init);
