@@ -195,48 +195,76 @@ async function loadKmlFile(file) {
         const layerGroup = L.layerGroup().addTo(map);
         currentLayer = layerGroup;
 
-        // Парсим стили
+        // Парсим все стили (включая StyleMap)
         const styles = {};
+        const styleMaps = {};
+
+        // Обрабатываем обычные стили
         kmlDoc.querySelectorAll('Style').forEach(style => {
             const id = style.getAttribute('id');
-            const lineStyle = style.querySelector('LineStyle');
-            if (lineStyle) {
-                styles[id] = {
-                    color: `#${lineStyle.querySelector('color').textContent.slice(6, 8)}${lineStyle.querySelector('color').textContent.slice(4, 6)}${lineStyle.querySelector('color').textContent.slice(2, 4)}`,
-                    weight: parseInt(lineStyle.querySelector('width').textContent)
-                };
-            }
+            styles[id] = {
+                line: parseLineStyle(style),
+                poly: parsePolyStyle(style)
+            };
+        });
+
+        // Обрабатываем StyleMap
+        kmlDoc.querySelectorAll('StyleMap').forEach(styleMap => {
+            const id = styleMap.getAttribute('id');
+            const pairs = {};
+            styleMap.querySelectorAll('Pair').forEach(pair => {
+                const key = pair.querySelector('key').textContent;
+                const styleUrl = pair.querySelector('styleUrl').textContent.replace('#', '');
+                pairs[key] = styleUrl;
+            });
+            styleMaps[id] = pairs;
         });
 
         let bounds = null;
+
         kmlDoc.querySelectorAll('Placemark').forEach(placemark => {
             const styleUrl = placemark.querySelector('styleUrl')?.textContent.replace('#', '') || '';
-            const style = styles[styleUrl] || { color: '#3388ff', weight: 3 };
+            
+            // Получаем актуальный стиль через StyleMap (если есть)
+            let targetStyleId = styleUrl;
+            if (styleMaps[styleUrl]) {
+                targetStyleId = styleMaps[styleUrl].normal; // Используем normal-стиль
+            }
 
+            const style = styles[targetStyleId] || { 
+                line: { color: '#3388ff', weight: 3 },
+                poly: { fillColor: '#3388ff', fillOpacity: 0.2 }
+            };
+
+            // Обработка LineString
             const lineString = placemark.querySelector('LineString');
             if (lineString) {
-                const coordinates = lineString.querySelector('coordinates')?.textContent;
-                if (!coordinates) return;
+                const coords = parseCoordinates(lineString);
+                if (coords.length < 2) return;
 
-                // Парсим координаты
-                const coords = coordinates
-                    .trim()
-                    .split(/\s+/)
-                    .map(coord => {
-                        const [lng, lat] = coord.split(',').map(Number);
-                        return [lat, lng];
-                    });
-
-                // Создаем полилинию
                 const polyline = L.polyline(coords, {
-                    color: style.color,
-                    weight: style.weight
+                    color: style.line.color,
+                    weight: style.line.weight,
+                    opacity: style.line.opacity
                 }).addTo(layerGroup);
 
-                // Обновляем границы
-                if (polyline.getBounds) {
-                    bounds = bounds ? bounds.extend(polyline.getBounds()) : polyline.getBounds();
-                }
+                updateBounds(polyline);
+            }
+
+            // Обработка Polygon
+            const polygon = placemark.querySelector('Polygon');
+            if (polygon) {
+                const coords = parseCoordinates(polygon.querySelector('LinearRing'));
+                if (coords.length < 3) return;
+
+                const poly = L.polygon(coords, {
+                    color: style.line.color,
+                    weight: style.line.weight,
+                    fillColor: style.poly.fillColor,
+                    fillOpacity: style.poly.fillOpacity
+                }).addTo(layerGroup);
+
+                updateBounds(poly);
             }
         });
 
@@ -248,6 +276,63 @@ async function loadKmlFile(file) {
         preserveZoom = true;
     } catch (error) {
         console.error("Ошибка загрузки KML:", error);
+    }
+
+    // Вспомогательные функции
+    function parseLineStyle(style) {
+        const lineStyle = style.querySelector('LineStyle');
+        if (!lineStyle) return null;
+        
+        return {
+            color: parseColor(lineStyle.querySelector('color')?.textContent || '#3388ff'),
+            weight: parseFloat(lineStyle.querySelector('width')?.textContent || 3,
+            opacity: parseOpacity(lineStyle.querySelector('color')?.textContent)
+        };
+    }
+
+    function parsePolyStyle(style) {
+        const polyStyle = style.querySelector('PolyStyle');
+        if (!polyStyle) return null;
+
+        return {
+            fillColor: parseColor(polyStyle.querySelector('color')?.textContent || '#3388ff'),
+            fillOpacity: parseOpacity(polyStyle.querySelector('color')?.textContent)
+        };
+    }
+
+    function parseCoordinates(element) {
+        const coordinates = element?.querySelector('coordinates')?.textContent;
+        if (!coordinates) return [];
+        
+        return coordinates
+            .trim()
+            .split(/\s+/)
+            .map(coord => {
+                const [lng, lat] = coord.split(',').map(Number);
+                return [lat, lng];
+            });
+    }
+
+    function parseColor(kmlColor) {
+        if (!kmlColor) return '#3388ff';
+        // Конвертация ABGR в RGBA (пример: ff0000ff -> #ff0000)
+        const a = kmlColor.substr(0, 2);
+        const b = kmlColor.substr(2, 2);
+        const g = kmlColor.substr(4, 2);
+        const r = kmlColor.substr(6, 2);
+        return `#${r}${g}${b}`;
+    }
+
+    function parseOpacity(kmlColor) {
+        if (!kmlColor) return 1;
+        const alpha = parseInt(kmlColor.substr(0, 2), 16) / 255;
+        return alpha.toFixed(2);
+    }
+
+    function updateBounds(layer) {
+        if (layer.getBounds) {
+            bounds = bounds ? bounds.extend(layer.getBounds()) : layer.getBounds();
+        }
     }
 }
 
