@@ -234,6 +234,43 @@ async function loadKmlFile(file) {
 			if (poly.getBounds().isValid()) {
 				bounds.extend(poly.getBounds());
 			}
+			
+			// Обработка LineString
+            const lineString = placemark.querySelector('LineString');
+            if (lineString) {
+                const coords = parseCoordinates(lineString);
+                if (coords.length < 2) return;
+
+                const polyline = L.polyline(coords, {
+                    color: style.line.color,
+                    weight: style.line.weight,
+                    opacity: style.line.opacity
+                }).addTo(layerGroup);
+
+                // Обновляем границы, если полилиния валидна
+                if (polyline.getBounds().isValid()) {
+                    bounds.extend(polyline.getBounds());
+                }
+            }
+
+            // Обработка Polygon
+            const polygon = placemark.querySelector('Polygon');
+            if (polygon) {
+                const coords = parseCoordinates(polygon.querySelector('LinearRing'));
+                if (coords.length < 3) return;
+
+                const poly = L.polygon(coords, {
+                    color: style.line.color,
+                    weight: style.line.weight,
+                    fillColor: style.poly.fillColor,
+                    fillOpacity: style.poly.fillOpacity
+                }).addTo(layerGroup);
+
+                // Обновляем границы, если полигон валиден
+                if (poly.getBounds().isValid()) {
+                    bounds.extend(poly.getBounds());
+                }
+            }
 		});
 
 		if (!preserveZoom && bounds.isValid() && !bounds.isFlat()) {
