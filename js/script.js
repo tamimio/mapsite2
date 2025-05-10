@@ -154,10 +154,37 @@ function populateCitiesDropdown() {
         // document.getElementById('coords-input').value = `${lat}, ${lng}`;
     // }
 // }
+
+let highlightMarker = null;
+let highlightTimeout = null;
+
 function centerMap(lat, lng) {
     const currentZoom = map.getZoom();
     map.setView([lat, lng], currentZoom);
     document.getElementById('coords-input').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+
+    // Удаляем предыдущий маркер и сбрасываем таймер
+    if (highlightMarker) {
+        map.removeLayer(highlightMarker);
+        highlightMarker = null;
+    }
+    if (highlightTimeout) {
+        clearTimeout(highlightTimeout);
+    }
+
+    // Создаем новый маркер-подсветку
+    highlightMarker = L.circle([lat, lng], {
+        color: '#ff0000',
+        fillColor: '#ff0000',
+        fillOpacity: 0.2,
+        radius: 500 // 500 метров
+    }).addTo(map);
+
+    // Удаляем маркер через 5 секунд
+    highlightTimeout = setTimeout(() => {
+        map.removeLayer(highlightMarker);
+        highlightMarker = null;
+    }, 5000);
 }
 
 // Загрузка постоянного KML-слоя
