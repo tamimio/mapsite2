@@ -223,6 +223,30 @@ async function loadKmlFile(file) {
         let bounds = L.latLngBounds(); // Инициализация пустыми границами
 
 		kmlDoc.querySelectorAll('Placemark').forEach(placemark => {
+			// Получаем стиль для Placemark
+			const styleUrl = placemark.querySelector('styleUrl')?.textContent.replace('#', '');
+			let style = { line: {}, poly: {} };
+			
+			if (styleUrl) {
+				// Проверяем StyleMap
+				if (styleMaps[styleUrl]) {
+					const normalStyleId = styleMaps[styleUrl].normal;
+					style = Object.assign(
+						{}, 
+						styles[normalStyleId]?.line || {},
+						styles[normalStyleId]?.poly || {}
+					);
+				} 
+				// Проверяем обычный стиль
+				else if (styles[styleUrl]) {
+					style = Object.assign(
+						{}, 
+						styles[styleUrl].line || {},
+						styles[styleUrl].poly || {}
+					);
+				}
+			}
+
 			// Обработка LineString
 			const lineString = placemark.querySelector('LineString');
 			if (lineString) {
@@ -230,12 +254,11 @@ async function loadKmlFile(file) {
 				if (coords.length < 2) return;
 
 				const polyline = L.polyline(coords, {
-					color: style.line.color,
-					weight: style.line.weight,
-					opacity: style.line.opacity
+					color: style.color || '#3388ff',
+					weight: style.weight || 3,
+					opacity: style.opacity || 1
 				}).addTo(layerGroup);
 
-				// Обновляем границы, если полилиния валидна
 				if (polyline.getBounds().isValid()) {
 					bounds.extend(polyline.getBounds());
 				}
@@ -248,13 +271,12 @@ async function loadKmlFile(file) {
 				if (coords.length < 3) return;
 
 				const poly = L.polygon(coords, {
-					color: style.line.color,
-					weight: style.line.weight,
-					fillColor: style.poly.fillColor,
-					fillOpacity: style.poly.fillOpacity
+					color: style.color || '#3388ff',
+					weight: style.weight || 3,
+					fillColor: style.fillColor || '#3388ff',
+					fillOpacity: style.fillOpacity || 0.5
 				}).addTo(layerGroup);
 
-				// Обновляем границы, если полигон валиден
 				if (poly.getBounds().isValid()) {
 					bounds.extend(poly.getBounds());
 				}
