@@ -177,10 +177,10 @@ function centerMap(lat, lng) {
     }
 
     // Параметры анимации
-    const startRadius = 2000; // Начальный радиус 2 км
+    const startRadius = 10000; // Начальный радиус 2 км
     const endRadius = 200;    // Конечный радиус 200 м
-    const duration = 2000;    // Длительность анимации 2 секунды
-    const steps = 20;         // Количество шагов анимации
+    const duration = 2500;    // Длительность анимации 2 секунды
+    const steps = 100;         // Количество шагов анимации
 
     // Создаем временный маркер
     highlightMarker = L.circle([lat, lng], {
