@@ -220,60 +220,28 @@ async function loadKmlFile(file) {
             styleMaps[id] = pairs;
         });
 
-        let bounds = null;
+        let bounds = L.latLngBounds(); // Инициализация пустыми границами
 
-        kmlDoc.querySelectorAll('Placemark').forEach(placemark => {
-            const styleUrl = placemark.querySelector('styleUrl')?.textContent.replace('#', '') || '';
-            
-            // Получаем актуальный стиль через StyleMap (если есть)
-            let targetStyleId = styleUrl;
-            if (styleMaps[styleUrl]) {
-                targetStyleId = styleMaps[styleUrl].normal; // Используем normal-стиль
-            }
+		kmlDoc.querySelectorAll('Placemark').forEach(placemark => {
+			// ... обработка Placemark ...
 
-            const style = styles[targetStyleId] || { 
-                line: { color: '#3388ff', weight: 3 },
-                poly: { fillColor: '#3388ff', fillOpacity: 0.2 }
-            };
+			// Обновляем границы только если они валидны
+			if (polyline.getBounds().isValid()) {
+				bounds.extend(polyline.getBounds());
+			}
 
-            // Обработка LineString
-            const lineString = placemark.querySelector('LineString');
-            if (lineString) {
-                const coords = parseCoordinates(lineString);
-                if (coords.length < 2) return;
+			// Для полигона аналогично
+			if (poly.getBounds().isValid()) {
+				bounds.extend(poly.getBounds());
+			}
+		});
 
-                const polyline = L.polyline(coords, {
-                    color: style.line.color,
-                    weight: style.line.weight,
-                    opacity: style.line.opacity
-                }).addTo(layerGroup);
-
-                updateBounds(polyline);
-            }
-
-            // Обработка Polygon
-            const polygon = placemark.querySelector('Polygon');
-            if (polygon) {
-                const coords = parseCoordinates(polygon.querySelector('LinearRing'));
-                if (coords.length < 3) return;
-
-                const poly = L.polygon(coords, {
-                    color: style.line.color,
-                    weight: style.line.weight,
-                    fillColor: style.poly.fillColor,
-                    fillOpacity: style.poly.fillOpacity
-                }).addTo(layerGroup);
-
-                updateBounds(poly);
-            }
-        });
-
-        if (!preserveZoom && bounds && bounds.isValid()) {
-            map.fitBounds(bounds);
-        } else {
-            map.setView(currentCenter, currentZoom);
-        }
-        preserveZoom = true;
+		if (!preserveZoom && bounds.isValid() && !bounds.isFlat()) {
+			map.fitBounds(bounds);
+		} else {
+			map.setView(currentCenter, currentZoom);
+		}
+		preserveZoom = true;
     } catch (error) {
         console.error("Ошибка загрузки KML:", error);
     }
