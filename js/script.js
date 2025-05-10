@@ -221,6 +221,7 @@ async function loadKmlFile(file) {
         });
 
         let bounds = L.latLngBounds(); // Инициализация пустыми границами
+		// let bounds = null;
 
 		kmlDoc.querySelectorAll('Placemark').forEach(placemark => {
 			// Получаем стиль для Placemark
@@ -283,8 +284,16 @@ async function loadKmlFile(file) {
 			}
 		});
 
-		if (!preserveZoom && bounds.isValid() && !bounds.isFlat()) {
-			map.fitBounds(bounds);
+		if (bounds.isValid()) {
+			const sw = bounds.getSouthWest();
+			const ne = bounds.getNorthEast();
+			const isNotPoint = sw.lat !== ne.lat || sw.lng !== ne.lng;
+			
+			if (!preserveZoom && isNotPoint) {
+				map.fitBounds(bounds);
+			} else {
+				map.setView(currentCenter, currentZoom);
+			}
 		} else {
 			map.setView(currentCenter, currentZoom);
 		}
