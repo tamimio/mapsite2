@@ -157,30 +157,54 @@ function populateCitiesDropdown() {
 
 let highlightMarker = null;
 let highlightTimeout = null;
+let highlightAnimationInterval = null;
 
 function centerMap(lat, lng) {
     const currentZoom = map.getZoom();
     map.setView([lat, lng], currentZoom);
     document.getElementById('coords-input').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
 
-    // Удаляем предыдущий маркер и сбрасываем таймер
+    // Очищаем предыдущие элементы анимации
     if (highlightMarker) {
         map.removeLayer(highlightMarker);
         highlightMarker = null;
+    }
+    if (highlightAnimationInterval) {
+        clearInterval(highlightAnimationInterval);
     }
     if (highlightTimeout) {
         clearTimeout(highlightTimeout);
     }
 
-    // Создаем новый маркер-подсветку
+    // Параметры анимации
+    const startRadius = 2000; // Начальный радиус 2 км
+    const endRadius = 200;    // Конечный радиус 200 м
+    const duration = 2000;    // Длительность анимации 2 секунды
+    const steps = 20;         // Количество шагов анимации
+
+    // Создаем временный маркер
     highlightMarker = L.circle([lat, lng], {
-        color: '#ff0000',
-        fillColor: '#ff0000',
-        fillOpacity: 0.2,
-        radius: 500 // 500 метров
+        color: '#ff4444',
+        fillColor: '#ff7777',
+        fillOpacity: 0.3,
+        radius: startRadius
     }).addTo(map);
 
-    // Удаляем маркер через 5 секунд
+    // Анимация уменьшения
+    let currentStep = 0;
+    highlightAnimationInterval = setInterval(() => {
+        currentStep++;
+        const progress = currentStep / steps;
+        const currentRadius = startRadius - (startRadius - endRadius) * progress;
+        
+        highlightMarker.setRadius(currentRadius);
+        
+        if (currentStep >= steps) {
+            clearInterval(highlightAnimationInterval);
+        }
+    }, duration / steps);
+
+    // Удаление через 5 секунд
     highlightTimeout = setTimeout(() => {
         map.removeLayer(highlightMarker);
         highlightMarker = null;
