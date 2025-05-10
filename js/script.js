@@ -208,23 +208,40 @@ async function loadKmlFile(file) {
             }
         });
 
-		//
-        let bounds = null; // Собираем границы всех линий
+        let bounds = null;
         kmlDoc.querySelectorAll('Placemark').forEach(placemark => {
-            // ... (создание полилиний и добавление в layerGroup) ...
-            const polyline = L.polyline(coords, { 
-                color: style.color, 
-                weight: style.weight 
-            }).addTo(layerGroup);
+            const styleUrl = placemark.querySelector('styleUrl')?.textContent.replace('#', '') || '';
+            const style = styles[styleUrl] || { color: '#3388ff', weight: 3 };
 
-            // Обновляем общие границы
-            if (polyline.getBounds) {
-                bounds = bounds ? bounds.extend(polyline.getBounds()) : polyline.getBounds();
+            const lineString = placemark.querySelector('LineString');
+            if (lineString) {
+                const coordinates = lineString.querySelector('coordinates')?.textContent;
+                if (!coordinates) return;
+
+                // Парсим координаты
+                const coords = coordinates
+                    .trim()
+                    .split(/\s+/)
+                    .map(coord => {
+                        const [lng, lat] = coord.split(',').map(Number);
+                        return [lat, lng];
+                    });
+
+                // Создаем полилинию
+                const polyline = L.polyline(coords, {
+                    color: style.color,
+                    weight: style.weight
+                }).addTo(layerGroup);
+
+                // Обновляем границы
+                if (polyline.getBounds) {
+                    bounds = bounds ? bounds.extend(polyline.getBounds()) : polyline.getBounds();
+                }
             }
         });
 
         if (!preserveZoom && bounds && bounds.isValid()) {
-            map.fitBounds(bounds); // Используем собранные границы
+            map.fitBounds(bounds);
         } else {
             map.setView(currentCenter, currentZoom);
         }
