@@ -208,30 +208,23 @@ async function loadKmlFile(file) {
             }
         });
 
-        // Парсим Placemarks
+		//
+        let bounds = null; // Собираем границы всех линий
         kmlDoc.querySelectorAll('Placemark').forEach(placemark => {
-            const styleUrl = placemark.querySelector('styleUrl').textContent.replace('#', '');
-            const style = styles[styleUrl] || { color: '#3388ff', weight: 3 };
-            
-            const lineString = placemark.querySelector('LineString');
-            if (lineString) {
-                const coords = lineString.querySelector('coordinates').textContent
-                    .trim()
-                    .split(/\s+/)
-                    .map(coord => {
-                        const [lng, lat] = coord.split(',').map(Number);
-                        return [lat, lng];
-                    });
+            // ... (создание полилиний и добавление в layerGroup) ...
+            const polyline = L.polyline(coords, { 
+                color: style.color, 
+                weight: style.weight 
+            }).addTo(layerGroup);
 
-                L.polyline(coords, {
-                    color: style.color,
-                    weight: style.weight
-                }).addTo(layerGroup);
+            // Обновляем общие границы
+            if (polyline.getBounds) {
+                bounds = bounds ? bounds.extend(polyline.getBounds()) : polyline.getBounds();
             }
         });
 
-        if (!preserveZoom && layerGroup.getBounds().isValid()) {
-            map.fitBounds(layerGroup.getBounds());
+        if (!preserveZoom && bounds && bounds.isValid()) {
+            map.fitBounds(bounds); // Используем собранные границы
         } else {
             map.setView(currentCenter, currentZoom);
         }
