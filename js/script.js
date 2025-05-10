@@ -182,27 +182,56 @@ async function loadKmlFile(file) {
     if (currentLayer) {
         map.removeLayer(currentLayer);
     }
-    
+
     const currentCenter = map.getCenter();
     const currentZoom = map.getZoom();
-    
+
     try {
-        const layer = await omnivore.kml(file.path);
-        layer.eachLayer(function(featureLayer) {
-            // Сохраняем оригинальные стили из KML
-            if (featureLayer.setStyle) {
-                featureLayer.setStyle({
-                    color: featureLayer.feature?.properties?.color || null,
-                    fillColor: featureLayer.feature?.properties?.fillColor || null
-                });
+        const response = await fetch(file.path);
+        const kmlText = await response.text();
+        const parser = new DOMParser();
+        const kmlDoc = parser.parseFromString(kmlText, "text/xml");
+
+        const layerGroup = L.layerGroup().addTo(map);
+        currentLayer = layerGroup;
+
+        // Парсим стили
+        const styles = {};
+        kmlDoc.querySelectorAll('Style').forEach(style => {
+            const id = style.getAttribute('id');
+            const lineStyle = style.querySelector('LineStyle');
+            if (lineStyle) {
+                styles[id] = {
+                    color: `#${lineStyle.querySelector('color').textContent.slice(6, 8)}${lineStyle.querySelector('color').textContent.slice(4, 6)}${lineStyle.querySelector('color').textContent.slice(2, 4)}`,
+                    weight: parseInt(lineStyle.querySelector('width').textContent)
+                };
             }
         });
-        
-        currentLayer = layer;
-        currentLayer.addTo(map);
-        
-        if (!preserveZoom) {
-            map.fitBounds(currentLayer.getBounds());
+
+        // Парсим Placemarks
+        kmlDoc.querySelectorAll('Placemark').forEach(placemark => {
+            const styleUrl = placemark.querySelector('styleUrl').textContent.replace('#', '');
+            const style = styles[styleUrl] || { color: '#3388ff', weight: 3 };
+            
+            const lineString = placemark.querySelector('LineString');
+            if (lineString) {
+                const coords = lineString.querySelector('coordinates').textContent
+                    .trim()
+                    .split(/\s+/)
+                    .map(coord => {
+                        const [lng, lat] = coord.split(',').map(Number);
+                        return [lat, lng];
+                    });
+
+                L.polyline(coords, {
+                    color: style.color,
+                    weight: style.weight
+                }).addTo(layerGroup);
+            }
+        });
+
+        if (!preserveZoom && layerGroup.getBounds().isValid()) {
+            map.fitBounds(layerGroup.getBounds());
         } else {
             map.setView(currentCenter, currentZoom);
         }
