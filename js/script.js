@@ -285,7 +285,7 @@ async function loadKmlFile(file) {
         
         return {
             color: parseColor(lineStyle.querySelector('color')?.textContent || '#3388ff'),
-            weight: parseFloat(lineStyle.querySelector('width')?.textContent || 3,
+            weight: parseFloat(lineStyle.querySelector('width')?.textContent || '3'),
             opacity: parseOpacity(lineStyle.querySelector('color')?.textContent)
         };
     }
