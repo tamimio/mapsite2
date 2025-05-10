@@ -417,15 +417,15 @@ document.getElementById('lang-en').addEventListener('click', () => {
 
 async function init() {
     try {
+        // Инициализируем календарь
+        initDatePicker();
+		
         // Загружаем постоянный слой
         await loadPermanentKml();
         
         // Загружаем последний файл по умолчанию
         preserveZoom = false;
-        await navigateTo(kmlFiles.length - 1);
-        
-        // Инициализируем календарь
-        initDatePicker();
+        await navigateTo(kmlFiles.length - 1);        
         
         // Устанавливаем русский язык по умолчанию
         setLanguage('ru');
