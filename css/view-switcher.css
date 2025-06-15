@@ -18,3 +18,17 @@
     color: white;
     border-color: #007bff;
 }
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+#map-container.active {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+}

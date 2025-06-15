@@ -53,3 +53,9 @@ body {
         align-items: flex-start;
     }
 }
+
+#map-container:not(.active),
+#stats1-container:not(.active),
+#stats2-container:not(.active) {
+    display: none !important;
+}

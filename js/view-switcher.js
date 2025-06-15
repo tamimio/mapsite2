@@ -7,20 +7,27 @@ function initViewSwitcher() {
     const stats1Container = document.getElementById('stats1-container');
     const stats2Container = document.getElementById('stats2-container');
     
+    // Сначала скроем все контейнеры
+    [mapContainer, stats1Container, stats2Container].forEach(container => {
+        container.classList.remove('active');
+    });
+    
+    // Затем покажем только активный контейнер
+    mapContainer.classList.add('active');
+    
     function switchView(activeBtn, activeContainer) {
         [mapBtn, stats1Btn, stats2Btn].forEach(btn => btn.classList.remove('active'));
         [mapContainer, stats1Container, stats2Container].forEach(container => {
             container.classList.remove('active');
-            container.style.display = 'none';
         });
         
         activeBtn.classList.add('active');
         activeContainer.classList.add('active');
-        activeContainer.style.display = 'block';
         
-        if (activeContainer === mapContainer) {
-            activeContainer.style.display = 'flex';
-            setTimeout(() => window.map && window.map.invalidateSize(), 100);
+        if (activeContainer === mapContainer && window.map) {
+            setTimeout(() => {
+                window.map.invalidateSize();
+            }, 100);
         }
     }
     
