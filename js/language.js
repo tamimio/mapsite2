@@ -51,9 +51,9 @@ function setLanguage(lang) {
     document.getElementById('current-center-label').textContent = t.currentCenter;
     document.getElementById('copy-coords-btn').title = t.copyTooltip;
     
-    document.getElementById('map-btn').title = t.viewSwitchMap;
-    document.getElementById('stats1-btn').title = t.viewSwitchSt1;
-    document.getElementById('stats2-btn').title = t.viewSwitchSt2;
+    document.getElementById('map-btn').textContent = t.viewSwitchMap;
+    document.getElementById('stats1-btn').textContent = t.viewSwitchSt1;
+    document.getElementById('stats2-btn').textContent = t.viewSwitchSt2;
     
     // Обновляем кнопки навигации
     document.getElementById('first-btn').title = t.firstBtnTitle;

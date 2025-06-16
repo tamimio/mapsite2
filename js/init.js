@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     /* Инициализация всех компонентов */
     
-    // Переключатель видов
-    initViewSwitcher();
 	// Инициализируем карту
     initMap();    
+    // Переключатель видов
+    initViewSwitcher();
     // Затем язык
     initLanguage();    
     

@@ -191,6 +191,7 @@ function centerMap(lat, lng) {
 // Загрузка постоянного KML-слоя
 async function loadPermanentKml() {
     try {
+        console.log("Loading permanent KML:", window.permanentLayerData.path);
         const layer = await omnivore.kml(window.permanentLayerData.path);
         layer.eachLayer(function(featureLayer) {
             if (featureLayer.setStyle) {
@@ -199,6 +200,7 @@ async function loadPermanentKml() {
         });
         permanentLayer = layer;
         permanentLayer.addTo(map);
+        console.log("Permanent layer added");
     } catch (error) {
         console.error("Ошибка загрузки постоянного KML:", error);
     }
