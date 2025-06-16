@@ -4,34 +4,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap'
 }).addTo(map);
 
-// Основные KML-файлы
-window.kmlFiles = [
-    { name: "01.10.24", path: "kml/Line_24_10_01.kml" },
-    { name: "01.11.24", path: "kml/Line_24_11_01.kml" },
-    { name: "01.12.24", path: "kml/Line_24_12_01.kml" },
-    { name: "01.01.25", path: "kml/Line_25_01_01.kml" }, 
-    { name: "01.02.25", path: "kml/Line_25_02_01.kml" },
-    { name: "01.03.25", path: "kml/Line_25_03_01.kml" },
-    { name: "03.04.25", path: "kml/Line_25_04_03.kml" }
-    
-];
-
-// Постоянный слой
-const permanentLayerData = {
-    name: "24.02.22", path: "kml/Line_start_LDNR.kml"
-};
-
-// Список городов с координатами
-const cities = [
-    { name: { ru: "Суджа",     en: "Sudzha"     }, lat: 51.19055,  lng: 35.27082   },
-    { name: { ru: "Волчанск",  en: "Volchansk"  }, lat: 50.288107, lng: 36.946217  },
-    { name: { ru: "Купянск",   en: "Kupyansk"   }, lat: 49.706396, lng: 37.616586  },
-    { name: { ru: "Боровая",   en: "Borovaya"   }, lat: 49.38417,  lng: 37.62086   },
-    { name: { ru: "Северск",   en: "Seversk"    }, lat: 48.868709, lng: 38.106425  },
-    { name: { ru: "Часов Яр",  en: "Chasov Yar" }, lat: 48.591656, lng: 37.820354  },
-    { name: { ru: "Дзержинск", en: "Dzerzhinsk" }, lat: 48.398329, lng:  37.836634 }
-];
-
 let currentLayer = null;
 let permanentLayer = null;
 let currentIndex = kmlFiles.length - 1;
@@ -526,103 +498,6 @@ map.on('moveend', function() {
     updateCurrentCenterDisplay();
 });
 
-
-//////////////////////// язык
-
-// Добавьте объект с переводами
-const translations = {
-    ru: {
-        title: "  dataviewer",
-        centerLabel: "Центрировать на:",
-        coordsPlaceholder: "Широта, Долгота (например: 55.7558, 37.6173)",
-        selectCity: "Выберите город",
-        currentCenter: "Текущий центр: ",
-        undefinedCoords: "не определен",
-        copyTooltip: "Копировать координаты",
-        firstBtnTitle: "Первый",
-        prevBtnTitle: "Предыдущий",
-        nextBtnTitle: "Следующий",
-        lastBtnTitle: "Последний",
-        viewSwitchMap: "Карта",
-        viewSwitchSt1: "Статистика1",
-        viewSwitchSt2: "Статистика2"
-    },
-    en: {
-        title: "  dataviewer",
-        centerLabel: "Center on:",
-        coordsPlaceholder: "Latitude, Longitude (e.g.: 55.7558, 37.6173)",
-        selectCity: "Select city",
-        currentCenter: "Current center: ",
-        undefinedCoords: "undefined",
-        copyTooltip: "Copy coordinates",
-        firstBtnTitle: "First",
-        prevBtnTitle: "Previous",
-        nextBtnTitle: "Next",
-        lastBtnTitle: "Last",
-        viewSwitchMap: "Map",
-        viewSwitchSt1: "Statistics1",
-        viewSwitchSt2: "Statistics2"
-    }
-};
-
-let currentLang = 'ru'; // По умолчанию русский
-
-// Функция переключения языка
-function setLanguage(lang) {
-    currentLang = lang;
-    const t = translations[lang];
-    
-    // Обновляем текст элементов
-    document.getElementById('page-title').textContent = t.title;
-    // document.getElementById('main-title').textContent = t.title;
-    document.getElementById('center-label').textContent = t.centerLabel;
-    document.getElementById('coords-input').placeholder = t.coordsPlaceholder;
-    document.getElementById('select-city-default').textContent = t.selectCity;
-    document.getElementById('current-center-label').textContent = t.currentCenter;
-    document.getElementById('copy-coords-btn').title = t.copyTooltip;
-	
-    document.getElementById('map-btn').textContent = t.viewSwitchMap;
-    document.getElementById('stats1-btn').textContent = t.viewSwitchSt1;
-    document.getElementById('stats2-btn').textContent = t.viewSwitchSt2;
-    
-    // Обновляем кнопки навигации
-    document.getElementById('first-btn').title = t.firstBtnTitle;
-    document.getElementById('prev-btn').title = t.prevBtnTitle;
-    document.getElementById('next-btn').title = t.nextBtnTitle;
-    document.getElementById('last-btn').title = t.lastBtnTitle;
-    
-    // Обновляем кнопки языка
-    document.getElementById('lang-ru').title = lang === 'ru' ? "Уже Русский" : "Переключить на Русский";
-    document.getElementById('lang-en').title = lang === 'en' ? "Already English" : "Switch to English";
-    
-    // Обновляем классы активности
-    document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
-    document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-    
-    // Обновляем список городов
-    populateCitiesDropdown();
-	    
-    // Пересоздаем календарь с новым языком
-    if (datePicker) {
-        datePicker.destroy();
-    }
-    initDatePicker();
-    
-    // Если координаты не определены, обновляем текст
-    if (document.getElementById('current-center-coords').textContent === 'не определен' || 
-        document.getElementById('current-center-coords').textContent === 'undefined') {
-        document.getElementById('current-center-coords').textContent = t.undefinedCoords;
-    }
-}
-
-// Обработчики кнопок переключения языка
-document.getElementById('lang-ru').addEventListener('click', () => {
-    if (currentLang !== 'ru') setLanguage('ru');
-});
-
-document.getElementById('lang-en').addEventListener('click', () => {
-    if (currentLang !== 'en') setLanguage('en');
-});
 
 async function init() {
     try {
