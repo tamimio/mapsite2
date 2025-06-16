@@ -30,6 +30,7 @@
         </div>
     </div>
     
+    <!-- Только один активный раздел будет виден -->
     <div id="map-container" class="content-section active">
         <!-- ... содержимое карты ... -->
         <div class="date-navigator">
@@ -62,42 +63,88 @@
     </div>
     
     <div id="stats1-container" class="content-section">
-        <!-- ... статистика 1 ... -->		
+        <!-- ... графики статистики1 ... -->
         <iframe width="1700" height="700" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRkt2S9rNVpj1C9C_6ZiTmdHu0vbZdoIQeBl3kBz0k4e0o6n16BbeF19APb8lFjEBJxvHb9uwRkLssS/pubchart?oid=2103496955&format=interactive"></iframe>
         <iframe width="724" height="449" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRkt2S9rNVpj1C9C_6ZiTmdHu0vbZdoIQeBl3kBz0k4e0o6n16BbeF19APb8lFjEBJxvHb9uwRkLssS/pubchart?oid=1357114866&amp;format=interactive"></iframe>
     </div>
     
     <div id="stats2-container" class="content-section">
-        <!-- ... статистика 2 ... -->		
+        <!-- ... графики статистики2 ... -->
         <iframe width="800" height="380" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRkt2S9rNVpj1C9C_6ZiTmdHu0vbZdoIQeBl3kBz0k4e0o6n16BbeF19APb8lFjEBJxvHb9uwRkLssS/pubchart?oid=1053948350&format=interactive"></iframe>
         <iframe width="896" height="567" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRkt2S9rNVpj1C9C_6ZiTmdHu0vbZdoIQeBl3kBz0k4e0o6n16BbeF19APb8lFjEBJxvHb9uwRkLssS/pubchart?oid=828460283&amp;format=image"></iframe>
         <iframe width="950" height="650" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRkt2S9rNVpj1C9C_6ZiTmdHu0vbZdoIQeBl3kBz0k4e0o6n16BbeF19APb8lFjEBJxvHb9uwRkLssS/pubhtml?gid=1583951093&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
     </div>
     
+    <!-- ... остальной код ... -->
+    
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- Для русского -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/l10n/ru.min.js"></script>
+    <!-- Для английского -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/l10n/default.min.js"></script>
     
     <script>
-        // Глобальные стили для KML
+        // Делаем стиль permanent доступным в JavaScript
         window.permanentLayerStyle = {
-            color: "#FF0000",
-            weight: 3,
-            opacity: 0.7,
-            fillColor: "#FF9999",
-            fillOpacity: 0.3
+            color: getComputedStyle(document.documentElement)
+                .getPropertyValue('--permanent-layer-color').trim(),
+            weight: parseInt(getComputedStyle(document.documentElement)
+                .getPropertyValue('--permanent-layer-weight').trim()),
+            opacity: parseFloat(getComputedStyle(document.documentElement)
+                .getPropertyValue('--permanent-layer-opacity').trim()),
+            fillColor: getComputedStyle(document.documentElement)
+                .getPropertyValue('--permanent-layer-fill').trim(),
+            fillOpacity: parseFloat(getComputedStyle(document.documentElement)
+                .getPropertyValue('--permanent-layer-fill-opacity').trim())
         };
     </script>
     
-    <!-- Разделенные JS-файлы -->
-    <script src="js/map.js"></script>
-    <script src="js/language.js"></script>
-    <script src="js/view-switcher.js"></script>
-    <script src="js/init.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        // Делаем доступные даты глобально доступными
+        window.availableDates = kmlFiles.map(file => file.name);
+        
+        // Добавляем функционал переключения видов
+        document.addEventListener('DOMContentLoaded', function() {
+            const mapBtn = document.getElementById('map-btn');
+            const stats1Btn = document.getElementById('stats1-btn');
+            const stats2Btn = document.getElementById('stats2-btn');
+            
+            const mapContainer = document.getElementById('map-container');
+            const stats1Container = document.getElementById('stats1-container');
+            const stats2Container = document.getElementById('stats2-container');
+            
+            // Функция переключения активного вида
+            function switchView(activeBtn, activeContainer) {
+                // Убираем активные классы у всех
+                mapBtn.classList.remove('active');
+                stats1Btn.classList.remove('active');
+                stats2Btn.classList.remove('active');
+                
+                mapContainer.classList.remove('active');
+                stats1Container.classList.remove('active');
+                stats2Container.classList.remove('active');
+                
+                // Добавляем активный класс выбранному
+                activeBtn.classList.add('active');
+                activeContainer.classList.add('active');
+            }
+            
+            // Обработчики кнопок
+            mapBtn.addEventListener('click', function() {
+                switchView(this, mapContainer);
+            });
+            
+            stats1Btn.addEventListener('click', function() {
+                switchView(this, stats1Container);
+            });
+            
+            stats2Btn.addEventListener('click', function() {
+                switchView(this, stats2Container);
+            });
+        });
+    </script>
 </body>
 </html>
-
-
-
