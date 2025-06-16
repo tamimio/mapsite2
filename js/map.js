@@ -12,6 +12,10 @@ window.kmlFiles = [
 
 window.availableDates = window.kmlFiles.map(file => file.name);
 
+window.permanentLayerData = {
+    name: "24.02.22", path: "kml/Line_start_LDNR.kml"
+};
+
 const cities = [
     { name: { ru: "Суджа",     en: "Sudzha" }, lat: 51.19055, lng: 35.27082 },
     { name: { ru: "Волчанск",  en: "Volchansk"  }, lat: 50.288107, lng: 36.946217  },
@@ -54,6 +58,10 @@ function initMap() {
     document.getElementById('copy-coords-btn').addEventListener('click', copyCoords);	
     
     map.on('moveend', updateCurrentCenterDisplay);
+    
+    
+    updateButtons(); // Обновить состояние кнопок
+    updateCurrentCenterDisplay(); // Обновить координаты
 }
 
 // Остальные функции карты 
@@ -68,7 +76,7 @@ function parseCustomDate(dateStr) {
 // Инициализация календаря с ограничением доступных дат
 function initDatePicker() {
     datePicker = flatpickr("#date-picker", {
-		locale: currentLang === 'ru' ? 'ru' : 'default',
+		// locale: currentLang === 'ru' ? 'ru' : 'default',
         dateFormat: "d.m.y",
         allowInput: true,
         locale: currentLang, // Используем текущий язык
@@ -183,13 +191,12 @@ function centerMap(lat, lng) {
 // Загрузка постоянного KML-слоя
 async function loadPermanentKml() {
     try {
-        const layer = await omnivore.kml(permanentLayerData.path);
+        const layer = await omnivore.kml(window.permanentLayerData.path);
         layer.eachLayer(function(featureLayer) {
             if (featureLayer.setStyle) {
                 featureLayer.setStyle(window.permanentLayerStyle);
             }
         });
-        
         permanentLayer = layer;
         permanentLayer.addTo(map);
     } catch (error) {
@@ -201,6 +208,7 @@ async function loadPermanentKml() {
 async function loadKmlFile(file) {
     if (currentLayer) {
         map.removeLayer(currentLayer);
+        currentLayer = null;
     }
 
     const currentCenter = map.getCenter();

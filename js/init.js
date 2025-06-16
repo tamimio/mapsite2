@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация всех компонентов
+    /* Инициализация всех компонентов */
+    
     // Переключатель видов
     initViewSwitcher();
 	// Инициализируем карту
