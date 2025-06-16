@@ -37,6 +37,7 @@ let citiesDropdown, currentCenterCoordsElement, copyCoordsBtn;
 
 // Инициализация карты
 function initMap() {
+    console.log("Initializing map...");                                   
     map = L.map('map').setView([55.751244, 37.618423], 5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap'
@@ -62,6 +63,7 @@ function initMap() {
     
     updateButtons(); // Обновить состояние кнопок
     updateCurrentCenterDisplay(); // Обновить координаты
+    console.log("Map initialized");
 }
 
 // Остальные функции карты 
@@ -196,11 +198,12 @@ async function loadPermanentKml() {
         layer.eachLayer(function(featureLayer) {
             if (featureLayer.setStyle) {
                 featureLayer.setStyle(window.permanentLayerStyle);
+                console.log("Applied style to permanent layer feature");
             }
         });
         permanentLayer = layer;
         permanentLayer.addTo(map);
-        console.log("Permanent layer added");
+        console.log("Permanent layer added to map");
     } catch (error) {
         console.error("Ошибка загрузки постоянного KML:", error);
     }
@@ -208,126 +211,180 @@ async function loadPermanentKml() {
 
 // Функция загрузки основного KML (с сохранением оригинальных стилей)
 async function loadKmlFile(file) {
+    console.log(`Loading KML file: ${file.path}`);
+    
+    // Удаляем только временный слой
     if (currentLayer) {
+        console.log("Removing previous currentLayer");
         map.removeLayer(currentLayer);
         currentLayer = null;
     }
 
     const currentCenter = map.getCenter();
     const currentZoom = map.getZoom();
+    console.log(`Current view: ${currentCenter.lat}, ${currentCenter.lng} @ zoom ${currentZoom}`);
 
     try {
         const response = await fetch(file.path);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const kmlText = await response.text();
         const parser = new DOMParser();
         const kmlDoc = parser.parseFromString(kmlText, "text/xml");
+        
+        // Проверка на ошибки парсинга
+        const parserErrors = kmlDoc.getElementsByTagName("parsererror");
+        if (parserErrors.length > 0) {
+            throw new Error("KML parsing error: " + parserErrors[0].textContent);
+        }
 
-        const layerGroup = L.layerGroup().addTo(map);
+        const layerGroup = L.layerGroup();
         currentLayer = layerGroup;
+        console.log("Created new layer group");
 
-        // Парсим все стили (включая StyleMap)
+        // Парсим все стили
         const styles = {};
         const styleMaps = {};
+        let styleCount = 0;
+        let styleMapCount = 0;
 
         // Обрабатываем обычные стили
         kmlDoc.querySelectorAll('Style').forEach(style => {
             const id = style.getAttribute('id');
+            if (!id) return;
+            
             styles[id] = {
                 line: parseLineStyle(style),
                 poly: parsePolyStyle(style)
             };
+            styleCount++;
         });
 
         // Обрабатываем StyleMap
         kmlDoc.querySelectorAll('StyleMap').forEach(styleMap => {
             const id = styleMap.getAttribute('id');
+            if (!id) return;
+            
             const pairs = {};
             styleMap.querySelectorAll('Pair').forEach(pair => {
-                const key = pair.querySelector('key').textContent;
-                const styleUrl = pair.querySelector('styleUrl').textContent.replace('#', '');
-                pairs[key] = styleUrl;
+                const key = pair.querySelector('key')?.textContent;
+                const styleUrl = pair.querySelector('styleUrl')?.textContent.replace('#', '');
+                if (key && styleUrl) {
+                    pairs[key] = styleUrl;
+                }
             });
-            styleMaps[id] = pairs;
+            
+            if (Object.keys(pairs).length > 0) {
+                styleMaps[id] = pairs;
+                styleMapCount++;
+            }
         });
 
-        let bounds = L.latLngBounds(); // Инициализация пустыми границами
-		// let bounds = null;
+        console.log(`Found ${styleCount} styles and ${styleMapCount} style maps`);
 
-		kmlDoc.querySelectorAll('Placemark').forEach(placemark => {
-			// Получаем стиль для Placemark
-			const styleUrl = placemark.querySelector('styleUrl')?.textContent.replace('#', '');
-			let style = { line: {}, poly: {} };
-			
-			if (styleUrl) {
-				// Проверяем StyleMap
-				if (styleMaps[styleUrl]) {
-					const normalStyleId = styleMaps[styleUrl].normal;
-					style = Object.assign(
-						{}, 
-						styles[normalStyleId]?.line || {},
-						styles[normalStyleId]?.poly || {}
-					);
-				} 
-				// Проверяем обычный стиль
-				else if (styles[styleUrl]) {
-					style = Object.assign(
-						{}, 
-						styles[styleUrl].line || {},
-						styles[styleUrl].poly || {}
-					);
-				}
-			}
+        let bounds = null;
+        let placemarkCount = 0;
+        let lineCount = 0;
+        let polygonCount = 0;
 
-			// Обработка LineString
-			const lineString = placemark.querySelector('LineString');
-			if (lineString) {
-				const coords = parseCoordinates(lineString);
-				if (coords.length < 2) return;
+        kmlDoc.querySelectorAll('Placemark').forEach(placemark => {
+            placemarkCount++;
+            const styleUrl = placemark.querySelector('styleUrl')?.textContent.replace('#', '');
+            let style = { line: {}, poly: {} };
+            
+            if (styleUrl) {
+                // Проверяем StyleMap
+                if (styleMaps[styleUrl]) {
+                    const normalStyleId = styleMaps[styleUrl].normal;
+                    if (styles[normalStyleId]) {
+                        style = {
+                            line: { ...styles[normalStyleId].line },
+                            poly: { ...styles[normalStyleId].poly }
+                        };
+                    }
+                } 
+                // Проверяем обычный стиль
+                else if (styles[styleUrl]) {
+                    style = {
+          
+                        line: { ...styles[styleUrl].line },
+                        poly: { ...styles[styleUrl].poly }
+                    };
+                }
+            }
 
-				const polyline = L.polyline(coords, {
-					color: style.color || '#3388ff',
-					weight: style.weight || 3,
-					opacity: style.opacity || 1
-				}).addTo(layerGroup);
+            // Обработка LineString
+            const lineString = placemark.querySelector('LineString');
+            if (lineString) {
+                const coords = parseCoordinates(lineString);
+                if (coords.length >= 2) {
 
-				if (polyline.getBounds().isValid()) {
-					bounds.extend(polyline.getBounds());
-				}
-			}
+                    const polyline = L.polyline(coords, {
+                        color: style.line.color || '#3388ff',
+                        weight: style.line.weight || 3,
+                        opacity: style.line.opacity || 1
+                    }).addTo(layerGroup);
+                    
+                    lineCount++;
+                    
+                    if (!bounds) {
+                        bounds = polyline.getBounds();
+                    } else {
+                        bounds.extend(polyline.getBounds());
+                    }
+                }
+            }
 
-			// Обработка Polygon
-			const polygon = placemark.querySelector('Polygon');
-			if (polygon) {
-				const coords = parseCoordinates(polygon.querySelector('LinearRing'));
-				if (coords.length < 3) return;
+            // Обработка Polygon
+            const polygon = placemark.querySelector('Polygon');
+            if (polygon) {
+                const coords = parseCoordinates(polygon.querySelector('LinearRing'));
+                if (coords.length >= 3) {
 
-				const poly = L.polygon(coords, {
-					color: style.color || '#3388ff',
-					weight: style.weight || 3,
-					fillColor: style.fillColor || '#3388ff',
-					fillOpacity: style.fillOpacity || 0.5
-				}).addTo(layerGroup);
+                    const poly = L.polygon(coords, {
+                        color: style.line.color || '#3388ff',
+                        weight: style.line.weight || 3,
+                        fillColor: style.poly.fillColor || '#3388ff',
+                        fillOpacity: style.poly.fillOpacity || 0.5
+                    }).addTo(layerGroup);
+                    
+                    polygonCount++;
+                    
+                    if (!bounds) {
+                        bounds = poly.getBounds();
+                    } else {
+                        bounds.extend(poly.getBounds());
+                    }
+                }
+            }
+        });
 
-				if (poly.getBounds().isValid()) {
-					bounds.extend(poly.getBounds());
-				}
-			}
-		});
+        console.log(`Processed ${placemarkCount} placemarks: ${lineCount} lines, ${polygonCount} polygons`);
+        
+        // Добавляем слой на карту только после создания всех элементов
+        layerGroup.addTo(map);
+        console.log("Layer group added to map");
 
-		if (bounds.isValid()) {
-			const sw = bounds.getSouthWest();
-			const ne = bounds.getNorthEast();
-			const isNotPoint = sw.lat !== ne.lat || sw.lng !== ne.lng;
-			
-			if (!preserveZoom && isNotPoint) {
-				map.fitBounds(bounds);
-			} else {
-				map.setView(currentCenter, currentZoom);
-			}
-		} else {
-			map.setView(currentCenter, currentZoom);
-		}
-		preserveZoom = true;
+        if (bounds && bounds.isValid()) {
+            const sw = bounds.getSouthWest();
+            const ne = bounds.getNorthEast();
+            const isNotPoint = sw.lat !== ne.lat || sw.lng !== ne.lng;
+            
+            if (!preserveZoom && isNotPoint) {
+                console.log("Fitting to bounds", bounds);
+                map.fitBounds(bounds);
+            } else {
+                console.log("Preserving current view");
+                map.setView(currentCenter, currentZoom);
+            }
+        } else {
+            console.log("No valid bounds, preserving current view");
+            map.setView(currentCenter, currentZoom);
+        }
+        
+        preserveZoom = true;
     } catch (error) {
         console.error("Ошибка загрузки KML:", error);
     }
@@ -335,22 +392,28 @@ async function loadKmlFile(file) {
     // Вспомогательные функции
     function parseLineStyle(style) {
         const lineStyle = style.querySelector('LineStyle');
-        if (!lineStyle) return null;
+        if (!lineStyle) return {};
+        
+        const color = parseColor(lineStyle.querySelector('color')?.textContent);
+        const width = parseFloat(lineStyle.querySelector('width')?.textContent);
         
         return {
-            color: parseColor(lineStyle.querySelector('color')?.textContent || '#3388ff'),
-            weight: parseFloat(lineStyle.querySelector('width')?.textContent || '3'),
-            opacity: parseOpacity(lineStyle.querySelector('color')?.textContent)
+            color: color || '#3388ff',
+            weight: isNaN(width) ? 3 : width,
+            opacity: parseOpacity(lineStyle.querySelector('color')?.textContent) || 1
         };
     }
 
     function parsePolyStyle(style) {
         const polyStyle = style.querySelector('PolyStyle');
-        if (!polyStyle) return null;
-
+        if (!polyStyle) return {};
+        
+        const color = parseColor(polyStyle.querySelector('color')?.textContent);
+        const fill = polyStyle.querySelector('fill')?.textContent;
+        
         return {
-            fillColor: parseColor(polyStyle.querySelector('color')?.textContent || '#3388ff'),
-            fillOpacity: parseOpacity(polyStyle.querySelector('color')?.textContent)
+            fillColor: color || '#3388ff',
+            fillOpacity: parseOpacity(polyStyle.querySelector('color')?.textContent) || 0.5
         };
     }
 
@@ -358,53 +421,78 @@ async function loadKmlFile(file) {
         const coordinates = element?.querySelector('coordinates')?.textContent;
         if (!coordinates) return [];
         
-        return coordinates
-            .trim()
-            .split(/\s+/)
-            .map(coord => {
-                const [lng, lat] = coord.split(',').map(Number);
-                return [lat, lng];
-            });
+        try {
+            return coordinates
+                .trim()
+                .split(/\s+/)
+                .filter(coord => coord.trim() !== '')
+                .map(coord => {
+                    const parts = coord.split(',');
+                    const lng = parseFloat(parts[0]);
+                    const lat = parseFloat(parts[1]);
+                    return [lat, lng];
+                })
+                .filter(coord => !isNaN(coord[0]) && !isNaN(coord[1]));
+        } catch (e) {
+            console.error("Error parsing coordinates:", e);
+            return [];
+        }
     }
 
     function parseColor(kmlColor) {
-        if (!kmlColor) return '#3388ff';
-        // Конвертация ABGR в RGBA (пример: ff0000ff -> #ff0000)
-        const a = kmlColor.substr(0, 2);
-        const b = kmlColor.substr(2, 2);
-        const g = kmlColor.substr(4, 2);
-        const r = kmlColor.substr(6, 2);
-        return `#${r}${g}${b}`;
+        if (!kmlColor || kmlColor.length < 8) return null;
+        
+        try {
+            // Конвертация ABGR в RGBA (пример: ff0000ff -> #ff0000)
+            const a = kmlColor.substr(0, 2);
+            const b = kmlColor.substr(2, 2);
+            const g = kmlColor.substr(4, 2);
+            const r = kmlColor.substr(6, 2);
+            return `#${r}${g}${b}`;
+        } catch (e) {
+            console.error("Error parsing color:", kmlColor, e);
+            return null;
+        }
     }
 
     function parseOpacity(kmlColor) {
-        if (!kmlColor) return 1;
-        const alpha = parseInt(kmlColor.substr(0, 2), 16) / 255;
-        return alpha.toFixed(2);
-    }
-
-    function updateBounds(layer) {
-        if (layer.getBounds) {
-            bounds = bounds ? bounds.extend(layer.getBounds()) : layer.getBounds();
+        if (!kmlColor || kmlColor.length < 8) return 1;
+                                                                
+                                
+     
+        
+        try {
+            const alpha = parseInt(kmlColor.substr(0, 2), 16);
+            return alpha / 255;
+        } catch (e) {
+            console.error("Error parsing opacity:", kmlColor, e);
+            return 1;
         }
     }
 }
-
 // Навигация к определенному индексу
 async function navigateTo(index) {
-    if (index < 0 || index >= kmlFiles.length) return;
+    if (index < 0 || index >= kmlFiles.length) {
+        console.log(`Invalid index: ${index}`);
+        return;
+    }
     
+    console.log(`Navigating to index: ${index}, date: ${kmlFiles[index].name}`);
     currentIndex = index;
     const file = kmlFiles[currentIndex];
     
     // Обновляем календарь
-    datePicker.setDate(file.name, false);
+    if (datePicker) {
+        datePicker.setDate(file.name, false);
+        console.log("Date picker updated");
+    }
     
     // Загружаем файл
     await loadKmlFile(file);
     
     // Обновляем состояние кнопок
     updateButtons();
+    console.log("Navigation complete");
 }
 
 // Обновление состояния кнопок
