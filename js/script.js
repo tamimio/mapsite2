@@ -256,8 +256,6 @@ function parseOpacity(kmlColor) {
     //}
 //}
 
-let permanentLayers = []; // Массив для хранения постоянных слоев
-
 // Функция загрузки постоянных KML-слоев
 async function loadPermanentKmlLayers() {
     try {
