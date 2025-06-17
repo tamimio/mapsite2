@@ -13,7 +13,8 @@ window.kmlFiles = [
 // Постоянные слои
 const permanentLayers = [
     { name: "24.02.22", path: "kml/Line_start_LDNR.kml" },
-    { name: "24.02.23", path: "kml/LDPR.kml" }
+    { name: "24.02.23", path: "kml/LDPR.kml" },
+    { name: "24.02.24", path: "kml/FrontLine_25_02_01.kml" }
     
 ];
 
