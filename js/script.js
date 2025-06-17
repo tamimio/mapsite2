@@ -260,7 +260,7 @@ function parseOpacity(kmlColor) {
 async function loadPermanentKmlLayers() {
     try {
         // Загружаем все постоянные слои
-        for (const layerData of window.permanentLayers) {
+        for (const layerData of permanentLayers) {
             const response = await fetch(layerData.path);
             const kmlText = await response.text();
             const parser = new DOMParser();
