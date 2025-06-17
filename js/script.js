@@ -261,9 +261,26 @@ window.permanentLayerGroups = []; // Храним группы слоёв
 // Функция загрузки постоянных KML-слоев
 async function loadPermanentKmlLayers() {
     try {
+        // Проверяем наличие данных
+        if (!window.permanentLayers || !Array.isArray(window.permanentLayers)) {
+            console.error("window.permanentLayers не определен или не является массивом");
+            return;
+        }
+
         // Загружаем все постоянные слои
         for (const layerData of window.permanentLayers) {
+            // Проверяем наличие пути
+            if (!layerData.path) {
+                console.error("Отсутствует путь для постоянного слоя:", layerData);
+                continue;
+            }
+            
             const response = await fetch(layerData.path);
+            if (!response.ok) {
+                console.error(`Ошибка загрузки KML (${layerData.path}): ${response.status}`);
+                continue;
+            }
+            
             const kmlText = await response.text();
             const parser = new DOMParser();
             const kmlDoc = parser.parseFromString(kmlText, "text/xml");
@@ -340,7 +357,8 @@ async function loadPermanentKmlLayers() {
             });
 
             layerGroup.addTo(map);
-            window.permanentLayerGroups.push(layerGroup); // Сохраняем в глобальной переменной
+            window.permanentLayerGroups = window.permanentLayerGroups || [];
+            window.permanentLayerGroups.push(layerGroup);
         }
     } catch (error) {
         console.error("Ошибка загрузки постоянных KML:", error);
