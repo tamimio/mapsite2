@@ -11,15 +11,15 @@ window.kmlFiles = [
 ];
 
 // Постоянные слои
-const permanentLayers = [
-    { name: "24.02.22", path: "kml/Line_start_LDNR.kml" },
+window.permanentLayers = [
+    // { name: "24.02.22", path: "kml/Line_start_LDNR.kml" },
     { name: "24.02.23", path: "kml/LDPR.kml" },
     { name: "24.02.24", path: "kml/FrontLine_25_02_01.kml" }
     
 ];
 
 // Список городов с координатами
-const cities = [
+window.cities = [
     { name: { ru: "Суджа",     en: "Sudzha"     }, lat: 51.19055,  lng: 35.27082   },
     { name: { ru: "Волчанск",  en: "Volchansk"  }, lat: 50.288107, lng: 36.946217  },
     { name: { ru: "Купянск",   en: "Kupyansk"   }, lat: 49.706396, lng: 37.616586  },

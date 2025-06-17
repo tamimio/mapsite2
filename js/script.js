@@ -256,11 +256,13 @@ function parseOpacity(kmlColor) {
     //}
 //}
 
+window.permanentLayerGroups = []; // Храним группы слоёв
+
 // Функция загрузки постоянных KML-слоев
 async function loadPermanentKmlLayers() {
     try {
         // Загружаем все постоянные слои
-        for (const layerData of permanentLayers) {
+        for (const layerData of window.permanentLayers) {
             const response = await fetch(layerData.path);
             const kmlText = await response.text();
             const parser = new DOMParser();
@@ -338,7 +340,7 @@ async function loadPermanentKmlLayers() {
             });
 
             layerGroup.addTo(map);
-            permanentLayers.push(layerGroup);
+            window.permanentLayerGroups.push(layerGroup); // Сохраняем в глобальной переменной
         }
     } catch (error) {
         console.error("Ошибка загрузки постоянных KML:", error);
@@ -356,6 +358,9 @@ async function loadKmlFile(file) {
 
     try {
         const response = await fetch(file.path);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const kmlText = await response.text();
         const parser = new DOMParser();
         const kmlDoc = parser.parseFromString(kmlText, "text/xml");
@@ -468,6 +473,7 @@ async function loadKmlFile(file) {
 		preserveZoom = true;
     } catch (error) {
         console.error("Ошибка загрузки KML:", error);
+		alert(`Ошибка загрузки файла: ${file.path}\n${error.message}`);
     }
 
     function updateBounds(layer) {
