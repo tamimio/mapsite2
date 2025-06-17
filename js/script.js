@@ -183,20 +183,167 @@ function centerMap(lat, lng) {
     }, 5000);
 }
 
-// Загрузка постоянного KML-слоя
-async function loadPermanentKml() {
-    try {
-        const layer = await omnivore.kml(permanentLayerData.path);
-        layer.eachLayer(function(featureLayer) {
-            if (featureLayer.setStyle) {
-                featureLayer.setStyle(window.permanentLayerStyle);
-            }
+
+
+// Вспомогательные функции для парсинга (должны быть доступны для постоянных и временных слоев)
+function parseLineStyle(style) {
+    const lineStyle = style.querySelector('LineStyle');
+    if (!lineStyle) return null;
+    
+    return {
+        color: parseColor(lineStyle.querySelector('color')?.textContent || '#3388ff'),
+        weight: parseFloat(lineStyle.querySelector('width')?.textContent || '3'),
+        opacity: parseOpacity(lineStyle.querySelector('color')?.textContent)
+    };
+}
+
+function parsePolyStyle(style) {
+    const polyStyle = style.querySelector('PolyStyle');
+    if (!polyStyle) return null;
+
+    return {
+        fillColor: parseColor(polyStyle.querySelector('color')?.textContent || '#3388ff'),
+        fillOpacity: parseOpacity(polyStyle.querySelector('color')?.textContent)
+    };
+}
+
+function parseCoordinates(element) {
+    const coordinates = element?.querySelector('coordinates')?.textContent;
+    if (!coordinates) return [];
+    
+    return coordinates
+        .trim()
+        .split(/\s+/)
+        .map(coord => {
+            const [lng, lat] = coord.split(',').map(Number);
+            return [lat, lng];
         });
+}
+
+function parseColor(kmlColor) {
+    if (!kmlColor) return '#3388ff';
+    const a = kmlColor.substr(0, 2);
+    const b = kmlColor.substr(2, 2);
+    const g = kmlColor.substr(4, 2);
+    const r = kmlColor.substr(6, 2);
+    return `#${r}${g}${b}`;
+}
+
+function parseOpacity(kmlColor) {
+    if (!kmlColor) return 1;
+    const alpha = parseInt(kmlColor.substr(0, 2), 16) / 255;
+    return alpha.toFixed(2);
+}
+
+
+
+
+
+// Загрузка постоянного KML-слоя
+//async function loadPermanentKml() {
+    //try {
+        //const layer = await omnivore.kml(permanentLayerData.path);
+        //layer.eachLayer(function(featureLayer) {
+            //if (featureLayer.setStyle) {
+                //featureLayer.setStyle(window.permanentLayerStyle);
+            //}
+        //});
         
-        permanentLayer = layer;
-        permanentLayer.addTo(map);
+        //permanentLayer = layer;
+        //permanentLayer.addTo(map);
+    //} catch (error) {
+        //console.error("Ошибка загрузки постоянного KML:", error);
+    //}
+//}
+
+let permanentLayers = []; // Массив для хранения постоянных слоев
+
+// Функция загрузки постоянных KML-слоев
+async function loadPermanentKmlLayers() {
+    try {
+        // Загружаем все постоянные слои
+        for (const layerData of window.permanentLayers) {
+            const response = await fetch(layerData.path);
+            const kmlText = await response.text();
+            const parser = new DOMParser();
+            const kmlDoc = parser.parseFromString(kmlText, "text/xml");
+            
+            const layerGroup = L.layerGroup();
+            const styles = {};
+            const styleMaps = {};
+
+            // Парсинг стилей
+            kmlDoc.querySelectorAll('Style').forEach(style => {
+                const id = style.getAttribute('id');
+                styles[id] = {
+                    line: parseLineStyle(style),
+                    poly: parsePolyStyle(style)
+                };
+            });
+
+            // Парсинг StyleMap
+            kmlDoc.querySelectorAll('StyleMap').forEach(styleMap => {
+                const id = styleMap.getAttribute('id');
+                const pairs = {};
+                styleMap.querySelectorAll('Pair').forEach(pair => {
+                    const key = pair.querySelector('key').textContent;
+                    const styleUrl = pair.querySelector('styleUrl').textContent.replace('#', '');
+                    pairs[key] = styleUrl;
+                });
+                styleMaps[id] = pairs;
+            });
+
+            // Обработка Placemarks
+            kmlDoc.querySelectorAll('Placemark').forEach(placemark => {
+                const styleUrl = placemark.querySelector('styleUrl')?.textContent.replace('#', '');
+                let style = { line: {}, poly: {} };
+                
+                if (styleUrl) {
+                    if (styleMaps[styleUrl]) {
+                        const normalStyleId = styleMaps[styleUrl].normal;
+                        if (styles[normalStyleId]) {
+                            style.line = styles[normalStyleId].line || {};
+                            style.poly = styles[normalStyleId].poly || {};
+                        }
+                    } else if (styles[styleUrl]) {
+                        style.line = styles[styleUrl].line || {};
+                        style.poly = styles[styleUrl].poly || {};
+                    }
+                }
+
+                // Обработка LineString
+                const lineString = placemark.querySelector('LineString');
+                if (lineString) {
+                    const coords = parseCoordinates(lineString);
+                    if (coords.length >= 2) {
+                        L.polyline(coords, {
+                            color: style.line.color || '#3388ff',
+                            weight: style.line.weight || 3,
+                            opacity: style.line.opacity || 1
+                        }).addTo(layerGroup);
+                    }
+                }
+
+                // Обработка Polygon
+                const polygon = placemark.querySelector('Polygon');
+                if (polygon) {
+                    const coords = parseCoordinates(polygon.querySelector('LinearRing'));
+                    if (coords.length >= 3) {
+                        L.polygon(coords, {
+                            color: style.line.color || '#3388ff',
+                            weight: style.line.weight || 3,
+                            fillColor: style.poly.fillColor || '#3388ff',
+                            fillOpacity: style.poly.fillOpacity || 0.5
+                        }).addTo(layerGroup);
+                    }
+                }
+            });
+
+            layerGroup.addTo(map);
+            permanentLayers.push(layerGroup);
+        }
     } catch (error) {
-        console.error("Ошибка загрузки постоянного KML:", error);
+        console.error("Ошибка загрузки постоянных KML:", error);
     }
 }
 
@@ -323,57 +470,6 @@ async function loadKmlFile(file) {
 		preserveZoom = true;
     } catch (error) {
         console.error("Ошибка загрузки KML:", error);
-    }
-
-    // Вспомогательные функции
-    function parseLineStyle(style) {
-        const lineStyle = style.querySelector('LineStyle');
-        if (!lineStyle) return null;
-        
-        return {
-            color: parseColor(lineStyle.querySelector('color')?.textContent || '#3388ff'),
-            weight: parseFloat(lineStyle.querySelector('width')?.textContent || '3'),
-            opacity: parseOpacity(lineStyle.querySelector('color')?.textContent)
-        };
-    }
-
-    function parsePolyStyle(style) {
-        const polyStyle = style.querySelector('PolyStyle');
-        if (!polyStyle) return null;
-
-        return {
-            fillColor: parseColor(polyStyle.querySelector('color')?.textContent || '#3388ff'),
-            fillOpacity: parseOpacity(polyStyle.querySelector('color')?.textContent)
-        };
-    }
-
-    function parseCoordinates(element) {
-        const coordinates = element?.querySelector('coordinates')?.textContent;
-        if (!coordinates) return [];
-        
-        return coordinates
-            .trim()
-            .split(/\s+/)
-            .map(coord => {
-                const [lng, lat] = coord.split(',').map(Number);
-                return [lat, lng];
-            });
-    }
-
-    function parseColor(kmlColor) {
-        if (!kmlColor) return '#3388ff';
-        // Конвертация ABGR в RGBA (пример: ff0000ff -> #ff0000)
-        const a = kmlColor.substr(0, 2);
-        const b = kmlColor.substr(2, 2);
-        const g = kmlColor.substr(4, 2);
-        const r = kmlColor.substr(6, 2);
-        return `#${r}${g}${b}`;
-    }
-
-    function parseOpacity(kmlColor) {
-        if (!kmlColor) return 1;
-        const alpha = parseInt(kmlColor.substr(0, 2), 16) / 255;
-        return alpha.toFixed(2);
     }
 
     function updateBounds(layer) {
@@ -503,9 +599,9 @@ async function init() {
     try {
         // Инициализируем календарь
         initDatePicker();
-		
-        // Загружаем постоянный слой
-        await loadPermanentKml();
+        
+        // Загружаем постоянные слои
+        await loadPermanentKmlLayers();
         
         // Загружаем последний файл по умолчанию
         preserveZoom = false;

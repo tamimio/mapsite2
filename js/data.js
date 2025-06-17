@@ -10,10 +10,12 @@ window.kmlFiles = [
     
 ];
 
-// Постоянный слой
-const permanentLayerData = {
-    name: "24.02.22", path: "kml/Line_start_LDNR.kml"
-};
+// Постоянные слои
+const permanentLayers = [
+    { name: "24.02.22", path: "kml/Line_start_LDNR.kml" },
+    { name: "24.02.23", path: "kml/LDPR.kml" }
+    
+];
 
 // Список городов с координатами
 const cities = [
