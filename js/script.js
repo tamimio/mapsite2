@@ -376,6 +376,9 @@ async function loadPermanentKmlLayers() {
                     console.log(`- Border weight: ${style.line?.weight || 'default'}`);
                     console.log(`- Border opacity: ${style.line?.opacity || 'default'}`);
                 }
+				
+                // Закрываем группу для этого Placemark
+                console.groupEnd();
             });
                         
             console.log(`Total elements: ${elementCount}`);
