@@ -241,7 +241,7 @@ function parseColor(kmlColor) {
 function parseOpacity(kmlColor) {
     if (!kmlColor) return 1;
     const alpha = parseInt(kmlColor.substr(0, 2), 16) / 255;
-    return alpha.toFixed(2);
+    return Number(alpha.toFixed(2));
 }
 
 
@@ -321,6 +321,20 @@ async function loadPermanentKmlLayers() {
                     }
                 }
 
+				console.groupCollapsed(`Placemark styles: ${placemark.querySelector('name')?.textContent || 'unnamed'}`);
+				console.log('Style URL:', styleUrl);
+				console.log('Line Style:', style.line ? {
+					rawColor: style.line.rawColor, 
+					parsedColor: style.line.color,
+					weight: style.line.weight,
+					opacity: style.line.opacity
+				} : null);
+				console.log('Poly Style:', style.poly ? {
+					rawColor: style.poly.rawColor, 
+					parsedFillColor: style.poly.fillColor,
+					fillOpacity: style.poly.fillOpacity
+				} : null);
+
                 // Обработка LineString
                 const lineString = placemark.querySelector('LineString');
                 if (lineString) {
@@ -334,7 +348,7 @@ async function loadPermanentKmlLayers() {
                     }
                     // Логирование информации о линии
                     console.log(`LineString #${++elementCount}:`);
-                    console.log(`- Raw color: ${style.line?.rawColor || 'not set'}`); // Добавляем
+                    console.log(`- Raw color: ${style.line?.rawColor || 'not set'}`);
                     console.log(`- Parsed color: ${style.line?.color || 'default'}`);
                     console.log(`- Weight: ${style.line?.weight || 'default'}`);
                     console.log(`- Opacity: ${style.line?.opacity || 'default'}`);
@@ -357,7 +371,7 @@ async function loadPermanentKmlLayers() {
                     console.log(`- Raw fill color: ${style.poly?.rawColor || 'not set'}`); 
                     console.log(`- Parsed fill color: ${style.poly?.fillColor || 'default'}`);
                     console.log(`- Fill opacity: ${style.poly?.fillOpacity || 'default'}`);
-                    console.log(`- Raw border color: ${style.line?.rawColor || 'not set'}`); // Для границы
+                    console.log(`- Raw border color: ${style.line?.rawColor || 'not set'}`);
                     console.log(`- Parsed border color: ${style.line?.color || 'default'}`);
                     console.log(`- Border weight: ${style.line?.weight || 'default'}`);
                     console.log(`- Border opacity: ${style.line?.opacity || 'default'}`);
@@ -365,19 +379,6 @@ async function loadPermanentKmlLayers() {
             });
                         
             console.log(`Total elements: ${elementCount}`);
-            console.groupCollapsed(`Placemark styles: ${placemark.querySelector('name')?.textContent || 'unnamed'}`);
-            console.log('Style URL:', styleUrl);
-            console.log('Line Style:', style.line ? {
-                rawColor: style.line.rawColor, // Добавляем
-                parsedColor: style.line.color,
-                weight: style.line.weight,
-                opacity: style.line.opacity
-            } : null);
-            console.log('Poly Style:', style.poly ? {
-                rawColor: style.poly.rawColor, // Добавляем
-                parsedFillColor: style.poly.fillColor,
-                fillOpacity: style.poly.fillOpacity
-            } : null);
             console.groupEnd();
 
             layerGroup.addTo(map);
