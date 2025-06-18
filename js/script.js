@@ -190,12 +190,15 @@ function parseLineStyle(style) {
     const lineStyle = style.querySelector('LineStyle');
     if (!lineStyle) return null;
     
-    const color = lineStyle.querySelector('color')?.textContent || '#3388ff';
+    const colorElement = lineStyle.querySelector('color');
+    const rawColor = colorElement ? colorElement.textContent : null;
+    const width = parseFloat(lineStyle.querySelector('width')?.textContent || '0');
     
     return {
-        color: parseColor(color),
-        weight: parseFloat(lineStyle.querySelector('width')?.textContent || '0'),
-        opacity: parseOpacity(color)
+        rawColor: rawColor,
+        color: rawColor ? parseColor(rawColor) : '#3388ff',
+        weight: width,
+        opacity: rawColor ? parseOpacity(rawColor) : 1
     };
 }
 
@@ -203,9 +206,13 @@ function parsePolyStyle(style) {
     const polyStyle = style.querySelector('PolyStyle');
     if (!polyStyle) return null;
 
+    const colorElement = polyStyle.querySelector('color');
+    const rawColor = colorElement ? colorElement.textContent : null;
+
     return {
-        fillColor: parseColor(polyStyle.querySelector('color')?.textContent || '#3388ff'),
-        fillOpacity: parseOpacity(polyStyle.querySelector('color')?.textContent)
+        rawColor: rawColor,
+        fillColor: rawColor ? parseColor(rawColor) : '#3388ff',
+        fillOpacity: rawColor ? parseOpacity(rawColor) : 0.5
     };
 }
 
@@ -327,9 +334,10 @@ async function loadPermanentKmlLayers() {
                     }
                     // Логирование информации о линии
                     console.log(`LineString #${++elementCount}:`);
-                    console.log(`- Color: ${style.line?.color || '#3388ff'}`);
-                    console.log(`- Weight: ${style.line?.weight || 3}`);
-                    console.log(`- Opacity: ${style.line?.opacity || 1}`);
+                    console.log(`- Raw color: ${style.line?.rawColor || 'not set'}`); // Добавляем
+                    console.log(`- Parsed color: ${style.line?.color || 'default'}`);
+                    console.log(`- Weight: ${style.line?.weight || 'default'}`);
+                    console.log(`- Opacity: ${style.line?.opacity || 'default'}`);
                 }
 
                 // Обработка Polygon
@@ -346,12 +354,30 @@ async function loadPermanentKmlLayers() {
                     }
                     // Логирование информации о полигоне
                     console.log(`Polygon #${++elementCount}:`);
-                    console.log(`- Fill color: ${style.poly?.fillColor || '#3388ff'}`);
-                    console.log(`- Border color: ${style.line?.color || '#3388ff'}`);
+                    console.log(`- Raw fill color: ${style.poly?.rawColor || 'not set'}`); 
+                    console.log(`- Parsed fill color: ${style.poly?.fillColor || 'default'}`);
+                    console.log(`- Fill opacity: ${style.poly?.fillOpacity || 'default'}`);
+                    console.log(`- Raw border color: ${style.line?.rawColor || 'not set'}`); // Для границы
+                    console.log(`- Parsed border color: ${style.line?.color || 'default'}`);
+                    console.log(`- Border weight: ${style.line?.weight || 'default'}`);
+                    console.log(`- Border opacity: ${style.line?.opacity || 'default'}`);
                 }
             });
                         
             console.log(`Total elements: ${elementCount}`);
+            console.groupCollapsed(`Placemark styles: ${placemark.querySelector('name')?.textContent || 'unnamed'}`);
+            console.log('Style URL:', styleUrl);
+            console.log('Line Style:', style.line ? {
+                rawColor: style.line.rawColor, // Добавляем
+                parsedColor: style.line.color,
+                weight: style.line.weight,
+                opacity: style.line.opacity
+            } : null);
+            console.log('Poly Style:', style.poly ? {
+                rawColor: style.poly.rawColor, // Добавляем
+                parsedFillColor: style.poly.fillColor,
+                fillOpacity: style.poly.fillOpacity
+            } : null);
             console.groupEnd();
 
             layerGroup.addTo(map);
