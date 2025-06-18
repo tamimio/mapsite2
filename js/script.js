@@ -757,9 +757,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Перерисовываем карту при возвращении на вкладку
-        if (activeContainer === mapContainer && window.map) {
+        if (activeContainer === mapContainer && map) {
             setTimeout(() => {
-                window.map.invalidateSize();
+                map.invalidateSize();
             }, 100);
         }
     }
