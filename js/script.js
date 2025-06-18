@@ -190,10 +190,12 @@ function parseLineStyle(style) {
     const lineStyle = style.querySelector('LineStyle');
     if (!lineStyle) return null;
     
+    const color = lineStyle.querySelector('color')?.textContent || '#3388ff';
+    
     return {
-        color: parseColor(lineStyle.querySelector('color')?.textContent || '#3388ff'),
+        color: parseColor(color),
         weight: parseFloat(lineStyle.querySelector('width')?.textContent || '0'),
-        opacity: parseOpacity(lineStyle.querySelector('color')?.textContent)
+        opacity: parseOpacity(color)
     };
 }
 
@@ -327,6 +329,7 @@ async function loadPermanentKmlLayers() {
                     console.log(`LineString #${++elementCount}:`);
                     console.log(`- Color: ${style.line?.color || '#3388ff'}`);
                     console.log(`- Weight: ${style.line?.weight || 3}`);
+                    console.log(`- Opacity: ${style.line?.opacity || 1}`);
                 }
 
                 // Обработка Polygon
