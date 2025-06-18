@@ -192,7 +192,7 @@ function parseLineStyle(style) {
     
     return {
         color: parseColor(lineStyle.querySelector('color')?.textContent || '#3388ff'),
-        weight: parseFloat(lineStyle.querySelector('width')?.textContent || '3'),
+        weight: parseFloat(lineStyle.querySelector('width')?.textContent || '0'),
         opacity: parseOpacity(lineStyle.querySelector('color')?.textContent)
     };
 }
@@ -336,7 +336,7 @@ async function loadPermanentKmlLayers() {
                     if (coords.length >= 3) {
                         L.polygon(coords, {
                             color: style.line.color || '#3388ff',
-                            weight: style.line.weight || 3,
+                            weight: style.line.weight || 0,
                             fillColor: style.poly.fillColor || '#3388ff',
                             fillOpacity: style.poly.fillOpacity || 0.5
                         }).addTo(layerGroup);
