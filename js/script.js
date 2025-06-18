@@ -15,6 +15,9 @@ const coordsInput = document.getElementById('coords-input');
 let currentCenterCoordsElement = document.getElementById('current-center-coords');
 let copyCoordsBtn = document.getElementById('copy-coords-btn');
 
+// Глобальный флаг для логгирования стилей временных файлов
+const LOG_TEMPORARY_STYLES = true; // Можно менять на false для отключения
+
 // Получаем массив доступных дат из kmlFiles
 const availableDates = kmlFiles.map(file => file.name);
 
@@ -440,86 +443,142 @@ async function loadKmlFile(file) {
         });
 
         let bounds = L.latLngBounds(); // Инициализация пустыми границами
-		// let bounds = null;
+        
+        // Добавляем логирование для временных файлов
+        let elementCount = 0;
+        if (LOG_TEMPORARY_STYLES) {
+            console.groupCollapsed(`Temporary layer loaded: ${file.path}`);
+        }
 
-		kmlDoc.querySelectorAll('Placemark').forEach(placemark => {
-			// Получаем стиль для Placemark
-			const styleUrl = placemark.querySelector('styleUrl')?.textContent.replace('#', '');
-			let style = { line: {}, poly: {} };
-			
-			if (styleUrl) {
-				// Проверяем StyleMap
-				if (styleMaps[styleUrl]) {
-					const normalStyleId = styleMaps[styleUrl].normal;
-					style = Object.assign(
-						{}, 
-						styles[normalStyleId]?.line || {},
-						styles[normalStyleId]?.poly || {}
-					);
-				} 
-				// Проверяем обычный стиль
-				else if (styles[styleUrl]) {
-					style = Object.assign(
-						{}, 
-						styles[styleUrl].line || {},
-						styles[styleUrl].poly || {}
-					);
-				}
-			}
+        kmlDoc.querySelectorAll('Placemark').forEach(placemark => {
+            // Получаем стиль для Placemark
+            const styleUrl = placemark.querySelector('styleUrl')?.textContent.replace('#', '');
+            let style = { line: {}, poly: {} };
+            
+            if (styleUrl) {
+                // Проверяем StyleMap
+                if (styleMaps[styleUrl]) {
+                    const normalStyleId = styleMaps[styleUrl].normal;
+                    style = Object.assign(
+                        {}, 
+                        styles[normalStyleId]?.line || {},
+                        styles[normalStyleId]?.poly || {}
+                    );
+                } 
+                // Проверяем обычный стиль
+                else if (styles[styleUrl]) {
+                    style = Object.assign(
+                        {}, 
+                        styles[styleUrl].line || {},
+                        styles[styleUrl].poly || {}
+                    );
+                }
+            }
 
-			// Обработка LineString
-			const lineString = placemark.querySelector('LineString');
-			if (lineString) {
-				const coords = parseCoordinates(lineString);
-				if (coords.length < 2) return;
+            // Логирование для временных файлов
+            if (LOG_TEMPORARY_STYLES) {
+                console.groupCollapsed(`Placemark styles: ${placemark.querySelector('name')?.textContent || 'unnamed'}`);
+                console.log('Style URL:', styleUrl);
+                console.log('Line Style:', style.line ? {
+                    rawColor: style.line.rawColor, 
+                    parsedColor: style.line.color,
+                    weight: style.line.weight,
+                    opacity: style.line.opacity
+                } : null);
+                console.log('Poly Style:', style.poly ? {
+                    rawColor: style.poly.rawColor, 
+                    parsedFillColor: style.poly.fillColor,
+                    fillOpacity: style.poly.fillOpacity
+                } : null);
+            }
 
-				const polyline = L.polyline(coords, {
-					color: style.color || '#3388ff',
-					weight: style.weight || 3,
-					opacity: style.opacity || 1
-				}).addTo(layerGroup);
+            // Обработка LineString
+            const lineString = placemark.querySelector('LineString');
+            if (lineString) {
+                const coords = parseCoordinates(lineString);
+                if (coords.length < 2) {
+                    if (LOG_TEMPORARY_STYLES) console.groupEnd(); // Закрываем группу Placemark
+                    return;
+                }
 
-				if (polyline.getBounds().isValid()) {
-					bounds.extend(polyline.getBounds());
-				}
-			}
+                const polyline = L.polyline(coords, {
+                    color: style.color || '#3388ff',
+                    weight: style.weight || 3,
+                    opacity: style.opacity || 1
+                }).addTo(layerGroup);
 
-			// Обработка Polygon
-			const polygon = placemark.querySelector('Polygon');
-			if (polygon) {
-				const coords = parseCoordinates(polygon.querySelector('LinearRing'));
-				if (coords.length < 3) return;
+                // Логирование информации о линии
+                if (LOG_TEMPORARY_STYLES) {
+                    console.log(`LineString #${++elementCount}:`);
+                    console.log(`- Raw color: ${style.line?.rawColor || 'not set'}`);
+                    console.log(`- Parsed color: ${style.line?.color || 'default'}`);
+                    console.log(`- Weight: ${style.line?.weight || 'default'}`);
+                    console.log(`- Opacity: ${style.line?.opacity || 'default'}`);
+                }
 
-				const poly = L.polygon(coords, {
-					color: style.color || '#3388ff',
-					weight: style.weight || 3,
-					fillColor: style.fillColor || '#3388ff',
-					fillOpacity: style.fillOpacity || 0.5
-				}).addTo(layerGroup);
+                if (polyline.getBounds().isValid()) {
+                    bounds.extend(polyline.getBounds());
+                }
+            }
 
-				if (poly.getBounds().isValid()) {
-					bounds.extend(poly.getBounds());
-				}
-			}
-		});
+            // Обработка Polygon
+            const polygon = placemark.querySelector('Polygon');
+            if (polygon) {
+                const coords = parseCoordinates(polygon.querySelector('LinearRing'));
+                if (coords.length < 3) {
+                    if (LOG_TEMPORARY_STYLES) console.groupEnd(); // Закрываем группу Placemark
+                    return;
+                }
 
-		if (bounds.isValid()) {
-			const sw = bounds.getSouthWest();
-			const ne = bounds.getNorthEast();
-			const isNotPoint = sw.lat !== ne.lat || sw.lng !== ne.lng;
-			
-			if (!preserveZoom && isNotPoint) {
-				map.fitBounds(bounds);
-			} else {
-				map.setView(currentCenter, currentZoom);
-			}
-		} else {
-			map.setView(currentCenter, currentZoom);
-		}
-		preserveZoom = true;
+                const poly = L.polygon(coords, {
+                    color: style.color || '#3388ff',
+                    weight: style.weight || 3,
+                    fillColor: style.fillColor || '#3388ff',
+                    fillOpacity: style.fillOpacity || 0.5
+                }).addTo(layerGroup);
+
+                // Логирование информации о полигоне
+                if (LOG_TEMPORARY_STYLES) {
+                    console.log(`Polygon #${++elementCount}:`);
+                    console.log(`- Raw fill color: ${style.poly?.rawColor || 'not set'}`); 
+                    console.log(`- Parsed fill color: ${style.poly?.fillColor || 'default'}`);
+                    console.log(`- Fill opacity: ${style.poly?.fillOpacity || 'default'}`);
+                    console.log(`- Raw border color: ${style.line?.rawColor || 'not set'}`);
+                    console.log(`- Parsed border color: ${style.line?.color || 'default'}`);
+                    console.log(`- Border weight: ${style.line?.weight || 'default'}`);
+                    console.log(`- Border opacity: ${style.line?.opacity || 'default'}`);
+                }
+
+                if (poly.getBounds().isValid()) {
+                    bounds.extend(poly.getBounds());
+                }
+            }
+            
+            if (LOG_TEMPORARY_STYLES) console.groupEnd(); // Закрываем группу Placemark
+        });
+
+        if (LOG_TEMPORARY_STYLES) {
+            console.log(`Total elements: ${elementCount}`);
+            console.groupEnd(); // Закрываем группу временного слоя
+        }
+
+        if (bounds.isValid()) {
+            const sw = bounds.getSouthWest();
+            const ne = bounds.getNorthEast();
+            const isNotPoint = sw.lat !== ne.lat || sw.lng !== ne.lng;
+            
+            if (!preserveZoom && isNotPoint) {
+                map.fitBounds(bounds);
+            } else {
+                map.setView(currentCenter, currentZoom);
+            }
+        } else {
+            map.setView(currentCenter, currentZoom);
+        }
+        preserveZoom = true;
     } catch (error) {
         console.error("Ошибка загрузки KML:", error);
-		alert(`Ошибка загрузки файла: ${file.path}\n${error.message}`);
+        alert(`Ошибка загрузки файла: ${file.path}\n${error.message}`);
     }
 
     function updateBounds(layer) {
