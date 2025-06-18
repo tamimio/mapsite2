@@ -236,26 +236,6 @@ function parseOpacity(kmlColor) {
 }
 
 
-
-
-
-// Загрузка постоянного KML-слоя
-//async function loadPermanentKml() {
-    //try {
-        //const layer = await omnivore.kml(permanentLayerData.path);
-        //layer.eachLayer(function(featureLayer) {
-            //if (featureLayer.setStyle) {
-                //featureLayer.setStyle(window.permanentLayerStyle);
-            //}
-        //});
-        
-        //permanentLayer = layer;
-        //permanentLayer.addTo(map);
-    //} catch (error) {
-        //console.error("Ошибка загрузки постоянного KML:", error);
-    //}
-//}
-
 window.permanentLayerGroups = []; // Храним группы слоёв
 
 // Функция загрузки постоянных KML-слоев
@@ -288,6 +268,10 @@ async function loadPermanentKmlLayers() {
             const layerGroup = L.layerGroup();
             const styles = {};
             const styleMaps = {};
+            
+            // Логирование информации о слое
+            console.groupCollapsed(`Permanent layer loaded: ${layerData.path}`);
+            let elementCount = 0;
 
             // Парсинг стилей
             kmlDoc.querySelectorAll('Style').forEach(style => {
@@ -339,6 +323,10 @@ async function loadPermanentKmlLayers() {
                             opacity: style.line.opacity || 1
                         }).addTo(layerGroup);
                     }
+                    // Логирование информации о линии
+                    console.log(`LineString #${++elementCount}:`);
+                    console.log(`- Color: ${style.line?.color || '#3388ff'}`);
+                    console.log(`- Weight: ${style.line?.weight || 3}`);
                 }
 
                 // Обработка Polygon
@@ -353,8 +341,15 @@ async function loadPermanentKmlLayers() {
                             fillOpacity: style.poly.fillOpacity || 0.5
                         }).addTo(layerGroup);
                     }
+                    // Логирование информации о полигоне
+                    console.log(`Polygon #${++elementCount}:`);
+                    console.log(`- Fill color: ${style.poly?.fillColor || '#3388ff'}`);
+                    console.log(`- Border color: ${style.line?.color || '#3388ff'}`);
                 }
             });
+                        
+            console.log(`Total elements: ${elementCount}`);
+            console.groupEnd();
 
             layerGroup.addTo(map);
             window.permanentLayerGroups = window.permanentLayerGroups || [];
