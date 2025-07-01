@@ -105,16 +105,28 @@ copyCoordsBtn.addEventListener('click', function() {
 
 // функция заполнения списка городов
 function populateCitiesDropdown() {
+    // Проверяем, что элемент существует
+    if (!citiesDropdown) {
+        console.error("Элемент cities-dropdown не найден");
+        return;
+    }
+    
     // Очищаем список, кроме первого элемента
     while (citiesDropdown.options.length > 1) {
         citiesDropdown.remove(1);
+    }
+    
+    // Проверяем наличие данных о городах
+    if (!cities || !cities.length) {
+        console.error("Данные о городах отсутствуют");
+        return;
     }
     
     // Добавляем города на текущем языке
     cities.forEach(city => {
         const option = document.createElement('option');
         option.value = city.name.ru; // Сохраняем русское название как значение
-        option.textContent = city.name[currentLang];
+        option.textContent = city.name[currentLang] || city.name.ru;
         citiesDropdown.appendChild(option);
     });
 }
@@ -714,7 +726,10 @@ async function init() {
         
         // Загружаем последний файл по умолчанию
         preserveZoom = false;
-        await navigateTo(kmlFiles.length - 1);        
+        await navigateTo(kmlFiles.length - 1);       
+        
+        // Заполняем список городов
+        populateCitiesDropdown(); 
         
         // Устанавливаем русский язык по умолчанию
         setLanguage('ru');
