@@ -13,6 +13,8 @@ const translations = {
         prevBtnTitle: "Предыдущий",
         nextBtnTitle: "Следующий",
         lastBtnTitle: "Последний",
+        ruBtnTitle: "Текущий язык: Русский",
+        enBtnTitle: "Переключить на Английский"
         viewSwitchMap: "Карта",
         viewSwitchSt1: "Статистика1",
         viewSwitchSt2: "Статистика2"
@@ -30,6 +32,8 @@ const translations = {
         prevBtnTitle: "Previous",
         nextBtnTitle: "Next",
         lastBtnTitle: "Last",
+        ruBtnTitle: "Switch to Russian",
+        enBtnTitle: "Current language: English"
         viewSwitchMap: "Map",
         viewSwitchSt1: "Statistics1",
         viewSwitchSt2: "Statistics2"
@@ -105,4 +109,24 @@ document.getElementById('lang-ru').addEventListener('click', () => {
 
 document.getElementById('lang-en').addEventListener('click', () => {
     if (currentLang !== 'en') setLanguage('en');
+});
+
+document.getElementById('lang-ru').addEventListener('click', function() {
+    if (currentLang !== 'ru') {
+        setLanguage('ru');
+    } else {
+        // Обновляем title для текущего языка
+        const t = translations[currentLang];
+        this.title = t.ruBtnTitle;
+    }
+});
+
+document.getElementById('lang-en').addEventListener('click', function() {
+    if (currentLang !== 'en') {
+        setLanguage('en');
+    } else {
+        // Обновляем title для текущего языка
+        const t = translations[currentLang];
+        this.title = t.enBtnTitle;
+    }
 });

@@ -55,6 +55,17 @@
   background: rgba(0,0,0,0.05);
 }
 
+/*
 .lang-btn.active {
-  font-weight: bold;
+    background-color: #e0e0e0;
+    border: 2px solid #007bff;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    z-index: 10;
 }
+
+.lang-btn {
+    transition: all 0.3s ease;
+    position: relative;
+}
+*/

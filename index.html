@@ -25,20 +25,21 @@
     // Установка языка сразу после загрузки HTML
 -->
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const savedLang = localStorage.getItem('preferredLang') || 'ru';
-        document.documentElement.lang = savedLang;
-        
-        // Применяем активный класс сразу
-        document.getElementById(`lang-${savedLang}`).classList.add('active');
-        
-        // Обновляем title
-        document.getElementById('lang-ru').title = 
-            savedLang === 'ru' ? "Текущий язык: Русский" : "Переключить на Русский";
-        
-        document.getElementById('lang-en').title = 
-            savedLang === 'en' ? "Current language: English" : "Switch to English";
-    });
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('preferredLang') || 'ru';
+            document.documentElement.lang = savedLang;
+            
+            // Применяем активный класс сразу
+            document.getElementById(`lang-${savedLang}`).classList.add('active');
+            
+            // Обновляем title
+            const t = translations[savedLang];
+            document.getElementById('lang-ru').title = 
+                savedLang === 'ru' ? t.ruBtnTitle : t.enBtnTitle;
+            
+            document.getElementById('lang-en').title = 
+                savedLang === 'en' ? t.enBtnTitle : t.ruBtnTitle;
+        });
     </script>
 </head>
 <body>
