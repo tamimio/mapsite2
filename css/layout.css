@@ -15,11 +15,15 @@ body {
 
 .header-container {
     display: flex;
+/*
     align-items: center;
+*/
     justify-content: space-between;
     flex-wrap: wrap;
 	width: 100%;
+/*
     gap: 15px;
+*/
     /* margin-bottom: 15px; */
     height: 60px; /* Фиксированная высота для верхней панели */
 }
