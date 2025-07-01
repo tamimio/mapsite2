@@ -769,3 +769,38 @@ document.addEventListener('DOMContentLoaded', function() {
     stats1Btn.addEventListener('click', () => switchView(stats1Btn, stats1Container));
     stats2Btn.addEventListener('click', () => switchView(stats2Btn, stats2Container));
 });
+
+// Обработчик гамбургер-меню
+document.querySelector('.hamburger-menu').addEventListener('click', function() {
+    document.querySelector('.nav-bar').classList.toggle('active');
+    
+    // Перерисовываем карту после изменения размера
+    if (map) {
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 100);
+    }
+});
+
+// Закрываем меню при клике на карту
+document.getElementById('map').addEventListener('click', function() {
+    if (window.innerWidth <= 768) {
+        document.querySelector('.nav-bar').classList.remove('active');
+    }
+});
+
+// Добавляем обработчик изменения размера окна
+window.addEventListener('resize', function() {
+  if (map) {
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
+  }
+});
+
+// При инициализации карты добавляем обработчик для перерисовки
+map.whenReady(function() {
+  setTimeout(() => {
+    map.invalidateSize();
+  }, 100);
+});

@@ -1,7 +1,17 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+  /* font-family: Arial, sans-serif; */
+  /* font-family: 'MOSCOW2024', monospace; */
+  /* font-family: 'VT323', monospace; */
+    /* font-family: "Press Start 2P", system-ui; */
+  /* font-weight: 400; */
+  /* font-style: normal; */
+  margin: 0; /* Убираем все отступы */
+  padding: 0; /* Убираем все внутренние отступы */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
+
 
 .header-container {
     display: flex;
@@ -26,25 +36,38 @@ body {
     display: block;
 }
 
+#map-container {
+  margin: 0; /* Убираем внешние отступы */
+  padding: 0; /* Убираем внутренние отступы */
+  flex-grow: 1; /* Занимает все доступное пространство */
+  display: flex;
+  flex-direction: column;
+}
+
 #map-container.active {
     display: flex;
     flex-direction: column;
     height: calc(100vh - 120px);
 }
 
+
 #stats1-container,
 #stats2-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    height: calc(100vh - 120px);
+  margin: 0; /* Убираем внешние отступы */
+  padding: 0; /* Убираем внутренние отступы */
+  flex-grow: 1; /* Занимает все доступное пространство */
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
 }
 
 #stats1-container iframe,
 #stats2-container iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
+  width: 100%;
+  height: 100%;
+  border: none;
+  margin: 0;
+  padding: 0;
 }
 
 @media (max-width: 768px) {
@@ -58,4 +81,166 @@ body {
 #stats1-container:not(.active),
 #stats2-container:not(.active) {
     display: none !important;
+}
+
+/* Общие стили верхней панели */
+.top-bar {
+  background: #dadada;
+  padding: 8px 15px;
+  margin: 0; /* Убираем внешние отступы */
+}
+
+/* Убираем отступы у навигационной панели */
+.nav-bar {
+  background: #f0f0f0;
+  padding: 8px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0; /* Убираем внешние отступы */
+}
+
+/* Стили для заголовка и кнопок */
+h1 {
+      font-family: "Wallpoet", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #F51F0F;
+    margin: 0;
+    font-size: 1.4rem;
+    white-space: nowrap;
+}
+
+.view-switcher {
+    display: flex;
+    gap: 10px;
+    margin-left: 15px;
+}
+
+/* Стили для кнопок-ссылок */
+.view-btn {
+    background: none;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    color: #000;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.view-btn:hover {
+    text-decoration: underline;
+}
+
+.view-btn.active {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.lang-btn {
+    background: none;
+    border: none;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #000;
+}
+
+.lang-btn:hover {
+    text-decoration: underline;
+}
+
+/* Стили для навигационной панели */
+.date-navigator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex-grow: 1;
+}
+
+.city-coord-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Стили для гамбургер-меню */
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+/* Адаптивные стили */
+@media (max-width: 1200px) {
+    .date-navigator {
+        gap: 6px;
+        font-size: 0.9rem;
+    }
+    
+    .coord-input {
+        width: 200px;
+    }
+}
+
+@media (max-width: 900px) {
+    .view-switcher {
+        margin-left: 8px;
+        gap: 6px;
+    }
+    
+    .date-navigator label {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        flex-wrap: wrap;
+    }
+    
+    .title-section {
+        flex-basis: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .date-navigator > *:not(.date-selector):not(.nav-btn) {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: block;
+    }
+    
+    .nav-bar.active .date-navigator > * {
+        display: block;
+    }
+    
+    .nav-bar.active .hamburger-menu {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.2rem;
+    }
+    
+    .view-btn {
+        padding: 3px 6px;
+        font-size: 0.8rem;
+    }
+    
+    .date-selector {
+        width: 100px;
+    }
+    
+    .nav-btn {
+        padding: 6px 8px;
+        min-width: 30px;
+    }
 }
