@@ -41,6 +41,13 @@ function setLanguage(lang) {
     currentLang = lang;
     const t = translations[lang];
     
+    // Обновляем title кнопок
+    document.getElementById('lang-ru').title = 
+        lang === 'ru' ? "Текущий язык: Русский" : "Переключить на Русский";
+    
+    document.getElementById('lang-en').title = 
+        lang === 'en' ? "Current language: English" : "Switch to English";
+    
     // Обновляем текст элементов
     document.getElementById('page-title').textContent = t.title;
     // document.getElementById('main-title').textContent = t.title;
@@ -82,6 +89,10 @@ function setLanguage(lang) {
         document.getElementById('current-center-coords').textContent === 'undefined') {
         document.getElementById('current-center-coords').textContent = t.undefinedCoords;
     }
+    
+    // Сохраняем выбор в localStorage
+    localStorage.setItem('preferredLang', lang);
+    document.documentElement.lang = lang;
 }
 
 // Обработчики кнопок переключения языка

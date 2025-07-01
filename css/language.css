@@ -27,6 +27,13 @@
     /* border-color: #999; */
 /* } */
 
+.lang-btn.active {
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid #999;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
 .lang-btn {
   /* Убираем стандартные стили кнопки */
   background: none;
@@ -39,7 +46,9 @@
   border-radius: 4px;
   height: 40px;
   display: flex;
-  align-items: center;
+  align-items: center; /* анимация для плавного перехода */
+  
+  transition: all 0.3s ease;
 }
 
 .lang-btn:hover {

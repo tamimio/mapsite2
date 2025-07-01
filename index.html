@@ -9,13 +9,33 @@
     <title id="page-title">dataviewer</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-	<link rel="icon" href="data:,"> <!-- Пустая favicon для избежания 404 -->
+    <link rel="icon" href="data:,"> <!-- Пустая favicon для избежания 404 -->
     <!-- Разделенные CSS-файлы -->
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/map.css">
     <link rel="stylesheet" href="css/calendar.css">
     <link rel="stylesheet" href="css/language.css">
     <link rel="stylesheet" href="css/view-switcher.css">
+    
+<!--
+    // Установка языка сразу после загрузки HTML
+-->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedLang = localStorage.getItem('preferredLang') || 'ru';
+        document.documentElement.lang = savedLang;
+        
+        // Применяем активный класс сразу
+        document.getElementById(`lang-${savedLang}`).classList.add('active');
+        
+        // Обновляем title
+        document.getElementById('lang-ru').title = 
+            savedLang === 'ru' ? "Текущий язык: Русский" : "Переключить на Русский";
+        
+        document.getElementById('lang-en').title = 
+            savedLang === 'en' ? "Current language: English" : "Switch to English";
+    });
+    </script>
 </head>
 <body>
     <div class="top-bar">
