@@ -19,50 +19,55 @@
 </head>
 <body>
     <div class="top-bar">
-        <div class="header-container">
-            <div class="title-section">
-                <h1 id="page-title">dataviewer</h1>
-                <div class="view-switcher">
-                    <button id="map-btn" class="view-btn active">Карта</button>
-                    <button id="stats1-btn" class="view-btn">Статистика1</button>
-                    <button id="stats2-btn" class="view-btn">Статистика2</button>
-                </div>
-            </div>
-            <div class="date-navigator">
-                <button id="first-btn" class="nav-btn" title="Первый">❮❮</button>
-                <button id="prev-btn" class="nav-btn" title="Предыдущий">❮</button>
-                
-                <div class="date-selector">
-                    <input type="text" id="date-picker" placeholder="DD.MM.YY">
-                </div>
-                
-                <button id="next-btn" class="nav-btn" title="Следующий">❯</button>
-                <button id="last-btn" class="nav-btn" title="Последний">❯❯</button>
-            
-                <label id="center-label">Центрировать на:</label>
-                <input type="text" id="coords-input" placeholder="Широта, Долгота" class="coord-input">
-                
-                <div class="city-coord-group">
-                    <select id="cities-dropdown">
-                        <option value="" selected disabled id="select-city-default">Выберите город</option>
-                    </select>
-                    <div class="current-center">
-                        <span id="current-center-coords">не определен</span>
-                        <button id="copy-coords-btn" title="Копировать координаты">⎘</button>
-                    </div>
-                </div>
-            </div>            
-            <div class="language-switcher">
-                <button id="lang-ru" class="lang-btn" title="Переключить на Русский">🇷🇺</button>
-                <button id="lang-en" class="lang-btn" title="Switch to English">🇬🇧</button>
-            </div>
-        
-        <!-- Гамбургер-меню для мобильных устройств -->
-        <button class="hamburger-menu">☰</button>
-        
-        </div>
-    </div>
-    
+		<div class="header-container">
+			<!-- Заголовок -->
+			<div class="title-section">
+				<h1 id="page-title">dataviewer</h1>
+			</div>
+			
+			<!-- Переключатель видов -->
+			<div class="view-switcher">
+				<button id="map-btn" class="view-btn active">Карта</button>
+				<button id="stats1-btn" class="view-btn">Статистика1</button>
+				<button id="stats2-btn" class="view-btn">Статистика2</button>
+			</div>
+			
+			<!-- Навигация по дате -->
+			<div class="date-navigator">
+				<button id="first-btn" class="nav-btn" title="Первый">❮❮</button>
+				<button id="prev-btn" class="nav-btn" title="Предыдущий">❮</button>
+				
+				<div class="date-selector">
+					<input type="text" id="date-picker" placeholder="DD.MM.YY">
+				</div>
+				
+				<button id="next-btn" class="nav-btn" title="Следующий">❯</button>
+				<button id="last-btn" class="nav-btn" title="Последний">❯❯</button>
+
+				<label id="center-label">Центрировать на:</label>
+				<input type="text" id="coords-input" placeholder="Широта, Долгота" class="coord-input">
+				
+				<div class="city-coord-group">
+					<select id="cities-dropdown">
+						<option value="" selected disabled id="select-city-default">Выберите город</option>
+					</select>
+					<div class="current-center">
+						<span id="current-center-coords">не определен</span>
+						<button id="copy-coords-btn" title="Копировать координаты">⎘</button>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Переключатель языка -->
+			<div class="language-switcher">
+				<button id="lang-ru" class="lang-btn" title="Переключить на Русский">🇷🇺</button>
+				<button id="lang-en" class="lang-btn" title="Switch to English">🇬🇧</button>
+			</div>
+			
+			<!-- Гамбургер-меню -->
+			<button class="hamburger-menu">☰</button>
+		</div>
+	</div>
     <div id="map-container" class="content-section active">
         <div id="map"></div>
     </div>

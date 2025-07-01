@@ -18,14 +18,32 @@ body {
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
+	width: 100%;
     gap: 15px;
-    margin-bottom: 15px;
+    /* margin-bottom: 15px; */
+}
+
+/* Для всех непосредственных детей header-container */
+.header-container > * {
+    display: flex;
+    align-items: center; /* Центрируем содержимое каждого элемента */
+    min-height: 40px; /* Минимальная высота для выравнивания */
 }
 
 .title-section {
     display: flex;
     align-items: center;
-    gap: 15px;
+	margin-right: 20px;
+	flex-shrink: 0;
+}
+
+.title-section h1 {
+  font-family: 'Wallpoet', monospace;
+  color: #F51F0F;
+  font-size: 2.0rem;
+  letter-spacing: 1px;
+  margin: 0;
+  margin-right: 0px;
 }
 
 .content-section {
@@ -87,7 +105,10 @@ body {
 .top-bar {
   background: #dadada;
   padding: 8px 15px;
-  margin: 0; /* Убираем внешние отступы */
+  margin: 0; /* внешние отступы */
+  display: flex;
+  align-items: center;
+  min-height: 60px; /* Фиксированная минимальная высота */
 }
 
 /* Убираем отступы у навигационной панели */
@@ -97,74 +118,86 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0; /* Убираем внешние отступы */
-}
-
-/* Стили для заголовка и кнопок */
-h1 {
-      font-family: "Wallpoet", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  color: #F51F0F;
-    margin: 0;
-    font-size: 1.4rem;
-    white-space: nowrap;
-}
-
-.view-switcher {
-    display: flex;
-    gap: 10px;
-    margin-left: 15px;
+  margin: 0; /* внешние отступы */
 }
 
 /* Стили для кнопок-ссылок */
-.view-btn {
-    background: none;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    color: #000;
-    font-size: 0.9rem;
-    text-decoration: none;
+/* Выравниваем все элементы по центру по вертикали */
+.view-btn, .nav-btn, .lang-btn, .date-selector input,
+.coord-input, #cities-dropdown, .current-center {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
 }
 
-.view-btn:hover {
-    text-decoration: underline;
+/* Специальные стили для кнопок */
+.view-btn, .nav-btn, .lang-btn {
+  padding: 0 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #000;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.view-btn:hover, .nav-btn:hover, .lang-btn:hover {
+  background: rgba(0,0,0,0.05);
 }
 
 .view-btn.active {
-    font-weight: bold;
-    text-decoration: underline;
-}
-
-.lang-btn {
-    background: none;
-    border: none;
-    padding: 2px 8px;
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: #000;
-}
-
-.lang-btn:hover {
-    text-decoration: underline;
+  font-weight: bold;
+  background: rgba(0,0,0,0.1);
 }
 
 /* Стили для навигационной панели */
 .date-navigator {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
     flex-grow: 1;
+    /* Выравнивание по базовой линии для контейнера */
+    align-self: center;
+}
+
+.language-switcher {
+    margin-left: auto;
+    flex-shrink: 0;
+    /* Убираем верхний отступ, если есть */
+    margin-top: 0;
+}
+
+/* Стили для полей ввода */
+.date-selector input, .coord-input, #cities-dropdown {
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
 }
 
 .city-coord-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
+.current-center {
+  background: #f5f5f5;
+  padding: 0 10px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+#copy-coords-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 1.2rem;
+}
 /* Стили для гамбургер-меню */
 .hamburger-menu {
     display: none;
@@ -172,75 +205,80 @@ h1 {
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    padding: 5px 10px;
+    padding: 5px 10px;	
+    align-self: center; /* Выравниваем по центру */
 }
 
 /* Адаптивные стили */
 @media (max-width: 1200px) {
-    .date-navigator {
-        gap: 6px;
-        font-size: 0.9rem;
-    }
-    
-    .coord-input {
-        width: 200px;
-    }
+  .title-section h1 {
+    font-size: 2rem;
+    margin-right: 15px;
+  }
+  
+  .view-switcher {
+    gap: 8px;
+    margin-right: 15px;
+  }
 }
 
-@media (max-width: 900px) {
-    .view-switcher {
-        margin-left: 8px;
-        gap: 6px;
-    }
-    
-    .date-navigator label {
-        display: none;
-    }
+@media (max-width: 992px) {
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .date-navigator {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .language-switcher {
+    margin-left: 0;
+    margin-top: 10px;
+  }
 }
 
 @media (max-width: 768px) {
-    .header-container {
-        flex-wrap: wrap;
-    }
-    
-    .title-section {
-        flex-basis: 100%;
-        margin-bottom: 5px;
-    }
-    
-    .date-navigator > *:not(.date-selector):not(.nav-btn) {
-        display: none;
-    }
-    
-    .hamburger-menu {
-        display: block;
-    }
-    
-    .nav-bar.active .date-navigator > * {
-        display: block;
-    }
-    
-    .nav-bar.active .hamburger-menu {
-        display: none;
-    }
+  .title-section {
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .view-switcher {
+    margin-right: 0;
+  }
+  
+  .date-navigator {
+    flex-wrap: wrap;
+  }
+  
+  .city-coord-group {
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
 }
 
-@media (max-width: 480px) {
-    h1 {
-        font-size: 1.2rem;
-    }
-    
-    .view-btn {
-        padding: 3px 6px;
-        font-size: 0.8rem;
-    }
-    
-    .date-selector {
-        width: 100px;
-    }
-    
-    .nav-btn {
-        padding: 6px 8px;
-        min-width: 30px;
-    }
+@media (max-width: 576px) {
+  .top-bar {
+    padding: 8px 10px;
+  }
+  
+  .title-section h1 {
+    font-size: 1.8rem;
+  }
+  
+  .view-btn {
+    padding: 0 8px;
+    font-size: 0.9rem;
+  }
+  
+  .date-navigator {
+    gap: 5px;
+  }
+  
+  .date-selector {
+    width: 100px;
+  }
 }
