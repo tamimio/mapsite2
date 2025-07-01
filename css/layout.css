@@ -339,3 +339,8 @@ body {
         max-width: 120px;
     }
 }
+.link-icon[rel="icon"] {
+    border-radius: 4px; /* Слегка скруглить углы */
+    background-color: #ffffff; /* Белый фон для прозрачных иконок */
+    padding: 2px; /* Небольшой отступ */
+}
