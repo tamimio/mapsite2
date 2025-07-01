@@ -282,3 +282,32 @@ body {
     width: 100px;
   }
 }
+
+/* Стили для лого */
+.title-section a {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+#site-logo {
+    height: 50px; /* Регулируйте по необходимости */
+    width: auto;
+    transition: opacity 0.3s ease;
+}
+
+#site-logo:hover {
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    #site-logo {
+        height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    #site-logo {
+        height: 30px;
+    }
+}

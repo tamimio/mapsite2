@@ -1,7 +1,8 @@
 // Добавьте объект с переводами
 const translations = {
     ru: {
-        title: "  dataviewer",
+        //title: "  dataviewer",
+        logoAlt: "dataviewer - просмотр данных",
         centerLabel: "Центрировать на:",
         coordsPlaceholder: "Широта, Долгота (например: 55.7558, 37.6173)",
         selectCity: "Выберите город",
@@ -17,7 +18,8 @@ const translations = {
         viewSwitchSt2: "Статистика2"
     },
     en: {
-        title: "  dataviewer",
+        //title: "  dataviewer",
+        logoAlt: "dataviewer - data visualization",
         centerLabel: "Center on:",
         coordsPlaceholder: "Latitude, Longitude (e.g.: 55.7558, 37.6173)",
         selectCity: "Select city",
@@ -49,7 +51,8 @@ function setLanguage(lang) {
         lang === 'en' ? "Current language: English" : "Switch to English";
     
     // Обновляем текст элементов
-    document.getElementById('page-title').textContent = t.title;
+    //document.getElementById('page-title').textContent = t.title;
+    document.getElementById('site-logo').alt = t.logoAlt;
     // document.getElementById('main-title').textContent = t.title;
     document.getElementById('center-label').textContent = t.centerLabel;
     document.getElementById('coords-input').placeholder = t.coordsPlaceholder;
