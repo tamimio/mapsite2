@@ -92,9 +92,9 @@ function setLanguage(lang) {
     initDatePicker();
     
     // Если координаты не определены, обновляем текст
-    if (document.getElementById('current-center-coords').textContent === 'не определен' || 
-        document.getElementById('current-center-coords').textContent === 'undefined') {
-        document.getElementById('current-center-coords').textContent = t.undefinedCoords;
+    if (document.getElementById('current-center-label').textContent === 'не определен' || 
+        document.getElementById('current-center-label').textContent === 'undefined') {
+        document.getElementById('current-center-label').textContent = t.undefinedCoords;
     }
     
     // Сохраняем выбор в localStorage

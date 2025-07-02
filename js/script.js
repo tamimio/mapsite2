@@ -12,7 +12,7 @@ let preserveZoom = false;
 let lastSelectedCity = null;
 const citiesDropdown = document.getElementById('cities-dropdown');
 const coordsInput = document.getElementById('coords-input');
-let currentCenterCoordsElement = document.getElementById('current-center-coords');
+let currentCenterCoordsElement = document.getElementById('current-center-label');
 let copyCoordsBtn = document.getElementById('copy-coords-btn');
 
 // Глобальный флаг для логгирования стилей временных файлов
