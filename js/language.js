@@ -14,7 +14,7 @@ const translations = {
         nextBtnTitle: "Следующий",
         lastBtnTitle: "Последний",
         ruBtnTitle: "Текущий язык: Русский",
-        enBtnTitle: "Переключить на Английский"
+        enBtnTitle: "Переключить на Английский",
         viewSwitchMap: "Карта",
         viewSwitchSt1: "Статистика1",
         viewSwitchSt2: "Статистика2"
@@ -33,14 +33,14 @@ const translations = {
         nextBtnTitle: "Next",
         lastBtnTitle: "Last",
         ruBtnTitle: "Switch to Russian",
-        enBtnTitle: "Current language: English"
+        enBtnTitle: "Current language: English",
         viewSwitchMap: "Map",
         viewSwitchSt1: "Statistics1",
         viewSwitchSt2: "Statistics2"
     }
 };
 
-let currentLang = 'ru'; // По умолчанию русский
+let currentLang = localStorage.getItem('preferredLang') || 'ru'; // По умолчанию русский
 
 // Функция переключения языка
 function setLanguage(lang) {
@@ -100,6 +100,10 @@ function setLanguage(lang) {
     // Сохраняем выбор в localStorage
     localStorage.setItem('preferredLang', lang);
     document.documentElement.lang = lang;
+    
+    // Инициируем событие, что язык изменён
+    const event = new CustomEvent('languageChanged', { detail: lang });
+    document.dispatchEvent(event);
 }
 
 // Обработчики кнопок переключения языка
@@ -129,4 +133,18 @@ document.getElementById('lang-en').addEventListener('click', function() {
         const t = translations[currentLang];
         this.title = t.enBtnTitle;
     }
+});
+
+// Инициализация языка при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    setLanguage(currentLang);
+    
+    // Обработчики кнопок переключения языка
+    document.getElementById('lang-ru').addEventListener('click', () => {
+        if (currentLang !== 'ru') setLanguage('ru');
+    });
+
+    document.getElementById('lang-en').addEventListener('click', () => {
+        if (currentLang !== 'en') setLanguage('en');
+    });
 });

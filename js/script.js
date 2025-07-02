@@ -718,6 +718,16 @@ map.on('moveend', function() {
 
 async function init() {
     try {
+        // Устанавливаем русский язык по умолчанию
+        setLanguage('ru');
+        // Дождитесь инициализации языка
+        await new Promise(resolve => {
+            if (document.readyState === 'complete') {
+                resolve();
+            } else {
+                document.addEventListener('DOMContentLoaded', resolve);
+            }
+        });
         // Инициализируем календарь
         initDatePicker();
         
@@ -731,8 +741,6 @@ async function init() {
         // Заполняем список городов
         populateCitiesDropdown(); 
         
-        // Устанавливаем русский язык по умолчанию
-        setLanguage('ru');
     } catch (error) {
         console.error("Ошибка инициализации:", error);
     }
@@ -783,6 +791,15 @@ document.addEventListener('DOMContentLoaded', function() {
     mapBtn.addEventListener('click', () => switchView(mapBtn, mapContainer));
     stats1Btn.addEventListener('click', () => switchView(stats1Btn, stats1Container));
     stats2Btn.addEventListener('click', () => switchView(stats2Btn, stats2Container));
+});
+
+// Обработчик изменения языка
+document.addEventListener('languageChanged', function(event) {
+    currentLang = event.detail;
+    if (datePicker) {
+        datePicker.destroy();
+        initDatePicker();
+    }
 });
 
 // Обработчик гамбургер-меню
