@@ -631,7 +631,9 @@ async function navigateTo(index) {
     const file = kmlFiles[currentIndex];
     
     // Обновляем календарь
-    datePicker.setDate(file.name, false);
+    if (datePicker) {
+        datePicker.setDate(file.name, false);
+    }
     
     // Загружаем файл
     await loadKmlFile(file);
@@ -642,10 +644,27 @@ async function navigateTo(index) {
 
 // Обновление состояния кнопок
 function updateButtons() {
-    document.getElementById('first-btn').disabled = currentIndex === 0;
-    document.getElementById('prev-btn').disabled = currentIndex === 0;
-    document.getElementById('next-btn').disabled = currentIndex === kmlFiles.length - 1;
-    document.getElementById('last-btn').disabled = currentIndex === kmlFiles.length - 1;
+    console.log(`Updating buttons for index: ${currentIndex} of ${kmlFiles.length - 1}`);
+    const firstBtn = document.getElementById('first-btn');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const lastBtn = document.getElementById('last-btn');
+    
+    if (!firstBtn || !prevBtn || !nextBtn || !lastBtn) return;
+    
+    // кнопки "следующий" и "последний" должны быть disabled на последней дате
+    firstBtn.disabled = currentIndex === 0;
+    prevBtn.disabled = currentIndex === 0;
+    nextBtn.disabled = currentIndex >= kmlFiles.length - 1; // Исправлено условие
+    lastBtn.disabled = currentIndex >= kmlFiles.length - 1; // Исправлено условие
+    
+    // классы для визуального отображения состояния
+    firstBtn.classList.toggle('disabled', currentIndex === 0);
+    prevBtn.classList.toggle('disabled', currentIndex === 0);
+    nextBtn.classList.toggle('disabled', currentIndex >= kmlFiles.length - 1);
+    lastBtn.classList.toggle('disabled', currentIndex >= kmlFiles.length - 1);
+    
+    console.log(`First: ${firstBtn.disabled}, Prev: ${prevBtn.disabled}, Next: ${nextBtn.disabled}, Last: ${lastBtn.disabled}`);
 }
 
 // Обработчики кнопок навигации
@@ -755,8 +774,11 @@ async function init() {
         
         // Загружаем последний файл по умолчанию
         preserveZoom = false;
-        await navigateTo(kmlFiles.length - 1);  
+        currentIndex = kmlFiles.length - 1;
+        await navigateTo(currentIndex);
         
+        // Обновляем состояние кнопок сразу после установки индекса
+        updateButtons();        
         
         // Перерисовываем карту после загрузки всех слоёв
         setTimeout(() => {
