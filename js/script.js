@@ -743,6 +743,8 @@ async function init() {
         
         // Обновляем отображение центра карты
         updateCurrentCenterDisplay();
+        // Показываем date-navigator при загрузке (активна карта)
+        document.querySelector('.date-navigator-wrapper').style.display = 'block';
         
     } catch (error) {
         console.error("Ошибка инициализации:", error);
@@ -769,7 +771,7 @@ document.addEventListener('DOMContentLoaded', function() {
         [mapBtn, stats1Btn, stats2Btn].forEach(btn => btn.classList.remove('active'));
         [mapContainer, stats1Container, stats2Container].forEach(container => {
             container.classList.remove('active');
-            container.style.display = 'none'; // Явное скрытие
+            container.style.display = 'none';
         });
         
         // Устанавливаем активное состояние
@@ -782,6 +784,14 @@ document.addEventListener('DOMContentLoaded', function() {
             activeContainer.style.display = 'flex';
         }
         
+        // Показываем/скрываем date-navigator в зависимости от активной вкладки
+        const dateNavigatorWrapper = document.querySelector('.date-navigator-wrapper');
+        if (activeContainer === mapContainer) {
+            dateNavigatorWrapper.style.display = 'block';
+        } else {
+            dateNavigatorWrapper.style.display = 'none';
+        }
+        
         // Перерисовываем карту при возвращении на вкладку
         if (activeContainer === mapContainer && map) {
             setTimeout(() => {
@@ -789,7 +799,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 100);
         }
     }
-    
     // Обработчики кнопок
     mapBtn.addEventListener('click', () => switchView(mapBtn, mapContainer));
     stats1Btn.addEventListener('click', () => switchView(stats1Btn, stats1Container));

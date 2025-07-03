@@ -68,30 +68,32 @@
 			</div>
 			
 			<!-- Навигация по дате -->
-			<div class="date-navigator">
-				<button id="first-btn" class="nav-btn" title="Первый">❮❮</button>
-				<button id="prev-btn" class="nav-btn" title="Предыдущий">❮</button>
-				
-				<div class="date-selector">
-					<input type="text" id="date-picker" placeholder="DD.MM.YY">
-				</div>
-				
-				<button id="next-btn" class="nav-btn" title="Следующий">❯</button>
-				<button id="last-btn" class="nav-btn" title="Последний">❯❯</button>
+            <div class="date-navigator-wrapper">
+                <div class="date-navigator">
+                    <button id="first-btn" class="nav-btn" title="Первый">❮❮</button>
+                    <button id="prev-btn" class="nav-btn" title="Предыдущий">❮</button>
+                    
+                    <div class="date-selector">
+                        <input type="text" id="date-picker" placeholder="DD.MM.YY">
+                    </div>
+                    
+                    <button id="next-btn" class="nav-btn" title="Следующий">❯</button>
+                    <button id="last-btn" class="nav-btn" title="Последний">❯❯</button>
 
-				<label id="center-label">Центрировать на:</label>
-				<input type="text" id="coords-input" placeholder="Широта, Долгота" class="coord-input">
-				
-				<div class="city-coord-group">
-					<select id="cities-dropdown">
-						<option value="" selected disabled id="select-city-default">Выберите город</option>
-					</select>
-					<div class="current-center">
-						<span id="current-center-label"></span>
-						<button id="copy-coords-btn" title="Копировать координаты">⎘</button>
-					</div>
-				</div>
-			</div>
+                    <label id="center-label">Центрировать на:</label>
+                    <input type="text" id="coords-input" placeholder="Широта, Долгота" class="coord-input">
+                    
+                    <div class="city-coord-group">
+                        <select id="cities-dropdown">
+                            <option value="" selected disabled id="select-city-default">Выберите город</option>
+                        </select>
+                        <div class="current-center">
+                            <span id="current-center-label"></span>
+                            <button id="copy-coords-btn" title="Копировать координаты">⎘</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 			
 			<!-- Переключатель языка -->
 			<div class="language-switcher">

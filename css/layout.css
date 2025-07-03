@@ -412,3 +412,50 @@ body {
     }
 }
 
+/* Навигация по дате */
+
+.date-navigator-wrapper {
+    display: block;
+    width: 100%;
+    order: 3; /* Располагаем после заголовка и кнопок */
+    margin-top: 10px;
+}
+
+@media (min-width: 992px) {
+    .date-navigator-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 0;
+    }
+}
+
+
+
+@media (max-width: 768px) {
+    .date-navigator-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .date-navigator {
+        flex-wrap: wrap;
+    }
+    
+    .city-coord-group {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .date-navigator {
+        gap: 5px;
+    }
+    
+    .date-selector {
+        width: 100px;
+    }
+}
+
