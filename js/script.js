@@ -638,19 +638,21 @@ async function loadKmlFile(file) {
 async function navigateTo(index) {
     if (index < 0 || index >= kmlFiles.length) return;
     
-    currentIndex = index;
-    const file = kmlFiles[currentIndex];
-    
-    // Обновляем календарь
-    if (datePicker) {
-        datePicker.setDate(file.name, false);
+    try {
+        currentIndex = index;
+        const file = kmlFiles[currentIndex];
+        
+        if (datePicker) {
+            datePicker.setDate(file.name, false);
+        }
+        
+        await loadKmlFile(file);
+    } catch (error) {
+        console.error("Ошибка навигации:", error);
+    } finally {
+        // Гарантированно обновляем кнопки даже при ошибках
+        updateButtons();
     }
-    
-    // Загружаем файл
-    await loadKmlFile(file);
-    
-    // Обновляем состояние кнопок
-    updateButtons();
 }
 
 // Обновление состояния кнопок
@@ -663,17 +665,18 @@ function updateButtons() {
     
     if (!firstBtn || !prevBtn || !nextBtn || !lastBtn) return;
     
-    // кнопки "следующий" и "последний" должны быть disabled на последней дате
-    firstBtn.disabled = currentIndex === 0;
-    prevBtn.disabled = currentIndex === 0;
-    nextBtn.disabled = currentIndex >= kmlFiles.length - 1; // Исправлено условие
-    lastBtn.disabled = currentIndex >= kmlFiles.length - 1; // Исправлено условие
+    const isFirst = currentIndex === 0;
+    const isLast = currentIndex === kmlFiles.length - 1;
     
-    // классы для визуального отображения состояния
-    firstBtn.classList.toggle('disabled', currentIndex === 0);
-    prevBtn.classList.toggle('disabled', currentIndex === 0);
-    nextBtn.classList.toggle('disabled', currentIndex >= kmlFiles.length - 1);
-    lastBtn.classList.toggle('disabled', currentIndex >= kmlFiles.length - 1);
+    firstBtn.disabled = isFirst;
+    prevBtn.disabled = isFirst;
+    nextBtn.disabled = isLast;
+    lastBtn.disabled = isLast;
+    
+    firstBtn.classList.toggle('disabled', isFirst);
+    prevBtn.classList.toggle('disabled', isFirst);
+    nextBtn.classList.toggle('disabled', isLast);
+    lastBtn.classList.toggle('disabled', isLast);
     
     console.log(`First: ${firstBtn.disabled}, Prev: ${prevBtn.disabled}, Next: ${nextBtn.disabled}, Last: ${lastBtn.disabled}`);
 }
@@ -787,10 +790,7 @@ async function init() {
         preserveZoom = false;
         currentIndex = kmlFiles.length - 1;
         await navigateTo(currentIndex);
-        
-        // Обновляем состояние кнопок сразу после установки индекса
-        updateButtons();        
-        
+                
         // Заполняем список городов
         populateCitiesDropdown(); 
                 
