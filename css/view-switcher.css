@@ -1,24 +1,73 @@
-.view-switcher {
+/* .view-switcher { */
+    /* display: flex; */
+    /* gap: 5px; */
+    /* margin: 0; */
+    /* align-items: center; /* Центрируем кнопки внутри */ */
+/* } */
+
+/* Гамбургер с переключателем видов */
+.view-menu-container {
+    position: relative;
     display: flex;
-    gap: 5px;
-    margin: 0;
-    align-items: center; /* Центрируем кнопки внутри */
+    align-items: center;
+    margin-right: 10px;
 }
 
-/* .view-btn { */
-    /* padding: 8px 16px; */
-    /* background-color: #f1f1f1; */
-    /* border: 1px solid #d4d4d4; */
-    /* border-radius: 4px; */
-    /* cursor: pointer; */
-    /* font-size: 14px; */
-/* } */
+.view-menu-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+}
 
-/* .view-btn.active { */
-    /* background-color: #007bff; */
-    /* color: white; */
-    /* border-color: #007bff; */
-/* } */
+.view-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    z-index: 1000;
+    min-width: 150px;
+    flex-direction: column;
+    padding: 5px 0;
+}
+
+.view-menu-container.active .view-dropdown {
+    display: flex;
+}
+
+.view-dropdown .view-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 0;
+}
+
+.view-dropdown .view-btn:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+.view-dropdown .view-btn.active {
+    font-weight: bold;
+    background: rgba(0,0,0,0.1);
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    .view-dropdown {
+        left: auto;
+        right: 0;
+    }
+}
 
 .view-btn {
   /* Убираем стандартные стили кнопки */

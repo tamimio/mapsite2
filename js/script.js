@@ -854,3 +854,39 @@ map.whenReady(function() {
         }
     }, 100);
 });
+
+// Гамбургер переключатель видов
+
+document.addEventListener('DOMContentLoaded', function() {
+    const viewMenuBtn = document.querySelector('.view-menu-btn');
+    const viewMenuContainer = document.querySelector('.view-menu-container');
+    
+    // Обработчик открытия/закрытия меню видов
+    viewMenuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        viewMenuContainer.classList.toggle('active');
+    });
+    
+    // Закрытие меню при клике вне его
+    document.addEventListener('click', function(e) {
+        if (!viewMenuContainer.contains(e.target)) {
+            viewMenuContainer.classList.remove('active');
+        }
+    });
+    
+    // Закрытие меню при выборе вида
+    document.querySelectorAll('.view-dropdown .view-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            viewMenuContainer.classList.remove('active');
+        });
+    });
+    
+    // Перерисовка карты при открытии/закрытии меню
+    viewMenuBtn.addEventListener('click', function() {
+        if (map) {
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+        }
+    });
+});
