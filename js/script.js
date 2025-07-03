@@ -771,50 +771,46 @@ map.on('moveend', function() {
     updateCurrentCenterDisplay();
 });
 
-
 async function init() {
-    try {
-        // Загружаем постоянные слои
-        await loadPermanentKmlLayers();  
-        
-        // Дождитесь инициализации языка
-        await new Promise(resolve => {
-            if (document.readyState === 'complete') resolve();
-            else document.addEventListener('DOMContentLoaded', resolve);
-        });
-        
-        // Инициализируем календарь
-        initDatePicker();
-        
-        // Загружаем последний файл по умолчанию
-        preserveZoom = false;
-        currentIndex = kmlFiles.length - 1;
-        requestAnimationFrame(async () => {
-            await navigateTo(currentIndex);
-        });
-                
-        // Заполняем список городов
-        populateCitiesDropdown(); 
-                
-        // Показываем date-navigator при загрузке (активна карта)
-        document.querySelector('.date-navigator-wrapper').style.display = 'block';
-        
-        // Перерисовываем карту после загрузки всех слоёв
-        setTimeout(() => {
-            if (map) map.invalidateSize();
-            updateCurrentCenterDisplay(); // Обновляем отображение координат центра карты
-        }, 50);           
-        
-        
-    } catch (error) {
-        console.error("Ошибка инициализации:", error);
-    }
+  try {
+    // Загружаем постоянные слои
+    await loadPermanentKmlLayers();
+    
+    // Дождитесь инициализации языка
+    await new Promise(
+      resolve => {
+        if (document.readyState === 'complete') resolve();
+        else document.addEventListener('DOMContentLoaded', resolve);
+      }
+    );
+    
+    // Инициализируем календарь
+    initDatePicker();
+    
+    // Заполняем список городов
+    populateCitiesDropdown();
+    
+    // Показываем date-navigator при загрузке (активна карта)
+    document.querySelector('.date-navigator-wrapper').style.display = 'block';
+    
+    // Загружаем последний файл по умолчанию
+    preserveZoom = false;
+    currentIndex = kmlFiles.length - 1;
+    
+    setTimeout(async () => {
+      await navigateTo(currentIndex);
+      
+      // Перерисовываем карту после загрузки всех слоёв
+      if (map) map.invalidateSize();
+      updateCurrentCenterDisplay();
+    }, 300); 
+    
+  } catch (error) {
+    console.error('Ошибка инициализации:', error);
+  }
 }
 
-// Инициализация при загрузке
-// document.addEventListener('DOMContentLoaded', () => {
-    // init();
-// });
+
 document.addEventListener('DOMContentLoaded', init);
 
 document.addEventListener('DOMContentLoaded', function() {
