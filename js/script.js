@@ -771,8 +771,37 @@ map.on('moveend', function() {
     updateCurrentCenterDisplay();
 });
 
+// Функция для установки обработчика копирования координат
+function setupCopyCoordsButton() {
+    if (!copyCoordsBtn || !currentCenterCoordsElement) return;
+    
+    copyCoordsBtn.addEventListener('click', function() {
+        const coords = currentCenterCoordsElement.textContent;
+        const undefinedText = translations[currentLang].undefinedCoords;
+        
+        if (coords && coords !== undefinedText) {
+            navigator.clipboard.writeText(coords)
+                .then(() => {
+                    const originalText = this.textContent;
+                    this.textContent = translations[currentLang].copiedText;
+                    
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Ошибка копирования: ', err);
+                });
+        }
+    });
+}
+
 async function init() {
   try {
+    // Инициализируем переменные, зависящие от DOM
+    currentCenterCoordsElement = document.getElementById('current-center-label');
+    copyCoordsBtn = document.getElementById('copy-coords-btn');
+    
     // Шаг 1: Загружаем постоянные слои
     await loadPermanentKmlLayers();
     
@@ -780,6 +809,9 @@ async function init() {
     initDatePicker();
     populateCitiesDropdown();
     document.querySelector('.date-navigator-wrapper').style.display = 'block';
+    
+    // Настраиваем кнопку копирования
+    setupCopyCoordsButton();
     
     // Шаг 3: Ждем когда все элементы интерфейса будут доступны
     await waitForUIElements();

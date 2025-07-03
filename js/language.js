@@ -9,6 +9,7 @@ const translations = {
         currentCenter: "Текущий центр: ",
         undefinedCoords: "не определен",
         copyTooltip: "Копировать координаты",
+        copiedText: "Скопировано!",
         firstBtnTitle: "Первый",
         prevBtnTitle: "Предыдущий",
         nextBtnTitle: "Следующий",
@@ -17,7 +18,7 @@ const translations = {
         enBtnTitle: "Переключить на Английский",
         viewSwitchMap: "Карта",
         viewSwitchSt1: "Статистика1",
-        viewSwitchSt2: "Статистика2"
+        viewSwitchSt2: "Статистика2"  
     },
     en: {
         title: "  dataviewer",
@@ -28,6 +29,7 @@ const translations = {
         currentCenter: "Current center: ",
         undefinedCoords: "undefined",
         copyTooltip: "Copy coordinates",
+        copiedText: "Copied!",
         firstBtnTitle: "First",
         prevBtnTitle: "Previous",
         nextBtnTitle: "Next",
@@ -147,4 +149,21 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('lang-en').addEventListener('click', () => {
         if (currentLang !== 'en') setLanguage('en');
     });
+});
+
+copyCoordsBtn.addEventListener('click', function() {
+    const coords = currentCenterCoordsElement.textContent;
+    if (coords && coords !== 'не определен' && coords !== 'undefined') {
+        navigator.clipboard.writeText(coords)
+            .then(() => {
+                const originalText = this.textContent;
+                this.textContent = translations[currentLang].copiedText;
+                setTimeout(() => {
+                    this.textContent = originalText;
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Ошибка копирования: ', err);
+            });
+    }
 });
