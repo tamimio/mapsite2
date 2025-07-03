@@ -103,15 +103,20 @@
 
 #copy-coords-btn {
     background: none;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    padding: 2px 5px;
+    border: none;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 1.2rem;
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
 }
 
 #copy-coords-btn:hover {
-    background: #f0f0f0;
+    background-color: #f0f0f0;
+    border-radius: 3px;
 }
 
 /* @media (max-width: 600px) { */

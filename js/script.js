@@ -14,6 +14,8 @@ const citiesDropdown = document.getElementById('cities-dropdown');
 const coordsInput = document.getElementById('coords-input');
 let currentCenterCoordsElement = document.getElementById('current-center-label');
 let copyCoordsBtn = document.getElementById('copy-coords-btn');
+//let copyCoordsBtn = null;
+//let currentCenterCoordsElement = null;
 
 // Глобальный флаг для логгирования стилей временных файлов
 const LOG_TEMPORARY_STYLES = true; // Можно менять на false для отключения
@@ -771,34 +773,45 @@ map.on('moveend', function() {
     updateCurrentCenterDisplay();
 });
 
-// Функция для установки обработчика копирования координат
+// Функция для установки обработчика копирования
 function setupCopyCoordsButton() {
-    if (!copyCoordsBtn || !currentCenterCoordsElement) return;
+    // Получаем элементы заново для надежности
+    const btn = document.getElementById('copy-coords-btn');
+    const coordsElement = document.getElementById('current-center-label');
     
-    copyCoordsBtn.addEventListener('click', function() {
-        const coords = currentCenterCoordsElement.textContent;
-        const undefinedText = translations[currentLang].undefinedCoords;
+    if (!btn || !coordsElement) {
+        console.error('Элементы для копирования координат не найдены');
+        return;
+    }
+    
+    btn.addEventListener('click', function() {
+        const coords = coordsElement.textContent;
         
-        if (coords && coords !== undefinedText) {
-            navigator.clipboard.writeText(coords)
-                .then(() => {
-                    const originalText = this.textContent;
-                    this.textContent = translations[currentLang].copiedText;
-                    
-                    setTimeout(() => {
-                        this.textContent = originalText;
-                    }, 2000);
-                })
-                .catch(err => {
-                    console.error('Ошибка копирования: ', err);
-                });
+        // Проверяем, что координаты действительны
+        if (!coords || coords === 'не определен' || coords === 'undefined') {
+            console.warn('Нет координат для копирования');
+            return;
         }
+        
+        navigator.clipboard.writeText(coords)
+            .then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Ошибка копирования: ', err);
+                alert('Не удалось скопировать координаты. Попробуйте снова.');
+            });
     });
 }
 
 async function init() {
   try {
-    // Инициализируем переменные, зависящие от DOM
+    // Инициализируем переменные
     currentCenterCoordsElement = document.getElementById('current-center-label');
     copyCoordsBtn = document.getElementById('copy-coords-btn');
     
