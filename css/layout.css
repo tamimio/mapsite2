@@ -108,12 +108,14 @@ body {
 
 /* Общие стили верхней панели */
 .top-bar {
-  background: #dadada;
+  background: #dadada; /* серый цвет */
   padding: 8px 15px;
   margin: 0; /* внешние отступы */
   display: flex;
   align-items: center;
   min-height: 60px; /* Фиксированная минимальная высота */
+  position: relative;
+  z-index: 1001; /* наложение */
 }
 
 /* Убираем отступы у навигационной панели */
@@ -354,6 +356,7 @@ body {
     display: flex;
     align-items: center;
     margin-right: 10px;
+    z-index: 1002; /* Выше верхней панели */
 }
 
 .view-menu-btn {
@@ -375,14 +378,25 @@ body {
     background: #fff;
     box-shadow: 0 3px 10px rgba(0,0,0,0.2);
     border-radius: 4px;
-    z-index: 1000;
-    min-width: 150px;
+    z-index: 2000; /* Значительно выше элементов карты */
+    min-width: 180px;
     flex-direction: column;
     padding: 5px 0;
+    border: 1px solid #ddd;
 }
 
 .view-menu-container.active .view-dropdown {
-    display: flex;
+    display: flex;    
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.view-menu-btn:hover {
+    background: rgba(0,0,0,0.05);
 }
 
 .view-dropdown .view-btn {
@@ -405,10 +419,16 @@ body {
     background: rgba(0,0,0,0.1);
 }
 
+/* Для мобильных - показываем меню справа */
 @media (max-width: 768px) {
     .view-dropdown {
         left: auto;
         right: 0;
+    }
+    
+    .view-menu-btn {
+        font-size: 1.8rem;
+        padding: 0 10px;
     }
 }
 
