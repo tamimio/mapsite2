@@ -791,22 +791,62 @@ function setupCopyCoordsButton() {
             return;
         }
         
-        navigator.clipboard.writeText(coords)
-            .then(() => {
-                const originalText = btn.textContent;
-                // Используем переводы из language.js
-                const t = translations[currentLang];
-                btn.textContent = t ? t.copiedText : '✓';
-                
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                }, 2000);
-            })
-            .catch(err => {
-                console.error('Ошибка копирования: ', err);
-                alert('Не удалось скопировать координаты. Попробуйте снова.');
-            });
+        // Проверяем доступность Clipboard API
+        if (navigator.clipboard) {
+            // Используем современный API
+            navigator.clipboard.writeText(coords)
+                .then(() => {
+                    showCopiedFeedback(btn);
+                })
+                .catch(err => {
+                    console.error('Ошибка копирования через Clipboard API:', err);
+                    copyWithFallback(coords, btn);
+                });
+        } else {
+            // Используем fallback-метод
+            copyWithFallback(coords, btn);
+        }
     });
+    
+    // Функция для отображения обратной связи
+    function showCopiedFeedback(button) {
+        const originalText = button.textContent;
+        const t = translations[currentLang];
+        button.textContent = t ? t.copiedText : '✓';
+        
+        setTimeout(() => {
+            button.textContent = originalText;
+        }, 2000);
+    }
+    
+    // Fallback метод копирования
+    function copyWithFallback(text, button) {
+        try {
+            // Создаем временный textarea
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = 0;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            // Пытаемся скопировать
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            if (successful) {
+                showCopiedFeedback(button);
+            } else {
+                console.warn('Fallback метод копирования не сработал');
+                alert('Скопируйте координаты вручную: ' + text);
+            }
+        } catch (err) {
+            console.error('Ошибка при использовании fallback метода:', err);
+            alert('Скопируйте координаты вручную: ' + text);
+        }
+    }
 }
 
 async function init() {
