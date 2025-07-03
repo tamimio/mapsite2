@@ -82,7 +82,7 @@ function isValidCoordinate(value, isLatitude) {
 // Функция обновления отображения текущего центра
 function updateCurrentCenterDisplay() {
     // Проверка на доступность карты
-    if (!map || !map.getCenter) return;
+    if (!map || !map.getCenter || !currentCenterCoordsElement) return;
     
     const center = map.getCenter();
     if (center.lat === 0 && center.lng === 0) return; // Игнорируем нулевые координаты
@@ -269,7 +269,7 @@ window.permanentLayerGroups = []; // Храним группы слоёв
 // Функция загрузки постоянных KML-слоев
 async function loadPermanentKmlLayers() {
     try {
-        console.log("Начало загрузки постоянных слоев");
+        console.log("Начало загрузки постоянных слоев", window.permanentLayers);
         
         // Проверяем наличие данных
         if (!window.permanentLayers || !Array.isArray(window.permanentLayers)) {
@@ -372,12 +372,21 @@ async function loadPermanentKmlLayers() {
                                 opacity: style.line.opacity || 1
                             }).addTo(layerGroup);
                         }
-                        // Логирование информации о линии
-                        console.log(`LineString #${++elementCount}:`);
-                        console.log(`- Raw color: ${style.line?.rawColor || 'not set'}`);
-                        console.log(`- Parsed color: ${style.line?.color || 'default'}`);
-                        console.log(`- Weight: ${style.line?.weight || 'default'}`);
-                        console.log(`- Opacity: ${style.line?.opacity || 'default'}`);
+                        
+                    if (polyline && polyline.getBounds) {
+                        bounds.extend(polyline.getBounds());
+                    }
+
+                    if (poly && poly.getBounds) {
+                        bounds.extend(poly.getBounds());
+                    }                    
+                    
+                    // Логирование информации о линии
+                    console.log(`LineString #${++elementCount}:`);
+                    console.log(`- Raw color: ${style.line?.rawColor || 'not set'}`);
+                    console.log(`- Parsed color: ${style.line?.color || 'default'}`);
+                    console.log(`- Weight: ${style.line?.weight || 'default'}`);
+                    console.log(`- Opacity: ${style.line?.opacity || 'default'}`);
                     }
 
                     // Обработка Polygon
@@ -732,6 +741,9 @@ map.on('moveend', function() {
 
 async function init() {
     try {
+        // Загружаем постоянные слои
+        await loadPermanentKmlLayers();  
+        
         // Дождитесь инициализации языка
         await new Promise(resolve => {
             if (document.readyState === 'complete') resolve();
@@ -745,8 +757,12 @@ async function init() {
         preserveZoom = false;
         await navigateTo(kmlFiles.length - 1);  
         
-        // Загружаем постоянные слои
-        await loadPermanentKmlLayers();             
+        
+        // Перерисовываем карту после загрузки всех слоёв
+        setTimeout(() => {
+            if (map) map.invalidateSize();
+            updateCurrentCenterDisplay();
+        }, 500);           
         
         // Заполняем список городов
         populateCitiesDropdown(); 
