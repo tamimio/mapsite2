@@ -718,16 +718,12 @@ map.on('moveend', function() {
 
 async function init() {
     try {
-        // Устанавливаем русский язык по умолчанию
-        setLanguage('ru');
         // Дождитесь инициализации языка
         await new Promise(resolve => {
-            if (document.readyState === 'complete') {
-                resolve();
-            } else {
-                document.addEventListener('DOMContentLoaded', resolve);
-            }
+            if (document.readyState === 'complete') resolve();
+            else document.addEventListener('DOMContentLoaded', resolve);
         });
+        
         // Инициализируем календарь
         initDatePicker();
         
