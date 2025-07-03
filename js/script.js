@@ -773,41 +773,54 @@ map.on('moveend', function() {
 
 async function init() {
   try {
-    // Загружаем постоянные слои
+    // Шаг 1: Загружаем постоянные слои
     await loadPermanentKmlLayers();
     
-    // Дождитесь инициализации языка
-    await new Promise(
-      resolve => {
-        if (document.readyState === 'complete') resolve();
-        else document.addEventListener('DOMContentLoaded', resolve);
-      }
-    );
-    
-    // Инициализируем календарь
+    // Шаг 2: Инициализируем основные компоненты UI
     initDatePicker();
-    
-    // Заполняем список городов
     populateCitiesDropdown();
-    
-    // Показываем date-navigator при загрузке (активна карта)
     document.querySelector('.date-navigator-wrapper').style.display = 'block';
     
-    // Загружаем последний файл по умолчанию
+    // Шаг 3: Ждем когда все элементы интерфейса будут доступны
+    await waitForUIElements();
+    
+    // Шаг 4: Загружаем данные карты
     preserveZoom = false;
     currentIndex = kmlFiles.length - 1;
+    await navigateTo(currentIndex);
     
-    setTimeout(async () => {
-      await navigateTo(currentIndex);
-      
-      // Перерисовываем карту после загрузки всех слоёв
+    // Шаг 5: Финализируем инициализацию карты
+    setTimeout(() => {
       if (map) map.invalidateSize();
       updateCurrentCenterDisplay();
-    }, 300); 
+    }, 50);
     
   } catch (error) {
     console.error('Ошибка инициализации:', error);
   }
+}
+
+// Новая функция для ожидания готовности UI элементов
+function waitForUIElements() {
+  return new Promise(resolve => {
+    const checkElements = () => {
+      // Проверяем наличие всех необходимых элементов
+      const elementsReady = 
+        document.getElementById('first-btn') &&
+        document.getElementById('prev-btn') &&
+        document.getElementById('next-btn') &&
+        document.getElementById('last-btn') &&
+        document.querySelector('.date-navigator-wrapper');
+        
+      if (elementsReady) {
+        resolve();
+      } else {
+        setTimeout(checkElements, 50);
+      }
+    };
+    
+    checkElements();
+  });
 }
 
 
