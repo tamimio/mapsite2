@@ -19,27 +19,6 @@
     <link rel="stylesheet" href="css/calendar.css">
     <link rel="stylesheet" href="css/language.css">
     <link rel="stylesheet" href="css/view-switcher.css">
-    
-<!-- // Установка языка сразу после загрузки HTML 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            window.currentLang = localStorage.getItem('preferredLang') || 'ru';
-            document.documentElement.lang = window.currentLang;
-            const savedLang = window.currentLang;
-            
-            // Применяем активный класс сразу
-            document.getElementById(`lang-${savedLang}`).classList.add('active');
-            
-            // Обновляем title
-            const t = translations[savedLang];
-            document.getElementById('lang-ru').title = 
-                savedLang === 'ru' ? t.ruBtnTitle : t.enBtnTitle;
-            
-            document.getElementById('lang-en').title = 
-                savedLang === 'en' ? t.enBtnTitle : t.ruBtnTitle;
-        });
-    </script>
--->
 </head>
 <body>
     <div class="top-bar">
