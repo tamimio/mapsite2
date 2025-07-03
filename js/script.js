@@ -12,10 +12,10 @@ let preserveZoom = false;
 let lastSelectedCity = null;
 const citiesDropdown = document.getElementById('cities-dropdown');
 const coordsInput = document.getElementById('coords-input');
-//let currentCenterCoordsElement = document.getElementById('current-center-label');
-//let copyCoordsBtn = document.getElementById('copy-coords-btn');
-let copyCoordsBtn = null;
-let currentCenterCoordsElement = null;
+let currentCenterCoordsElement = document.getElementById('current-center-label');
+let copyCoordsBtn = document.getElementById('copy-coords-btn');
+// let copyCoordsBtn = null;
+// let currentCenterCoordsElement = null;
 
 // Глобальный флаг для логгирования стилей временных файлов
 const LOG_TEMPORARY_STYLES = true; // Можно менять на false для отключения
