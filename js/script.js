@@ -861,32 +861,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const viewMenuBtn = document.querySelector('.view-menu-btn');
     const viewMenuContainer = document.querySelector('.view-menu-container');
     
-    // Обработчик открытия/закрытия меню видов
-    viewMenuBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        viewMenuContainer.classList.toggle('active');
-    });
-    
-    // Закрытие меню при клике вне его
-    document.addEventListener('click', function(e) {
-        if (!viewMenuContainer.contains(e.target)) {
-            viewMenuContainer.classList.remove('active');
-        }
-    });
-    
-    // Закрытие меню при выборе вида
-    document.querySelectorAll('.view-dropdown .view-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            viewMenuContainer.classList.remove('active');
+    if (viewMenuBtn && viewMenuContainer) {
+        // Обработчик открытия/закрытия меню видов
+        viewMenuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            viewMenuContainer.classList.toggle('active');
         });
-    });
-    
-    // Перерисовка карты при открытии/закрытии меню
-    viewMenuBtn.addEventListener('click', function() {
-        if (map) {
-            setTimeout(() => {
-                map.invalidateSize();
-            }, 100);
-        }
-    });
+        
+        // Закрытие меню при клике вне его
+        document.addEventListener('click', function(e) {
+            if (!viewMenuContainer.contains(e.target)) {
+                viewMenuContainer.classList.remove('active');
+            }
+        });
+        
+        // Закрытие меню при выборе вида
+        document.querySelectorAll('.view-dropdown .view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                viewMenuContainer.classList.remove('active');
+                
+                // Перерисовываем карту при необходимости
+                if (map && this.id === 'map-btn') {
+                    setTimeout(() => map.invalidateSize(), 100);
+                }
+            });
+        });
+    }
 });
