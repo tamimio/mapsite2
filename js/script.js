@@ -269,9 +269,8 @@ window.permanentLayerGroups = []; // Храним группы слоёв
 // Функция загрузки постоянных KML-слоев
 async function loadPermanentKmlLayers() {
     try {
-        console.log("Начало загрузки постоянных слоев", window.permanentLayers);
+        console.log("Начало загрузки постоянных слоев");
         
-        // Проверяем наличие данных
         if (!window.permanentLayers || !Array.isArray(window.permanentLayers)) {
             console.error("window.permanentLayers не определен или не является массивом");
             return;
@@ -279,9 +278,13 @@ async function loadPermanentKmlLayers() {
         
         console.log("Найдено постоянных слоев:", window.permanentLayers.length);
 
-        // Загружаем все постоянные слои
+        // Удаляем старые постоянные слои
+        if (window.permanentLayerGroups && window.permanentLayerGroups.length) {
+            window.permanentLayerGroups.forEach(layer => map.removeLayer(layer));
+            window.permanentLayerGroups = [];
+        }
+
         for (const layerData of window.permanentLayers) {
-            // Проверяем наличие пути
             if (!layerData.path) {
                 console.error("Отсутствует путь для постоянного слоя:", layerData);
                 continue;
@@ -304,9 +307,9 @@ async function loadPermanentKmlLayers() {
                 const styles = {};
                 const styleMaps = {};
                 
-                // Логирование информации о слое
                 console.groupCollapsed(`Permanent layer loaded: ${layerData.path}`);
                 let elementCount = 0;
+                let bounds = L.latLngBounds(); // Инициализация границ для этого слоя
 
                 // Парсинг стилей
                 kmlDoc.querySelectorAll('Style').forEach(style => {
@@ -366,28 +369,25 @@ async function loadPermanentKmlLayers() {
                     if (lineString) {
                         const coords = parseCoordinates(lineString);
                         if (coords.length >= 2) {
-                            L.polyline(coords, {
+                            // СОЗДАЕМ ЛОКАЛЬНУЮ ПЕРЕМЕННУЮ polyline
+                            const polyline = L.polyline(coords, {
                                 color: style.line.color || '#3388ff',
                                 weight: style.line.weight || 3,
                                 opacity: style.line.opacity || 1
                             }).addTo(layerGroup);
+                            
+                            // Обновляем границы СРАЗУ ПОСЛЕ СОЗДАНИЯ
+                            if (polyline.getBounds && polyline.getBounds().isValid()) {
+                                bounds.extend(polyline.getBounds());
+                            }
                         }
-                        
-                    if (polyline && polyline.getBounds) {
-                        bounds.extend(polyline.getBounds());
-                    }
-
-                    if (poly && poly.getBounds) {
-                        bounds.extend(poly.getBounds());
-                    }                    
-                    
                     // Логирование информации о линии
                     console.log(`LineString #${++elementCount}:`);
                     console.log(`- Raw color: ${style.line?.rawColor || 'not set'}`);
                     console.log(`- Parsed color: ${style.line?.color || 'default'}`);
                     console.log(`- Weight: ${style.line?.weight || 'default'}`);
                     console.log(`- Opacity: ${style.line?.opacity || 'default'}`);
-                    }
+                    }                    
 
                     // Обработка Polygon
                     const polygon = placemark.querySelector('Polygon');
@@ -411,9 +411,10 @@ async function loadPermanentKmlLayers() {
                         console.log(`- Border weight: ${style.line?.weight || 'default'}`);
                         console.log(`- Border opacity: ${style.line?.opacity || 'default'}`);
                     }
+                    } // placemark
                     
                     // Закрываем группу для этого Placemark
-                    console.groupEnd();
+                    //console.groupEnd();
                 });
                             
                 console.log(`Total elements: ${elementCount}`);
@@ -422,6 +423,10 @@ async function loadPermanentKmlLayers() {
                 layerGroup.addTo(map);
                 window.permanentLayerGroups = window.permanentLayerGroups || [];
                 window.permanentLayerGroups.push(layerGroup);
+                
+                // Применяем границы только если они валидны
+                if (bounds.isValid()) {
+                    map.fitBounds(bounds);
             } catch (error) {
                 console.error(`Ошибка обработки слоя ${layerData.path}:`, error);
             }
