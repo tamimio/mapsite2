@@ -789,7 +789,9 @@ async function init() {
         // Загружаем последний файл по умолчанию
         preserveZoom = false;
         currentIndex = kmlFiles.length - 1;
-        await navigateTo(currentIndex);
+        requestAnimationFrame(async () => {
+            await navigateTo(currentIndex);
+        });
                 
         // Заполняем список городов
         populateCitiesDropdown(); 
