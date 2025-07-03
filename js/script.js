@@ -775,7 +775,6 @@ map.on('moveend', function() {
 
 // Функция для установки обработчика копирования
 function setupCopyCoordsButton() {
-    // Получаем элементы заново для надежности
     const btn = document.getElementById('copy-coords-btn');
     const coordsElement = document.getElementById('current-center-label');
     
@@ -787,7 +786,6 @@ function setupCopyCoordsButton() {
     btn.addEventListener('click', function() {
         const coords = coordsElement.textContent;
         
-        // Проверяем, что координаты действительны
         if (!coords || coords === 'не определен' || coords === 'undefined') {
             console.warn('Нет координат для копирования');
             return;
@@ -796,7 +794,9 @@ function setupCopyCoordsButton() {
         navigator.clipboard.writeText(coords)
             .then(() => {
                 const originalText = btn.textContent;
-                btn.textContent = '✓';
+                // Используем переводы из language.js
+                const t = translations[currentLang];
+                btn.textContent = t ? t.copiedText : '✓';
                 
                 setTimeout(() => {
                     btn.textContent = originalText;
@@ -839,6 +839,10 @@ async function init() {
       if (map) map.invalidateSize();
       updateCurrentCenterDisplay();
     }, 50);
+	
+	//
+	// Настройка кнопки после инициализации элементов
+    setupCopyCoordsButton();
     
   } catch (error) {
     console.error('Ошибка инициализации:', error);

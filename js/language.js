@@ -151,19 +151,3 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-copyCoordsBtn.addEventListener('click', function() {
-    const coords = currentCenterCoordsElement.textContent;
-    if (coords && coords !== 'не определен' && coords !== 'undefined') {
-        navigator.clipboard.writeText(coords)
-            .then(() => {
-                const originalText = this.textContent;
-                this.textContent = translations[currentLang].copiedText;
-                setTimeout(() => {
-                    this.textContent = originalText;
-                }, 2000);
-            })
-            .catch(err => {
-                console.error('Ошибка копирования: ', err);
-            });
-    }
-});
