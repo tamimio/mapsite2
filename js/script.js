@@ -81,7 +81,11 @@ function isValidCoordinate(value, isLatitude) {
 
 // Функция обновления отображения текущего центра
 function updateCurrentCenterDisplay() {
+    // Проверка на доступность карты
+    if (!map || !map.getCenter) return;
+    
     const center = map.getCenter();
+    if (center.lat === 0 && center.lng === 0) return; // Игнорируем нулевые координаты
     currentCenterCoordsElement.textContent = `${center.lat.toFixed(6)}, ${center.lng.toFixed(6)}`;
 }
 
@@ -737,6 +741,9 @@ async function init() {
         // Заполняем список городов
         populateCitiesDropdown(); 
         
+        // Обновляем отображение центра карты
+        updateCurrentCenterDisplay();
+        
     } catch (error) {
         console.error("Ошибка инициализации:", error);
     }
@@ -831,4 +838,19 @@ map.whenReady(function() {
   setTimeout(() => {
     map.invalidateSize();
   }, 100);
+});
+
+// обработчик для обновления координат при полной загрузке карты
+map.whenReady(function() {
+    // Обновляем координаты центра после полной загрузки карты
+    updateCurrentCenterDisplay();
+    
+    // Добавляем периодическую проверку на случай, 
+    // если карта полностью инициализируется с небольшой задержкой
+    const checkInterval = setInterval(() => {
+        if (map.getCenter().lat !== 0) {
+            updateCurrentCenterDisplay();
+            clearInterval(checkInterval);
+        }
+    }, 100);
 });
