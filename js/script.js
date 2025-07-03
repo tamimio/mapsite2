@@ -369,7 +369,6 @@ async function loadPermanentKmlLayers() {
                     if (lineString) {
                         const coords = parseCoordinates(lineString);
                         if (coords.length >= 2) {
-                            // СОЗДАЕМ ЛОКАЛЬНУЮ ПЕРЕМЕННУЮ polyline
                             const polyline = L.polyline(coords, {
                                 color: style.line.color || '#3388ff',
                                 weight: style.line.weight || 3,
@@ -381,26 +380,33 @@ async function loadPermanentKmlLayers() {
                                 bounds.extend(polyline.getBounds());
                             }
                         }
-                    // Логирование информации о линии
-                    console.log(`LineString #${++elementCount}:`);
-                    console.log(`- Raw color: ${style.line?.rawColor || 'not set'}`);
-                    console.log(`- Parsed color: ${style.line?.color || 'default'}`);
-                    console.log(`- Weight: ${style.line?.weight || 'default'}`);
-                    console.log(`- Opacity: ${style.line?.opacity || 'default'}`);
-                    }                    
+                        
+                        // Логирование информации о линии
+                        console.log(`LineString #${++elementCount}:`);
+                        console.log(`- Raw color: ${style.line?.rawColor || 'not set'}`);
+                        console.log(`- Parsed color: ${style.line?.color || 'default'}`);
+                        console.log(`- Weight: ${style.line?.weight || 'default'}`);
+                        console.log(`- Opacity: ${style.line?.opacity || 'default'}`);
+                    }
 
                     // Обработка Polygon
                     const polygon = placemark.querySelector('Polygon');
                     if (polygon) {
                         const coords = parseCoordinates(polygon.querySelector('LinearRing'));
                         if (coords.length >= 3) {
-                            L.polygon(coords, {
+                            const poly = L.polygon(coords, {
                                 color: style.line.color || '#3388ff',
                                 weight: style.line.weight || 0,
                                 fillColor: style.poly.fillColor || '#3388ff',
                                 fillOpacity: style.poly.fillOpacity || 0.5
                             }).addTo(layerGroup);
+                            
+                            // Обновляем границы СРАЗУ ПОСЛЕ СОЗДАНИЯ
+                            if (poly.getBounds && poly.getBounds().isValid()) {
+                                bounds.extend(poly.getBounds());
+                            }
                         }
+                        
                         // Логирование информации о полигоне
                         console.log(`Polygon #${++elementCount}:`);
                         console.log(`- Raw fill color: ${style.poly?.rawColor || 'not set'}`); 
@@ -411,12 +417,11 @@ async function loadPermanentKmlLayers() {
                         console.log(`- Border weight: ${style.line?.weight || 'default'}`);
                         console.log(`- Border opacity: ${style.line?.opacity || 'default'}`);
                     }
-                    } // placemark
                     
                     // Закрываем группу для этого Placemark
-                    //console.groupEnd();
+                    console.groupEnd();
                 });
-                            
+                
                 console.log(`Total elements: ${elementCount}`);
                 console.groupEnd();
 
@@ -427,6 +432,7 @@ async function loadPermanentKmlLayers() {
                 // Применяем границы только если они валидны
                 if (bounds.isValid()) {
                     map.fitBounds(bounds);
+                }
             } catch (error) {
                 console.error(`Ошибка обработки слоя ${layerData.path}:`, error);
             }
@@ -785,19 +791,18 @@ async function init() {
         // Обновляем состояние кнопок сразу после установки индекса
         updateButtons();        
         
+        // Заполняем список городов
+        populateCitiesDropdown(); 
+                
+        // Показываем date-navigator при загрузке (активна карта)
+        document.querySelector('.date-navigator-wrapper').style.display = 'block';
+        
         // Перерисовываем карту после загрузки всех слоёв
         setTimeout(() => {
             if (map) map.invalidateSize();
-            updateCurrentCenterDisplay();
-        }, 500);           
+            updateCurrentCenterDisplay(); // Обновляем отображение координат центра карты
+        }, 50);           
         
-        // Заполняем список городов
-        populateCitiesDropdown(); 
-        
-        // Обновляем отображение центра карты
-        updateCurrentCenterDisplay();
-        // Показываем date-navigator при загрузке (активна карта)
-        document.querySelector('.date-navigator-wrapper').style.display = 'block';
         
     } catch (error) {
         console.error("Ошибка инициализации:", error);
