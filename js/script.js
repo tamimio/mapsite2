@@ -720,14 +720,16 @@ function setupCopyCoordsButton() {
     
     if (!btn || !coordsElement) return;
     
-    // Удаляем все предыдущие обработчики (на всякий случай)
+    // Удаляем все предыдущие обработчики
     const newBtn = btn.cloneNode(true);
     btn.parentNode.replaceChild(newBtn, btn);
     const finalBtn = newBtn;
     
     finalBtn.addEventListener('click', function() {
-        const coordsElement = document.getElementById('current-center-coords');
+        // Получаем координаты из элемента
+        const coords = coordsElement.textContent;
         
+        // Проверяем наличие координат
         if (!coords || coords.includes('не определен') || coords.includes('undefined')) {
             return;
         }
