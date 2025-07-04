@@ -119,6 +119,7 @@ body {
   min-height: 60px; /* Фиксированная минимальная высота */
   position: relative;
   z-index: 1001; /* наложение */
+  flex-wrap: nowrap;
 }
 
 /* Убираем отступы у навигационной панели */
@@ -132,14 +133,45 @@ body {
 }
 
 /* Стили для кнопок-ссылок */
-/* Выравниваем все элементы по центру по вертикали */
-.view-btn, .nav-btn, .lang-btn, .date-selector input,
-.coord-input, #cities-dropdown, .current-center {
+/* .view-btn, .nav-btn, .lang-btn, .date-selector input, */
+/* .coord-input, #cities-dropdown, .current-center { */
+  /* height: 40px; */
+  /* display: flex; */
+  /* align-items: center; */
+  /* box-sizing: border-box; */
+/* } */
+/* Стили для кнопок */
+.view-btn, .nav-btn, .lang-btn {
+  padding: 0 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #000;
+  text-decoration: none;
+  border-radius: 4px;
   height: 40px;
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-  width: 130px;
+  width: auto; /* Важно - автоширина */
+}
+
+/* Стили для полей ввода */
+.date-selector input, .coord-input, #cities-dropdown {
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  width: auto;
+}
+
+/* Специально для поля координат */
+.coord-input {
+  width: 150px; /* Уже чем было */
+}
+
+/* Для выпадающего списка городов */
+#cities-dropdown {
+  width: 150px; /* Уже чем было */
 }
 
 /* Специальные стили для кнопок */
