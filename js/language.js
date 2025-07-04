@@ -77,15 +77,15 @@ function setLanguage(lang) {
     document.getElementById('page-title').textContent = t.title;
     //document.getElementById('site-logo').alt = t.logoAlt;
     // document.getElementById('main-title').textContent = t.title;
-    document.getElementById('center-label').textContent = t.centerLabel;
+    document.getElementById('centerOn-label').textContent = t.centerLabel;
     document.getElementById('coords-input').placeholder = t.coordsPlaceholder;
     document.getElementById('select-city-default').textContent = t.selectCity;
     
     // Восстанавливаем координаты после обновления префикса
     if (savedCoords) {
-        coordsElement.textContent = t.currentCenter + savedCoords;
+        coordsElement.textContent = savedCoords;
     } else {
-        coordsElement.textContent = t.currentCenter + t.undefinedCoords;
+        coordsElement.textContent = t.undefinedCoords;
     }
     
     document.getElementById('copy-coords-btn').title = t.copyTooltip;
