@@ -91,24 +91,6 @@ function updateCurrentCenterDisplay() {
     currentCenterCoordsElement.textContent = `${center.lat.toFixed(6)}, ${center.lng.toFixed(6)}`;
 }
 
-// Обработчик кнопки копирования координат
-copyCoordsBtn.addEventListener('click', function() {
-    const coords = currentCenterCoordsElement.textContent;
-    if (coords && coords !== 'не определен') {
-        navigator.clipboard.writeText(coords)
-            .then(() => {
-                const originalText = this.textContent;
-                this.textContent = 'Скопировано!';
-                setTimeout(() => {
-                    this.textContent = originalText;
-                }, 2000);
-            })
-            .catch(err => {
-                console.error('Ошибка копирования: ', err);
-            });
-    }
-});
-
 // функция заполнения списка городов
 function populateCitiesDropdown() {
     // Проверяем, что элемент существует
@@ -750,24 +732,6 @@ citiesDropdown.addEventListener('change', function() {
     }
 });
 
-// Обработчик кнопки копирования координат
-copyCoordsBtn.addEventListener('click', function() {
-    const coords = currentCenterCoordsElement.textContent;
-    if (coords && coords !== 'не определен') {
-        navigator.clipboard.writeText(coords)
-            .then(() => {
-                const originalText = this.textContent;
-                this.textContent = 'Скопировано!';
-                setTimeout(() => {
-                    this.textContent = originalText;
-                }, 2000);
-            })
-            .catch(err => {
-                console.error('Ошибка копирования: ', err);
-            });
-    }
-});
-
 // обработчик перемещения карты
 map.on('moveend', function() {
     updateCurrentCenterDisplay();
@@ -778,75 +742,50 @@ function setupCopyCoordsButton() {
     const btn = document.getElementById('copy-coords-btn');
     const coordsElement = document.getElementById('current-center-label');
     
-    if (!btn || !coordsElement) {
-        console.error('Элементы для копирования координат не найдены');
-        return;
-    }
+    if (!btn || !coordsElement) return;
     
-    btn.addEventListener('click', function() {
+    // Удаляем все предыдущие обработчики (на всякий случай)
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    const finalBtn = newBtn;
+    
+    finalBtn.addEventListener('click', function() {
         const coords = coordsElement.textContent;
         
-        if (!coords || coords === 'не определен' || coords === 'undefined') {
-            console.warn('Нет координат для копирования');
+        if (!coords || coords.includes('не определен') || coords.includes('undefined')) {
             return;
         }
         
-        // Проверяем доступность Clipboard API
-        if (navigator.clipboard) {
-            // Используем современный API
-            navigator.clipboard.writeText(coords)
-                .then(() => {
-                    showCopiedFeedback(btn);
-                })
-                .catch(err => {
-                    console.error('Ошибка копирования через Clipboard API:', err);
-                    copyWithFallback(coords, btn);
-                });
-        } else {
-            // Используем fallback-метод
-            copyWithFallback(coords, btn);
-        }
-    });
-    
-    // Функция для отображения обратной связи
-    function showCopiedFeedback(button) {
-        const originalText = button.textContent;
-        const t = translations[currentLang];
-        button.textContent = t ? t.copiedText : '✓';
-        
-        setTimeout(() => {
-            button.textContent = originalText;
-        }, 2000);
-    }
-    
-    // Fallback метод копирования
-    function copyWithFallback(text, button) {
         try {
-            // Создаем временный textarea
+            // Fallback метод копирования
             const textArea = document.createElement('textarea');
-            textArea.value = text;
+            textArea.value = coords;
             textArea.style.position = 'fixed';
             textArea.style.opacity = 0;
-            
             document.body.appendChild(textArea);
-            textArea.focus();
             textArea.select();
             
-            // Пытаемся скопировать
             const successful = document.execCommand('copy');
             document.body.removeChild(textArea);
             
-            if (successful) {
-                showCopiedFeedback(button);
-            } else {
-                console.warn('Fallback метод копирования не сработал');
-                alert('Скопируйте координаты вручную: ' + text);
+            // Показываем обратную связь в любом случае
+            const originalText = finalBtn.textContent;
+            const t = translations[currentLang];
+            finalBtn.textContent = t ? t.copiedText : '✓';
+            
+            setTimeout(() => {
+                finalBtn.textContent = originalText;
+            }, 2000);
+            
+            if (!successful) {
+                console.warn('Копирование не удалось, показываем координаты');
+                alert(`${translations[currentLang]?.copyFallback || "Скопируйте координаты"}: ${coords}`);
             }
         } catch (err) {
-            console.error('Ошибка при использовании fallback метода:', err);
-            alert('Скопируйте координаты вручную: ' + text);
+            console.error('Ошибка копирования:', err);
+            alert(`${translations[currentLang]?.copyError || "Ошибка копирования"}: ${coords}`);
         }
-    }
+    });
 }
 
 async function init() {
@@ -862,10 +801,7 @@ async function init() {
     initDatePicker();
     populateCitiesDropdown();
     document.querySelector('.date-navigator-wrapper').style.display = 'block';
-    
-    // Настраиваем кнопку копирования
-    setupCopyCoordsButton();
-    
+        
     // Шаг 3: Ждем когда все элементы интерфейса будут доступны
     await waitForUIElements();
     

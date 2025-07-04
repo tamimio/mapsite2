@@ -10,12 +10,17 @@ const translations = {
         undefinedCoords: "не определен",
         copyTooltip: "Копировать координаты",
         copiedText: "Скопировано!",
+        copyFallback: "Скопируйте координаты вручную",
+        copyError: "Ошибка копирования",
+        
         firstBtnTitle: "Первый",
         prevBtnTitle: "Предыдущий",
         nextBtnTitle: "Следующий",
         lastBtnTitle: "Последний",
+        
         ruBtnTitle: "Текущий язык: Русский",
         enBtnTitle: "Переключить на Английский",
+        
         viewSwitchMap: "Карта",
         viewSwitchSt1: "Статистика1",
         viewSwitchSt2: "Статистика2"  
@@ -30,12 +35,17 @@ const translations = {
         undefinedCoords: "undefined",
         copyTooltip: "Copy coordinates",
         copiedText: "Copied!",
+        copyFallback: "Copy coordinates manually",
+        copyError: "Copy error",
+        
         firstBtnTitle: "First",
         prevBtnTitle: "Previous",
         nextBtnTitle: "Next",
         lastBtnTitle: "Last",
+        
         ruBtnTitle: "Switch to Russian",
         enBtnTitle: "Current language: English",
+        
         viewSwitchMap: "Map",
         viewSwitchSt1: "Statistics1",
         viewSwitchSt2: "Statistics2"
