@@ -145,3 +145,71 @@
     height: calc(100vh - 90px); /* Дополнительная корректировка */
   }
 }
+
+
+
+
+
+/* Для скрытия элементов в лупу */
+
+.nav-menu-toggle {
+    display: none;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    height: 30px;
+    width: 40px;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+}
+
+.nav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: -25;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    z-index: 2000;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    min-width: 200px;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-dropdown.active {
+    display: flex;
+}
+
+@media (max-width: 1200px) {
+    .nav-menu-toggle {
+        display: flex;
+    }
+    
+    /* Порядок скрытия элементов - можно менять */
+    .hideable-nav-item:nth-child(1) { order: 1; } /* Центрировать на: */
+    .hideable-nav-item:nth-child(2) { order: 2; } /* Поле ввода координат */
+    .hideable-nav-item:nth-child(3) { order: 3; } /* Выпадающий список городов */
+    .hideable-nav-item:nth-child(4) { order: 4; } /* Текущий центр */
+    
+    /* Скрываем элементы при уменьшении ширины */
+    .hideable-nav-item {
+        display: none;
+    }
+    
+    /* Показываем элементы в выпадающем меню */
+    .nav-dropdown .hideable-nav-item {
+        display: block;
+        width: 100%;
+    }
+    
+    .nav-dropdown .city-coord-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

@@ -50,20 +50,20 @@
             <div class="nav-wrapper">
                 <div class="date-navigator-wrapper">
                     <div class="date-navigator">
+                        <!-- Кнопки навигации по дате -->
                         <button id="first-btn" class="nav-btn" title="Первый">❮❮</button>
                         <button id="prev-btn" class="nav-btn" title="Предыдущий">❮</button>
-                        
                         <div class="date-selector">
                             <input type="text" id="date-picker" placeholder="DD.MM.YY">
                         </div>
-                        
                         <button id="next-btn" class="nav-btn" title="Следующий">❯</button>
                         <button id="last-btn" class="nav-btn" title="Последний">❯❯</button>
 
-                        <label id="centerOn-label">Центрировать на:</label>
-                        <input type="text" id="coords-input" placeholder="Широта, Долгота" class="coord-input">
-                        
-                        <div class="city-coord-group">
+                        <!-- Элементы для скрытия (с классом hideable-nav-item) -->
+                        <label id="centerOn-label" class="hideable-nav-item">Центрировать на:</label>
+                        <input type="text" id="coords-input" placeholder="Широта, Долгота" class="hideable-nav-item coord-input">
+
+                        <div class="city-coord-group hideable-nav-item">
                             <select id="cities-dropdown">
                                 <option value="" selected disabled id="select-city-default">Выберите город</option>
                             </select>
@@ -73,7 +73,13 @@
                                 <button id="copy-coords-btn" title="Копировать координаты" aria-label="Копировать координаты">⎘</button>
                             </div>
                         </div>
-                    </div>
+
+                        <!-- Кнопка для открытия меню -->
+                        <button id="nav-menu-toggle" class="nav-menu-toggle"> 🎯</button>
+
+                        <!-- Контейнер для скрытых элементов -->
+                        <div id="nav-dropdown" class="nav-dropdown"></div>
+                    </div> <!-- date-navigator -->
                 </div>
 			</div>
 			<!-- Переключатель языка -->

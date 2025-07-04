@@ -981,3 +981,57 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+// Лупа
+document.addEventListener('DOMContentLoaded', function() {
+    const navMenuToggle = document.getElementById('nav-menu-toggle');
+    const navDropdown = document.getElementById('nav-dropdown');
+    const dateNavigator = document.querySelector('.date-navigator');
+    const hideableItems = document.querySelectorAll('.hideable-nav-item');
+    
+    // Функция для перемещения элементов между контейнерами
+    function moveItemsToDropdown() {
+        hideableItems.forEach(item => {
+            navDropdown.appendChild(item);
+        });
+    }
+    
+    function moveItemsToNav() {
+        // Определим позицию для вставки (после кнопки "Последний")
+        const lastBtn = document.getElementById('last-btn');
+        const insertPosition = lastBtn.nextSibling;
+        
+        hideableItems.forEach(item => {
+            dateNavigator.insertBefore(item, insertPosition);
+        });
+    }
+    
+    // Обработчик для кнопки меню
+    navMenuToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        navDropdown.classList.toggle('active');
+    });
+    
+    // Закрытие меню при клике вне его
+    document.addEventListener('click', function(e) {
+        if (!navDropdown.contains(e.target)) {
+            navDropdown.classList.remove('active');
+        }
+    });
+    
+    // Обработчик изменения размера окна
+    window.addEventListener('resize', function() {
+        if (window.innerWidth < 1200) {
+            moveItemsToDropdown();
+        } else {
+            moveItemsToNav();
+            navDropdown.classList.remove('active');
+        }
+    });
+    
+    // Инициализация при загрузке
+    if (window.innerWidth < 1200) {
+        moveItemsToDropdown();
+    }
+});
