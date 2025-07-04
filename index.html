@@ -31,7 +31,7 @@
                 </a>
             </div>
 -->
-			<!-- Переключатель видов теперь в гамбургере -->
+			<!-- Переключатель видов в гамбургере -->
             <div class="view-menu-container">
                 <button class="view-menu-btn">☰</button>
                 <div class="view-dropdown">
@@ -47,42 +47,41 @@
 			</div>
 			
 			<!-- Навигация по дате -->
-            <div class="date-navigator-wrapper">
-                <div class="date-navigator">
-                    <button id="first-btn" class="nav-btn" title="Первый">❮❮</button>
-                    <button id="prev-btn" class="nav-btn" title="Предыдущий">❮</button>
-                    
-                    <div class="date-selector">
-                        <input type="text" id="date-picker" placeholder="DD.MM.YY">
-                    </div>
-                    
-                    <button id="next-btn" class="nav-btn" title="Следующий">❯</button>
-                    <button id="last-btn" class="nav-btn" title="Последний">❯❯</button>
+            <div class="nav-wrapper">
+                <div class="date-navigator-wrapper">
+                    <div class="date-navigator">
+                        <button id="first-btn" class="nav-btn" title="Первый">❮❮</button>
+                        <button id="prev-btn" class="nav-btn" title="Предыдущий">❮</button>
+                        
+                        <div class="date-selector">
+                            <input type="text" id="date-picker" placeholder="DD.MM.YY">
+                        </div>
+                        
+                        <button id="next-btn" class="nav-btn" title="Следующий">❯</button>
+                        <button id="last-btn" class="nav-btn" title="Последний">❯❯</button>
 
-                    <label id="centerOn-label">Центрировать на:</label>
-                    <input type="text" id="coords-input" placeholder="Широта, Долгота" class="coord-input">
-                    
-                    <div class="city-coord-group">
-                        <select id="cities-dropdown">
-                            <option value="" selected disabled id="select-city-default">Выберите город</option>
-                        </select>
-                        <div class="current-center">
-                            <label id="currentCenter-label">Текущий центр:</label>
-                            <span id="current-center-coords"></span>
-                            <button id="copy-coords-btn" title="Копировать координаты" aria-label="Копировать координаты">⎘</button>
+                        <label id="centerOn-label">Центрировать на:</label>
+                        <input type="text" id="coords-input" placeholder="Широта, Долгота" class="coord-input">
+                        
+                        <div class="city-coord-group">
+                            <select id="cities-dropdown">
+                                <option value="" selected disabled id="select-city-default">Выберите город</option>
+                            </select>
+                            <div class="current-center">
+                                <label id="currentCenter-label">Текущий центр:</label>
+                                <span id="current-center-coords"></span>
+                                <button id="copy-coords-btn" title="Копировать координаты" aria-label="Копировать координаты">⎘</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-			
+			</div>
 			<!-- Переключатель языка -->
 			<div class="language-switcher">
 				<button id="lang-ru" class="lang-btn" title="Переключить на Русский">🇷🇺</button>
 				<button id="lang-en" class="lang-btn" title="Switch to English">🇬🇧</button>
 			</div>
 			
-			<!-- Гамбургер-меню -->
-			<button class="hamburger-menu">☰</button>
 		</div>
 	</div>
     <div id="map-container" class="content-section active">

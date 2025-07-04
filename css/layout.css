@@ -15,17 +15,11 @@ body {
 
 .header-container {
     display: flex;
-/*
     align-items: center;
-*/
     justify-content: space-between;
-    flex-wrap: wrap;
-	width: 100%;
-/*
-    gap: 15px;
-*/
-    /* margin-bottom: 15px; */
-    height: 60px; /* Фиксированная высота для верхней панели */
+    width: 100%;
+    gap: 10px;
+    /* height: 60px; */
 }
 
 /* Для всех непосредственных детей header-container */
@@ -49,6 +43,15 @@ body {
   letter-spacing: 1px;
   margin: 0;
   margin-right: 0px;
+}
+
+/* Новый контейнер для навигации */
+.nav-wrapper {
+    flex: 1;
+    min-width: 0; /* Важно для правильного сжатия */
+    margin: 0 10px;
+    display: flex;
+    justify-content: center;
 }
 
 .content-section {
@@ -136,6 +139,7 @@ body {
   display: flex;
   align-items: center;
   box-sizing: border-box;
+  width: 130px;
 }
 
 /* Специальные стили для кнопок */
@@ -163,11 +167,12 @@ body {
 .date-navigator {
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    flex-grow: 1;
+    gap: 5px;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    /* flex-grow: 1; */
     /* Выравнивание по базовой линии для контейнера */
-    align-self: center;
+    /* align-self: center; */
 }
 
 .language-switcher {
@@ -188,7 +193,7 @@ body {
 .city-coord-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
 }
 
 .current-center {
@@ -204,16 +209,6 @@ body {
   cursor: pointer;
   margin-left: 5px;
   font-size: 1.2rem;
-}
-/* Стили для гамбургер-меню */
-.hamburger-menu {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 5px 10px;	
-    align-self: center; /* Выравниваем по центру */
 }
 
 /* Адаптивные стили */

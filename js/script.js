@@ -883,18 +883,6 @@ document.addEventListener('languageChanged', function(event) {
     }
 });
 
-// Обработчик гамбургер-меню
-document.querySelector('.hamburger-menu').addEventListener('click', function() {
-    document.querySelector('.nav-bar').classList.toggle('active');
-    
-    // Перерисовываем карту после изменения размера
-    if (map) {
-        setTimeout(() => {
-            map.invalidateSize();
-        }, 100);
-    }
-});
-
 // Закрываем меню при клике на карту
 document.getElementById('map').addEventListener('click', function() {
     if (window.innerWidth <= 768) {
