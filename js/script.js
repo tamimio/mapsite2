@@ -10,12 +10,11 @@ let currentIndex = kmlFiles.length - 1;
 let preserveZoom = false;
 
 let lastSelectedCity = null;
-const citiesDropdown = document.getElementById('cities-dropdown');
-const coordsInput = document.getElementById('coords-input');
-let currentCenterCoordsElement = document.getElementById('current-center-label');
-let copyCoordsBtn = document.getElementById('copy-coords-btn');
-// let copyCoordsBtn = null;
-// let currentCenterCoordsElement = null;
+// const citiesDropdown = document.getElementById('cities-dropdown');
+// const coordsInput = document.getElementById('coords-input');
+// let currentCenterCoordsElement = document.getElementById('current-center-label');
+// let copyCoordsBtn = document.getElementById('copy-coords-btn');
+let citiesDropdown, coordsInput, currentCenterCoordsElement, copyCoordsBtn;
 
 // Глобальный флаг для логгирования стилей временных файлов
 const LOG_TEMPORARY_STYLES = true; // Можно менять на false для отключения
@@ -788,11 +787,39 @@ function setupCopyCoordsButton() {
     });
 }
 
+// обработчик для нажатия Enter в поле ввода
+coordsInput.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    const coords = this.value.split(',').map(coord => coord.trim());
+    if (coords.length === 2) {
+      const lat = parseFloat(coords[0]);
+      const lng = parseFloat(coords[1]);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        centerMap(lat, lng);
+      }
+    }
+  }
+});
+
 async function init() {
   try {
     // Инициализируем переменные
+    citiesDropdown = document.getElementById('cities-dropdown');
+    coordsInput = document.getElementById('coords-input');
     currentCenterCoordsElement = document.getElementById('current-center-label');
     copyCoordsBtn = document.getElementById('copy-coords-btn');
+    
+    // обработчик для поля ввода координат
+    coordsInput.addEventListener('change', function() {
+      const coords = this.value.split(',').map(coord => coord.trim());
+      if (coords.length === 2) {
+        const lat = parseFloat(coords[0]);
+        const lng = parseFloat(coords[1]);
+        if (!isNaN(lat) && !isNaN(lng)) {
+          centerMap(lat, lng);
+        }
+      }
+    });
     
     // Шаг 1: Загружаем постоянные слои
     await loadPermanentKmlLayers();
