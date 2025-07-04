@@ -682,20 +682,6 @@ document.getElementById('last-btn').addEventListener('click', async () => {
 });
 
 
-// Обработчик ввода координат
-coordsInput.addEventListener('change', function() {
-    const coords = this.value.split(',').map(coord => coord.trim());
-    
-    if (coords.length === 2) {
-        const lat = parseFloat(coords[0]);
-        const lng = parseFloat(coords[1]);
-        
-        if (!isNaN(lat) && !isNaN(lng)) {
-            centerMap(lat, lng);
-        }
-    }
-});
-
 
 
 
@@ -787,19 +773,6 @@ function setupCopyCoordsButton() {
     });
 }
 
-// обработчик для нажатия Enter в поле ввода
-coordsInput.addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    const coords = this.value.split(',').map(coord => coord.trim());
-    if (coords.length === 2) {
-      const lat = parseFloat(coords[0]);
-      const lng = parseFloat(coords[1]);
-      if (!isNaN(lat) && !isNaN(lng)) {
-        centerMap(lat, lng);
-      }
-    }
-  }
-});
 
 async function init() {
   try {
@@ -809,7 +782,7 @@ async function init() {
     currentCenterCoordsElement = document.getElementById('current-center-label');
     copyCoordsBtn = document.getElementById('copy-coords-btn');
     
-    // обработчик для поля ввода координат
+    // Обработчик для поля ввода координат
     coordsInput.addEventListener('change', function() {
       const coords = this.value.split(',').map(coord => coord.trim());
       if (coords.length === 2) {
@@ -817,6 +790,20 @@ async function init() {
         const lng = parseFloat(coords[1]);
         if (!isNaN(lat) && !isNaN(lng)) {
           centerMap(lat, lng);
+        }
+      }
+    });
+    
+    // обработчик для нажатия Enter в поле ввода
+    coordsInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const coords = this.value.split(',').map(coord => coord.trim());
+        if (coords.length === 2) {
+          const lat = parseFloat(coords[0]);
+          const lng = parseFloat(coords[1]);
+          if (!isNaN(lat) && !isNaN(lng)) {
+            centerMap(lat, lng);
+          }
         }
       }
     });
