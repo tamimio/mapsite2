@@ -59,6 +59,13 @@ function setLanguage(lang) {
     currentLang = lang;
     const t = translations[lang];
     
+    // Сохраняем текущие координаты перед обновлением текста
+    const coordsElement = document.getElementById('current-center-label');
+    const currentText = coordsElement.textContent;
+    const coordsRegex = /[-]?\d+\.\d+,\s*[-]?\d+\.\d+/;
+    const match = currentText.match(coordsRegex);
+    const savedCoords = match ? match[0] : null;
+    
     // Обновляем title кнопок
     document.getElementById('lang-ru').title = 
         lang === 'ru' ? "Текущий язык: Русский" : "Переключить на Русский";
@@ -73,7 +80,14 @@ function setLanguage(lang) {
     document.getElementById('center-label').textContent = t.centerLabel;
     document.getElementById('coords-input').placeholder = t.coordsPlaceholder;
     document.getElementById('select-city-default').textContent = t.selectCity;
-    document.getElementById('current-center-label').textContent = t.currentCenter;
+    
+    // Восстанавливаем координаты после обновления префикса
+    if (savedCoords) {
+        coordsElement.textContent = t.currentCenter + savedCoords;
+    } else {
+        coordsElement.textContent = t.currentCenter + t.undefinedCoords;
+    }
+    
     document.getElementById('copy-coords-btn').title = t.copyTooltip;
 	
     document.getElementById('map-btn').textContent = t.viewSwitchMap;

@@ -86,7 +86,10 @@ function updateCurrentCenterDisplay() {
     
     const center = map.getCenter();
     if (center.lat === 0 && center.lng === 0) return; // Игнорируем нулевые координаты
-    currentCenterCoordsElement.textContent = `${center.lat.toFixed(6)}, ${center.lng.toFixed(6)}`;
+    
+    const t = translations[currentLang];
+    currentCenterCoordsElement.textContent = 
+        t.currentCenter + `${center.lat.toFixed(6)}, ${center.lng.toFixed(6)}`;
 }
 
 // функция заполнения списка городов
