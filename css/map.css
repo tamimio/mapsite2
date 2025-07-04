@@ -186,7 +186,7 @@
     display: flex;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1799px) {
     .nav-menu-toggle {
         display: flex;
     }
