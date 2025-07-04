@@ -152,7 +152,7 @@
 
 /* Для скрытия элементов в лупу */
 
-.nav-menu-toggle {
+#nav-menu-toggle {
     display: none;
     background: #f0f0f0;
     border: 1px solid #ccc;
@@ -163,21 +163,22 @@
     width: 40px;
     justify-content: center;
     align-items: center;
-    margin-left: 5px;
+    margin-left: 5px;    
 }
 
+/* Адаптация выпадающего меню */
 .nav-dropdown {
     display: none;
     position: absolute;
     top: 100%;
-    right: -25;
+    right: 0;
     background: white;
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 10px;
     z-index: 2000;
     box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    min-width: 200px;
+    min-width: 250px;
     flex-direction: column;
     gap: 10px;
 }
@@ -186,30 +187,90 @@
     display: flex;
 }
 
+.dropdown-item {
+    margin: 5px 0;
+}
+
+/* Стили для элементов в выпадающем меню */
+.nav-dropdown .dropdown-item {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.nav-dropdown .city-coord-group {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Скрываем элементы, когда они не нужны */
+.hideable-nav-item.hidden {
+    display: none !important;
+}
+
+
+/* Для мобильной адаптации */
 @media (max-width: 1799px) {
-    .nav-menu-toggle {
-        display: flex;
+    #nav-menu-toggle {
+        display: flex !important;
     }
     
-    /* Порядок скрытия элементов - можно менять */
-    .hideable-nav-item:nth-child(1) { order: 1; } /* Центрировать на: */
-    .hideable-nav-item:nth-child(2) { order: 2; } /* Поле ввода координат */
-    .hideable-nav-item:nth-child(3) { order: 3; } /* Выпадающий список городов */
-    .hideable-nav-item:nth-child(4) { order: 4; } /* Текущий центр */
-    
-    /* Скрываем элементы при уменьшении ширины */
-    .hideable-nav-item {
-        display: none;
+    .hideable-nav-item:not(.keep-visible) {
+        display: none !important;
     }
+}
+
+/* @media (min-width: 1800px) { */
+    /* .hideable-nav-item { */
+        /* display: flex !important; */
+    /* } */
     
-    /* Показываем элементы в выпадающем меню */
-    .nav-dropdown .hideable-nav-item {
-        display: block;
-        width: 100%;
-    }
-    
-    .nav-dropdown .city-coord-group {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+    /* .nav-dropdown .dropdown-item { */
+        /* display: none !important; */
+    /* } */
+/* } */
+
+
+/* Переопределение стилей для дартс-меню */
+#nav-dropdown.dropdown-item,
+#nav-dropdown .dropdown-item {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#nav-dropdown .dropdown-item label,
+#nav-dropdown .dropdown-item input,
+#nav-dropdown .dropdown-item select,
+#nav-dropdown .dropdown-item div {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    font-size: 1rem !important;
+    padding: 8px !important;
+    box-sizing: border-box;
+}
+
+#nav-dropdown .city-coord-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+}
+
+#nav-dropdown .current-center {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 5px !important;
+    align-items: center !important;
+}
+
+#nav-dropdown #copy-coords-btn {
+    display: inline-flex !important;
+    width: auto !important;
 }
