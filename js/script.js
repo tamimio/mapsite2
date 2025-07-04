@@ -12,7 +12,7 @@ let preserveZoom = false;
 let lastSelectedCity = null;
 citiesDropdown = document.getElementById('cities-dropdown');
 coordsInput = document.getElementById('coords-input');
-currentCenterCoordsElement = document.getElementById('current-center-label');
+currentCenterCoordsElement = document.getElementById('current-center-coords');
 copyCoordsBtn = document.getElementById('copy-coords-btn');
 
 // Глобальный флаг для логгирования стилей временных файлов
@@ -87,9 +87,8 @@ function updateCurrentCenterDisplay() {
     const center = map.getCenter();
     if (center.lat === 0 && center.lng === 0) return; // Игнорируем нулевые координаты
     
-    const t = translations[currentLang];
-    currentCenterCoordsElement.textContent = 
-        t.currentCenter + `${center.lat.toFixed(6)}, ${center.lng.toFixed(6)}`;
+    currentCenterCoordsElement.textContent =
+        `${center.lat.toFixed(6)}, ${center.lng.toFixed(6)}`;
 }
 
 // функция заполнения списка городов
@@ -121,16 +120,6 @@ function populateCitiesDropdown() {
 }
 
 // Функция центрирования карты по координатам
-// async function centerMap(lat, lng) {
-    // const currentZoom = map.getZoom();
-    // map.setView([lat, lng], currentZoom);
-    
-    // // Обновляем поле ввода, если координаты изменились
-    // if (document.getElementById('coords-input').value !== `${lat}, ${lng}`) {
-        // document.getElementById('coords-input').value = `${lat}, ${lng}`;
-    // }
-// }
-
 let highlightMarker = null;
 let highlightTimeout = null;
 let highlightAnimationInterval = null;
@@ -727,7 +716,7 @@ map.on('moveend', function() {
 // Функция для установки обработчика копирования
 function setupCopyCoordsButton() {
     const btn = document.getElementById('copy-coords-btn');
-    const coordsElement = document.getElementById('current-center-label');
+    const coordsElement = document.getElementById('current-center-coords');
     
     if (!btn || !coordsElement) return;
     
@@ -737,7 +726,7 @@ function setupCopyCoordsButton() {
     const finalBtn = newBtn;
     
     finalBtn.addEventListener('click', function() {
-        const coords = coordsElement.textContent;
+        const coordsElement = document.getElementById('current-center-coords');
         
         if (!coords || coords.includes('не определен') || coords.includes('undefined')) {
             return;

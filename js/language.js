@@ -60,7 +60,7 @@ function setLanguage(lang) {
     const t = translations[lang];
     
     // Сохраняем текущие координаты перед обновлением текста
-    const coordsElement = document.getElementById('current-center-label');
+    const coordsElement = document.getElementById('current-center-coords');
     const currentText = coordsElement.textContent;
     const coordsRegex = /[-]?\d+\.\d+,\s*[-]?\d+\.\d+/;
     const match = currentText.match(coordsRegex);
@@ -81,6 +81,7 @@ function setLanguage(lang) {
     document.getElementById('coords-input').placeholder = t.coordsPlaceholder;
     document.getElementById('select-city-default').textContent = t.selectCity;
     
+    document.getElementById('currentCenter-label').textContent = t.currentCenter;
     // Восстанавливаем координаты после обновления префикса
     if (savedCoords) {
         coordsElement.textContent = savedCoords;
@@ -118,9 +119,9 @@ function setLanguage(lang) {
     initDatePicker();
     
     // Если координаты не определены, обновляем текст
-    if (document.getElementById('current-center-label').textContent === 'не определен' || 
-        document.getElementById('current-center-label').textContent === 'undefined') {
-        document.getElementById('current-center-label').textContent = t.undefinedCoords;
+    if (document.getElementById('current-center-coords').textContent === 'не определен' || 
+        document.getElementById('current-center-coords').textContent === 'undefined') {
+        document.getElementById('current-center-coords').textContent = t.undefinedCoords;
     }
     
     // Сохраняем выбор в localStorage
