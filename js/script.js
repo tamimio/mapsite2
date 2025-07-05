@@ -715,54 +715,68 @@ map.on('moveend', function() {
 
 // Функция для установки обработчика копирования
 function setupCopyCoordsButton() {
-    const btn = document.getElementById('copy-coords-btn');
-    const coordsElement = document.getElementById('current-center-coords');
-    
-    if (!btn || !coordsElement) return;
-    
-    // Удаляем все предыдущие обработчики
-    const newBtn = btn.cloneNode(true);
-    btn.parentNode.replaceChild(newBtn, btn);
-    const finalBtn = newBtn;
-    
-    finalBtn.addEventListener('click', function() {
-        // Получаем координаты из элемента
+	
+    function handleCopyClick() {
+        // Находим ближайший элемент с координатами
+        const coordsElement = this.closest('.current-center')?.querySelector('.current-coords-display, #current-center-coords');
+        if (!coordsElement) return;
+        
         const coords = coordsElement.textContent;
-        
-        // Проверяем наличие координат
-        if (!coords || coords.includes('не определен') || coords.includes('undefined')) {
-            return;
-        }
-        
-        try {
-            // Fallback метод копирования
-            const textArea = document.createElement('textarea');
-            textArea.value = coords;
-            textArea.style.position = 'fixed';
-            textArea.style.opacity = 0;
-            document.body.appendChild(textArea);
-            textArea.select();
-            
-            const successful = document.execCommand('copy');
-            document.body.removeChild(textArea);
-            
-            // Показываем обратную связь в любом случае
-            const originalText = finalBtn.textContent;
-            const t = translations[currentLang];
-            finalBtn.textContent = t ? t.copiedText : '✓';
-            
-            setTimeout(() => {
-                finalBtn.textContent = originalText;
-            }, 2000);
-            
-            if (!successful) {
-                console.warn('Копирование не удалось, показываем координаты');
-                alert(`${translations[currentLang]?.copyFallback || "Скопируйте координаты"}: ${coords}`);
-            }
-        } catch (err) {
-            console.error('Ошибка копирования:', err);
-            alert(`${translations[currentLang]?.copyError || "Ошибка копирования"}: ${coords}`);
-        }
+		
+		const btn = document.getElementById('copy-coords-btn');
+		// const coordsElement = document.getElementById('current-center-coords');
+		
+		if (!btn || !coordsElement) return;
+		
+		// Удаляем все предыдущие обработчики
+		const newBtn = btn.cloneNode(true);
+		btn.parentNode.replaceChild(newBtn, btn);
+		const finalBtn = newBtn;
+		
+		finalBtn.addEventListener('click', function() {
+			// Получаем координаты из элемента
+			// const coords = coordsElement.textContent;
+			
+			// Проверяем наличие координат
+			if (!coords || coords.includes('не определен') || coords.includes('undefined')) {
+				return;
+			}
+			
+			try {
+				// Fallback метод копирования
+				const textArea = document.createElement('textarea');
+				textArea.value = coords;
+				textArea.style.position = 'fixed';
+				textArea.style.opacity = 0;
+				document.body.appendChild(textArea);
+				textArea.select();
+				
+				const successful = document.execCommand('copy');
+				document.body.removeChild(textArea);
+				
+				// Показываем обратную связь в любом случае
+				const originalText = finalBtn.textContent;
+				const t = translations[currentLang];
+				finalBtn.textContent = t ? t.copiedText : '✓';
+				
+				setTimeout(() => {
+					finalBtn.textContent = originalText;
+				}, 2000);
+				
+				if (!successful) {
+					console.warn('Копирование не удалось, показываем координаты');
+					alert(`${translations[currentLang]?.copyFallback || "Скопируйте координаты"}: ${coords}`);
+				}
+			} catch (err) {
+				console.error('Ошибка копирования:', err);
+				alert(`${translations[currentLang]?.copyError || "Ошибка копирования"}: ${coords}`);
+			}
+		});
+	}
+	
+    document.querySelectorAll('.copy-coords-btn').forEach(btn => {
+        btn.removeEventListener('click', handleCopyClick);
+        btn.addEventListener('click', handleCopyClick);
     });
 }
 
@@ -884,6 +898,9 @@ document.addEventListener('languageChanged', function(event) {
         datePicker.destroy();
         initDatePicker();
     }
+	
+    populateCitiesDropdown(); // Обновляем основной список
+    initDartMenu(); // Перестраиваем дартс-меню
 });
 
 // Закрываем меню при клике на карту
@@ -946,16 +963,19 @@ coordsInput.addEventListener('change', function() {
 
 // обработчик для нажатия Enter в поле ввода
 coordsInput.addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    const coords = this.value.split(',').map(coord => coord.trim());
-    if (coords.length === 2) {
-      const lat = parseFloat(coords[0]);
-      const lng = parseFloat(coords[1]);
-      if (!isNaN(lat) && !isNaN(lng)) {
-        centerMap(lat, lng);
-      }
+  // if (e.key === 'Enter') {
+    // const coords = this.value.split(',').map(coord => coord.trim());
+    // if (coords.length === 2) {
+      // const lat = parseFloat(coords[0]);
+      // const lng = parseFloat(coords[1]);
+      // if (!isNaN(lat) && !isNaN(lng)) {
+        // centerMap(lat, lng);
+      // }
+    // }
+  // }
+	if (e.key === 'Enter') {
+		this.dispatchEvent(new Event('change'));
     }
-  }
 });
 
 // Гамбургер переключатель видов
@@ -992,185 +1012,261 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+
+//////////////////////////////////////////////////////////////////////
+
+const navDropdown = document.getElementById('nav-dropdown');
+const navMenuToggle = document.getElementById('nav-menu-toggle');
+const hideableItems = document.querySelectorAll('.hideable-nav-item');
+clonedItems = [];
 // Дартс (Лупа)
 function initDartMenu() {
-        console.log("[initDartMenu] Инициализация дартс-меню...");
-    const navMenuToggle = document.getElementById('nav-menu-toggle');
-    const navDropdown = document.getElementById('nav-dropdown');
+    console.log("[initDartMenu] Инициализация дартс-меню...");
     
     if (!navMenuToggle || !navDropdown) return;
 
-    const hideableItems = document.querySelectorAll('.hideable-nav-item');
+    navMenuToggle.style.display = 'flex';
     console.log(`[initDartMenu] Найдено ${hideableItems.length} элементов с классом 'hideable-nav-item'`);
     
-    const clonedItems = [];
+    // Очищаем предыдущие клоны
     navDropdown.innerHTML = '';
-
-    // Клонируем элементы с очисткой классов и стилей
-    hideableItems.forEach((item, index) => {
-        console.log(`[initDartMenu] Клонирование элемента #${index}:`, item);
+    clonedItems = [];
+    
+    // Клонируем только необходимые элементы
+    const elementsToClone = [
+        'centerOn-label',
+        'coords-input',
+        'cities-dropdown',
+        'currentCenter-label',
+        'current-center-coords',
+        'copy-coords-btn'
+    ];
+    
+    // Создаем контейнер для элементов меню
+    const container = document.createElement('div');
+    container.className = 'dropdown-items-container';
+    
+    elementsToClone.forEach(id => {
+        const original = document.getElementById(id);
+        if (!original) return;
         
-        try {
-            const clone = item.cloneNode(true);
-            
-            // Удаляем проблемные классы
-            clone.classList.remove('hideable-nav-item');
-            clone.classList.add('dropdown-item');
-            
-            // Очищаем инлайновые стили
-            clone.style.cssText = '';
-            
-            // Для вложенных элементов очищаем классы и стили
-            if (clone.id === 'coords-input' || clone.id === 'cities-dropdown') {
-                clone.classList.remove('coord-input');
-            }
-            
-            // Для группы элементов
-            if (clone.classList.contains('city-coord-group')) {
-                clone.querySelectorAll('*').forEach(child => {
-                    child.classList.remove('hideable-nav-item');
-                    child.style.cssText = '';
-                });
-            }
-            
-            navDropdown.appendChild(clone);
-            clonedItems.push(clone);
-            
-        } catch (error) {
-            console.error(`[initDartMenu] Ошибка при клонировании:`, error);
-        }
+        const clone = original.cloneNode(true);
+        clone.id = `${id}-clone`;
+        clone.classList.add('dropdown-item');
+        
+        // Удаляем классы, которые могут конфликтовать
+        clone.classList.remove('hideable-nav-item');
+        
+        // Очищаем инлайновые стили
+        clone.style.cssText = '';
+        
+        container.appendChild(clone);
+        clonedItems.push(clone);
     });
     
+    navDropdown.appendChild(container);
     console.log(`[initDartMenu] В nav-dropdown добавлено ${clonedItems.length} элементов`);
 
-    // Функции управления видимостью
-    function showOriginalItems() {
-        console.log("[showOriginalItems] Показываем оригинальные элементы");
-        hideableItems.forEach(item => {
-            item.style.display = 'flex';
-            console.log(`[showOriginalItems] Показан элемент:`, item);
-        });
-    }
-    
-    function showDropdownItems() {
-        console.log("[showDropdownItems] Скрываем оригинальные элементы");
-        hideableItems.forEach(item => {
-            item.style.display = 'none';
-            console.log(`[showDropdownItems] Скрыт элемент:`, item);
-        });
-    }
-    
-    // Синхронизация состояния
-    function syncDropdownState() {
-        console.log("[syncDropdownState] Синхронизация состояний");
-        hideableItems.forEach((original, index) => {
-            const clone = clonedItems[index];
-            if (!clone) {
-                console.warn(`[syncDropdownState] Нет клона для элемента #${index}`);
-                return;
-            }
-            
-            // Синхронизация полей ввода
-            if (original.querySelector('input')) {
-                const origInput = original.querySelector('input');
-                const cloneInput = clone.querySelector('input');
-                if (cloneInput) {
-                    cloneInput.value = origInput.value;
-                    console.log(`[syncDropdownState] Синхронизировано поле ввода: ${origInput.value}`);
-                } else {
-                    console.warn(`[syncDropdownState] Не найден клон поля ввода для:`, original);
-                }
-            }
-            
-            // Синхронизация выпадающих списков
-            if (original.querySelector('select')) {
-                const origSelect = original.querySelector('select');
-                const cloneSelect = clone.querySelector('select');
-                if (cloneSelect) {
-                    cloneSelect.value = origSelect.value;
-                    console.log(`[syncDropdownState] Синхронизирован выпадающий список: ${origSelect.value}`);
-                } else {
-                    console.warn(`[syncDropdownState] Не найден клон выпадающего списка для:`, original);
-                }
-            }
-        });
-    }
-    
-    // Обработчик для кнопки меню
-    navMenuToggle.addEventListener('click', function(e) {
-        e.stopPropagation();
-        console.log("[navMenuToggle] Нажата кнопка дартс-меню");
-        syncDropdownState();
-        navDropdown.classList.toggle('active');
-        console.log(`[navMenuToggle] Состояние меню: ${navDropdown.classList.contains('active') ? 'открыто' : 'закрыто'}`);
-    });
-    
-    // Обработчики для клонов в выпадающем меню
-    navDropdown.querySelectorAll('input, select').forEach((clone, index) => {
-        clone.addEventListener('change', function() {
-            console.log(`[cloneChange] Изменение в клоне #${index}:`, this.value);
-            const original = hideableItems[index];
-            if (!original) {
-                console.warn(`[cloneChange] Нет оригинала для клона #${index}`);
-                return;
-            }
-            
-            // Обновляем оригинальный элемент
-            if (this.tagName === 'INPUT') {
-                const origInput = original.querySelector('input');
-                if (origInput) {
-                    origInput.value = this.value;
-                    console.log(`[cloneChange] Обновлено оригинальное поле: ${this.value}`);
-                    
-                    // Триггерим события для координат
-                    if (origInput.id === 'coords-input') {
-                        const event = new Event('change');
-                        origInput.dispatchEvent(event);
-                        console.log("[cloneChange] Отправлено событие change для coords-input");
-                    }
-                }
-            }
-            else if (this.tagName === 'SELECT') {
-                const origSelect = original.querySelector('select');
-                if (origSelect) {
-                    origSelect.value = this.value;
-                    console.log(`[cloneChange] Обновлен оригинальный список: ${this.value}`);
-                    
-                    // Триггерим события для выпадающих списков
-                    if (origSelect.id === 'cities-dropdown') {
-                        const event = new Event('change');
-                        origSelect.dispatchEvent(event);
-                        console.log("[cloneChange] Отправлено событие change для cities-dropdown");
-                    }
-                }
-            }
-        });
-    });
-    
-    // Закрытие меню при клике вне его
-    document.addEventListener('click', function(e) {
-        if (!navDropdown.contains(e.target) && e.target !== navMenuToggle) {
-            console.log("[documentClick] Клик вне меню, закрываем");
-            navDropdown.classList.remove('active');
-        }
-    });
+    // Добавляем обработчики для клонированных элементов
+    setupDropdownListeners();
     
     // Обработчик изменения размера окна
     function handleResize() {
-        console.log(`[handleResize] Размер окна: ${window.innerWidth}px`);
         if (window.innerWidth < 1800) {
-            console.log("[handleResize] Ширина < 1800px - показываем меню");
-            showDropdownItems();
-            navMenuToggle.style.display = 'block';
+            hideableItems.forEach(item => item.style.display = 'none');
+            navMenuToggle.style.display = 'flex';
         } else {
-            console.log("[handleResize] Ширина >= 1800px - скрываем меню");
-            showOriginalItems();
+            hideableItems.forEach(item => item.style.display = 'flex');
             navMenuToggle.style.display = 'none';
             navDropdown.classList.remove('active');
         }
     }
     
     window.addEventListener('resize', handleResize);
-    handleResize(); // Инициализация
-    console.log("[initDartMenu] Инициализация завершена");
+    handleResize();
+}
+
+    // Синхронизация состояния
+function syncDropdownState() {
+    // Координаты
+    const originalCoords = document.getElementById('current-center-coords');
+    const cloneCoords = document.getElementById('current-center-coords-clone');
+    if (originalCoords && cloneCoords) {
+        cloneCoords.textContent = originalCoords.textContent;
+    }
+
+    // Поле ввода координат
+    const originalInput = document.getElementById('coords-input');
+    const cloneInput = document.getElementById('coords-input-clone');
+    if (originalInput && cloneInput) {
+        cloneInput.value = originalInput.value;
+    }
+
+    // Выпадающий список городов
+    const originalDropdown = document.getElementById('cities-dropdown');
+    const cloneDropdown = document.getElementById('cities-dropdown-clone');
+    if (originalDropdown && cloneDropdown) {
+        cloneDropdown.value = originalDropdown.value;
+    }
+}
+    
+
+// Обработчики для клонов в выпадающем меню
+navDropdown.querySelectorAll('input, select').forEach(clone => {
+	clone.addEventListener('change', function() {
+		// Находим соответствующий оригинальный элемент по индексу
+		const index = Array.from(navDropdown.children).indexOf(this.parentElement);
+		if (index === -1) return;
+		
+		const original = hideableItems[index];
+		if (!original) return;
+		
+		// Обновляем оригинальный элемент
+		if (this.tagName === 'INPUT') {
+			const origInput = original.querySelector('input');
+			if (origInput) {
+				origInput.value = this.value;
+				
+				// Для координат - центрируем карту
+				if (origInput.id === 'coords-input') {
+					const coords = this.value.split(',').map(coord => parseFloat(coord.trim()));
+					if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+						centerMap(coords[0], coords[1]);
+					}
+				}
+			}
+		}
+		else if (this.tagName === 'SELECT') {
+			const origSelect = original.querySelector('select');
+			if (origSelect) {
+				origSelect.value = this.value;
+				
+				// Для выпадающего списка городов
+				const city = cities.find(c => c.name[currentLang] === this.value);
+				if (city) {
+					centerMap(city.lat, city.lng);
+				}
+			}
+		}
+	});
+});
+
+// Обработчик для кнопки копирования в меню
+navDropdown.querySelectorAll('.copy-coords-btn').forEach(btn => {
+	btn.addEventListener('click', function() {
+		const coordsElement = this.closest('.current-center')?.querySelector('.current-coords-display');
+		if (coordsElement) {
+			const coords = coordsElement.textContent;
+			copyToClipboard(coords, this);
+		}
+	});
+});
+
+// Закрытие меню при клике вне его
+document.addEventListener('click', function(e) {
+	if (!navDropdown.contains(e.target) && e.target !== navMenuToggle) {
+		navDropdown.classList.remove('active');
+	}
+});
+
+
+// Обработчик для кнопки меню
+navMenuToggle.addEventListener('click', function(e) {
+	e.stopPropagation();
+	console.log("[navMenuToggle] Кнопка меню нажата");
+    // Синхронизируем состояние перед открытием
+    syncDropdownState();
+    // Открываем/закрываем меню
+    navDropdown.classList.toggle('active');
+});
+
+
+function copyToClipboard(text, button) {
+    if (!text || text.includes('не определен') || text.includes('undefined')) {
+        return;
+    }
+    
+    try {
+        // Fallback метод копирования
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = 0;
+        document.body.appendChild(textArea);
+        textArea.select();
+        
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        // Показываем обратную связь
+        const originalText = button.textContent;
+        const t = translations[currentLang];
+        button.textContent = t ? t.copiedText : '✓';
+        
+        setTimeout(() => {
+            button.textContent = originalText;
+        }, 2000);
+        
+        if (!successful) {
+            console.warn('Копирование не удалось, показываем координаты');
+            alert(`${translations[currentLang]?.copyFallback || "Скопируйте координаты"}: ${text}`);
+        }
+    } catch (err) {
+        console.error('Ошибка копирования:', err);
+        alert(`${translations[currentLang]?.copyError || "Ошибка копирования"}: ${text}`);
+    }
+}
+
+function setupDropdownListeners() {
+    // Обработчик для поля ввода координат в меню
+    const coordsClone = document.getElementById('coords-input-clone');
+    if (coordsClone) {
+        coordsClone.addEventListener('change', function() {
+            const coords = this.value.split(',').map(coord => coord.trim());
+            if (coords.length === 2) {
+                const lat = parseFloat(coords[0]);
+                const lng = parseFloat(coords[1]);
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    centerMap(lat, lng);
+                }
+            }
+        });
+        
+        coordsClone.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                this.dispatchEvent(new Event('change'));
+            }
+        });
+    }
+
+    // Обработчик для выпадающего списка городов в меню
+    const citiesClone = document.getElementById('cities-dropdown-clone');
+    if (citiesClone) {
+        citiesClone.addEventListener('change', function() {
+            const selectedCityName = this.value;
+            if (!selectedCityName) return;
+            
+            const city = cities.find(c => 
+                c.name.ru === selectedCityName || 
+                c.name.en === selectedCityName
+            );
+            
+            if (city) {
+                centerMap(city.lat, city.lng);
+                this.value = "";
+            }
+        });
+    }
+
+    // Обработчик для кнопки копирования в меню
+    const copyBtnClone = document.getElementById('copy-coords-btn-clone');
+    if (copyBtnClone) {
+        copyBtnClone.addEventListener('click', function() {
+            const coordsElement = document.getElementById('current-center-coords-clone');
+            if (coordsElement) {
+                const coords = coordsElement.textContent;
+                copyToClipboard(coords, this);
+            }
+        });
+    }
 }

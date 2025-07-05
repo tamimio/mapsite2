@@ -60,7 +60,7 @@
                         <button id="last-btn" class="nav-btn" title="Последний">❯❯</button>
 
                         <!-- Элементы для скрытия (с классом hideable-nav-item) -->
-                        <label id="centerOn-label" class="hideable-nav-item">Центрировать на:</label>
+                        <label id="centerOn-label" class="hideable-nav-item" data-translate="centerLabel">Центрировать на:</label>
                         <input type="text" id="coords-input" placeholder="Широта, Долгота" class="hideable-nav-item coord-input">
 
                         <div class="city-coord-group hideable-nav-item">
@@ -68,14 +68,16 @@
                                 <option value="" selected disabled id="select-city-default">Выберите город</option>
                             </select>
                             <div class="current-center">
-                                <label id="currentCenter-label">Текущий центр:</label>
-                                <span id="current-center-coords"></span>
-                                <button id="copy-coords-btn" title="Копировать координаты" aria-label="Копировать координаты">⎘</button>
+                                <label id="currentCenter-label" data-translate="currentCenter">Текущий центр:</label>
+                                <span id="current-center-coords" class="current-coords-display"></span>
+                                <button id="copy-coords-btn" class="copy-coords-btn" title="Копировать координаты" aria-label="Копировать координаты">⎘</button>
                             </div>
                         </div>
 
                         <!-- Кнопка для открытия меню -->
-                        <button id="nav-menu-toggle" class="nav-menu-toggle"> 🎯</button>
+						<div style="position: relative; display: inline-block;" class="dart-menu-container">
+							<button id="nav-menu-toggle" class="nav-menu-toggle"> 🎯</button>
+						</div>
 
                         <!-- Контейнер для скрытых элементов -->
                         <div id="nav-dropdown" class="nav-dropdown"></div>

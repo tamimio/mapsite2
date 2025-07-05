@@ -100,6 +100,13 @@
     border-radius: 3px;
 }
 
+.current-coords-display {
+    font-family: monospace;
+    background: #f5f5f5;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
 #copy-coords-btn {
     background: none;
     border: none;
@@ -167,6 +174,11 @@
 }
 
 /* Адаптация выпадающего меню */
+.dart-menu-container {
+    position: relative;
+    display: inline-block;
+}
+
 .nav-dropdown {
     display: none;
     position: absolute;
@@ -176,19 +188,17 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 10px;
-    z-index: 2000;
+    z-index: 3000;
     box-shadow: 0 3px 10px rgba(0,0,0,0.2);
     min-width: 250px;
     flex-direction: column;
     gap: 10px;
+	width: 100%;
 }
 
 .nav-dropdown.active {
     display: flex;
-}
-
-.dropdown-item {
-    margin: 5px 0;
+    flex-direction: column;
 }
 
 /* Стили для элементов в выпадающем меню */
@@ -202,9 +212,23 @@
     align-items: flex-start;
 }
 
+.nav-dropdown .current-center {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: center;
+}
+
 /* Скрываем элементы, когда они не нужны */
 .hideable-nav-item.hidden {
     display: none !important;
+}
+
+.dropdown-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
 }
 
 
@@ -231,46 +255,47 @@
 
 
 /* Переопределение стилей для дартс-меню */
-#nav-dropdown.dropdown-item,
-#nav-dropdown .dropdown-item {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: static !important;
-    width: 100% !important;
-    height: auto !important;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-    box-sizing: border-box;
-}
 
-#nav-dropdown .dropdown-item label,
-#nav-dropdown .dropdown-item input,
-#nav-dropdown .dropdown-item select,
-#nav-dropdown .dropdown-item div {
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    font-size: 1rem !important;
-    padding: 8px !important;
-    box-sizing: border-box;
-}
+/* #nav-dropdown.dropdown-item, */
+/* #nav-dropdown .dropdown-item { */
+    /* display: flex !important; */
+    /* visibility: visible !important; */
+    /* opacity: 1 !important; */
+    /* position: static !important; */
+    /* width: 100% !important; */
+    /* height: auto !important; */
+    /* flex-direction: column; */
+    /* gap: 10px; */
+    /* padding: 10px; */
+    /* box-sizing: border-box; */
+/* } */
 
-#nav-dropdown .city-coord-group {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 10px !important;
-}
+/* #nav-dropdown .dropdown-item label, */
+/* #nav-dropdown .dropdown-item input, */
+/* #nav-dropdown .dropdown-item select, */
+/* #nav-dropdown .dropdown-item div { */
+    /* display: block !important; */
+    /* width: 100% !important; */
+    /* height: auto !important; */
+    /* font-size: 1rem !important; */
+    /* padding: 8px !important; */
+    /* box-sizing: border-box; */
+/* } */
 
-#nav-dropdown .current-center {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 5px !important;
-    align-items: center !important;
-}
+/* #nav-dropdown .city-coord-group { */
+    /* display: flex !important; */
+    /* flex-direction: column !important; */
+    /* gap: 10px !important; */
+/* } */
 
-#nav-dropdown #copy-coords-btn {
-    display: inline-flex !important;
-    width: auto !important;
-}
+/* #nav-dropdown .current-center { */
+    /* display: flex !important; */
+    /* flex-wrap: wrap !important; */
+    /* gap: 5px !important; */
+    /* align-items: center !important; */
+/* } */
+
+/* #nav-dropdown #copy-coords-btn { */
+    /* display: inline-flex !important; */
+    /* width: auto !important; */
+/* } */
