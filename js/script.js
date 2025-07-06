@@ -748,8 +748,17 @@ map.on('moveend', function() {
 
 // Функция для установки обработчика копирования
 function setupCopyCoordsButton() {
-    function copyHandler() {
-        const coordsElement = document.getElementById('current-center-coords');
+    function copyHandler(event) {
+        // Определяем, из какого контекста вызвано копирование
+        const isClone = event.target.id === 'copy-coords-btn-clone';
+        
+        let coordsElement;
+        if (isClone) {
+            coordsElement = document.getElementById('current-center-coords-clone');
+        } else {
+            coordsElement = document.getElementById('current-center-coords');
+        }
+        
         if (!coordsElement) return;
         
         const coords = coordsElement.textContent;
@@ -757,16 +766,25 @@ function setupCopyCoordsButton() {
             return;
         }
         
+        const button = event.target;
+        const originalText = button.textContent;
+        const t = translations[currentLang];
+        
         try {
             navigator.clipboard.writeText(coords).then(() => {
-                const t = translations[currentLang];
-                const msg = t ? t.copiedText : 'Скопировано!';
-                alert(msg);
+                // Визуальная обратная связь
+                button.textContent = t ? t.copiedText : '✓ Скопировано!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
             });
         } catch (err) {
             console.error('Ошибка копирования:', err);
-            const t = translations[currentLang];
-            alert(t ? t.copyError : 'Ошибка копирования');
+            button.textContent = t ? t.copyError : 'Ошибка!';
+            setTimeout(() => button.textContent = originalText, 2000);
         }
     }
 
@@ -1073,6 +1091,8 @@ function initDartMenu() {
     
     navDropdown.appendChild(container);
     console.log(`[initDartMenu] В nav-dropdown добавлено ${clonedItems.length} элементов`);
+
+	setupCopyCoordsButton(); // Повторная инициализация обработчиков копирования
 
     // Добавляем обработчики для клонированных элементов
     setupDropdownListeners();

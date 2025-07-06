@@ -125,6 +125,17 @@
     border-radius: 3px;
 }
 
+.copy-coords-btn.copied {
+    background-color: #4CAF50 !important;
+    color: white !important;
+    border-color: #4CAF50 !important;
+}
+
+#copy-coords-btn-clone.copied {
+    background-color: #4CAF50 !important;
+    color: white !important;
+}
+
 @media (max-width: 768px) {
   .top-bar {
     padding: 6px 10px;
