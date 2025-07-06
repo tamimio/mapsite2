@@ -87,8 +87,15 @@ function updateCurrentCenterDisplay() {
     const center = map.getCenter();
     if (center.lat === 0 && center.lng === 0) return; // Игнорируем нулевые координаты
     
+	// обновление лейбла
     currentCenterCoordsElement.textContent =
         `${center.lat.toFixed(6)}, ${center.lng.toFixed(6)}`;
+		
+    // Обновляем клон лейбла для дартс-меню
+    const cloneCoords = document.getElementById('current-center-coords-clone');
+    if (cloneCoords) {
+        cloneCoords.textContent = `${center.lat.toFixed(6)}, ${center.lng.toFixed(6)}`;
+    }
 }
 
 // функция заполнения списка городов
@@ -174,6 +181,26 @@ function centerMap(lat, lng) {
         map.removeLayer(highlightMarker);
         highlightMarker = null;
     }, 5000);
+	
+	
+	// Явно обновляем лейблы текущих координат
+    document.getElementById('current-center-coords').textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    
+    const cloneCoords = document.getElementById('current-center-coords-clone');
+    if (cloneCoords) {
+        cloneCoords.textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    }
+		
+    // Обновляем поля ввода координат
+    const coordValue = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    
+    // Основное поле ввода
+    const coordsInput = document.getElementById('coords-input');
+    if (coordsInput) coordsInput.value = coordValue;
+    
+    // Клон поля ввода для дартс-меню
+    const coordsClone = document.getElementById('coords-input-clone');
+    if (coordsClone) coordsClone.value = coordValue;
 }
 
 
@@ -685,7 +712,13 @@ document.getElementById('cities-dropdown').addEventListener('change', async func
     
     const city = cities.find(c => c.name.ru === selectedCityName);
     if (city) {
-        document.getElementById('coords-input').value = `${city.lat}, ${city.lng}`;
+        // Обновляем все поля ввода
+        const coordsInput = document.getElementById('coords-input');
+        const coordsClone = document.getElementById('coords-input-clone');
+        
+        if (coordsInput) coordsInput.value = `${city.lat}, ${city.lng}`;
+        if (coordsClone) coordsClone.value = `${city.lat}, ${city.lng}`;
+        
         centerMap(city.lat, city.lng);
         this.value = "";
     }
@@ -715,69 +748,41 @@ map.on('moveend', function() {
 
 // Функция для установки обработчика копирования
 function setupCopyCoordsButton() {
-	
-    function handleCopyClick() {
-        // Находим ближайший элемент с координатами
-        const coordsElement = this.closest('.current-center')?.querySelector('.current-coords-display, #current-center-coords');
+    function copyHandler() {
+        const coordsElement = document.getElementById('current-center-coords');
         if (!coordsElement) return;
         
         const coords = coordsElement.textContent;
-		
-		const btn = document.getElementById('copy-coords-btn');
-		// const coordsElement = document.getElementById('current-center-coords');
-		
-		if (!btn || !coordsElement) return;
-		
-		// Удаляем все предыдущие обработчики
-		const newBtn = btn.cloneNode(true);
-		btn.parentNode.replaceChild(newBtn, btn);
-		const finalBtn = newBtn;
-		
-		finalBtn.addEventListener('click', function() {
-			// Получаем координаты из элемента
-			// const coords = coordsElement.textContent;
-			
-			// Проверяем наличие координат
-			if (!coords || coords.includes('не определен') || coords.includes('undefined')) {
-				return;
-			}
-			
-			try {
-				// Fallback метод копирования
-				const textArea = document.createElement('textarea');
-				textArea.value = coords;
-				textArea.style.position = 'fixed';
-				textArea.style.opacity = 0;
-				document.body.appendChild(textArea);
-				textArea.select();
-				
-				const successful = document.execCommand('copy');
-				document.body.removeChild(textArea);
-				
-				// Показываем обратную связь в любом случае
-				const originalText = finalBtn.textContent;
-				const t = translations[currentLang];
-				finalBtn.textContent = t ? t.copiedText : '✓';
-				
-				setTimeout(() => {
-					finalBtn.textContent = originalText;
-				}, 2000);
-				
-				if (!successful) {
-					console.warn('Копирование не удалось, показываем координаты');
-					alert(`${translations[currentLang]?.copyFallback || "Скопируйте координаты"}: ${coords}`);
-				}
-			} catch (err) {
-				console.error('Ошибка копирования:', err);
-				alert(`${translations[currentLang]?.copyError || "Ошибка копирования"}: ${coords}`);
-			}
-		});
-	}
-	
-    document.querySelectorAll('.copy-coords-btn').forEach(btn => {
-        btn.removeEventListener('click', handleCopyClick);
-        btn.addEventListener('click', handleCopyClick);
-    });
+        if (!coords || coords.includes('не определен') || coords.includes('undefined')) {
+            return;
+        }
+        
+        try {
+            navigator.clipboard.writeText(coords).then(() => {
+                const t = translations[currentLang];
+                const msg = t ? t.copiedText : 'Скопировано!';
+                alert(msg);
+            });
+        } catch (err) {
+            console.error('Ошибка копирования:', err);
+            const t = translations[currentLang];
+            alert(t ? t.copyError : 'Ошибка копирования');
+        }
+    }
+
+    // Для основной кнопки
+    const mainCopyBtn = document.getElementById('copy-coords-btn');
+    if (mainCopyBtn) {
+        mainCopyBtn.removeEventListener('click', copyHandler);
+        mainCopyBtn.addEventListener('click', copyHandler);
+    }
+    
+    // Для кнопки в дартс-меню
+    const cloneCopyBtn = document.getElementById('copy-coords-btn-clone');
+    if (cloneCopyBtn) {
+        cloneCopyBtn.removeEventListener('click', copyHandler);
+        cloneCopyBtn.addEventListener('click', copyHandler);
+    }
 }
 
 
@@ -807,7 +812,9 @@ async function init() {
 	
 	//
 	// Настройка кнопки после инициализации элементов
-    setupCopyCoordsButton();
+    setTimeout(() => {
+        setupCopyCoordsButton();
+    }, 500);
     
     // Инициализация дартс-меню
     initDartMenu(); 
@@ -1084,6 +1091,9 @@ function initDartMenu() {
     
     window.addEventListener('resize', handleResize);
     handleResize();
+	
+    // Синхронизируем состояние при инициализации
+    syncDropdownState();
 }
 
     // Синхронизация состояния
@@ -1252,6 +1262,13 @@ function setupDropdownListeners() {
             );
             
             if (city) {
+                // Обновляем поле ввода координат
+                const coordsInput = document.getElementById('coords-input');
+                const coordsClone = document.getElementById('coords-input-clone');
+                
+                if (coordsInput) coordsInput.value = `${city.lat}, ${city.lng}`;
+                if (coordsClone) coordsClone.value = `${city.lat}, ${city.lng}`;
+                
                 centerMap(city.lat, city.lng);
                 this.value = "";
             }
