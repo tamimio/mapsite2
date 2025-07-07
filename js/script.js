@@ -767,7 +767,6 @@ function setupCopyCoordsButton() {
         }
         
         const button = event.target;
-        const originalText = button.textContent;
         const t = translations[currentLang];
         
         try {
@@ -787,7 +786,9 @@ function setupCopyCoordsButton() {
             button.classList.add('copied');
             
             setTimeout(() => {
-                button.textContent = originalText;
+                if (button.dataset.originalText) {
+                    button.textContent = button.dataset.originalText;
+                }
                 button.classList.remove('copied');
             }, 2000);
             
@@ -798,7 +799,9 @@ function setupCopyCoordsButton() {
             console.error('Ошибка копирования:', err);
             button.textContent = t ? t.copyError : 'Ошибка!';
             setTimeout(() => {
-                button.textContent = originalText;
+                if (button.dataset.originalText) {
+                    button.textContent = button.dataset.originalText;
+                }
                 button.classList.remove('copied');
             }, 2000);
         }
@@ -807,6 +810,8 @@ function setupCopyCoordsButton() {
     // Для основной кнопки
     const mainCopyBtn = document.getElementById('copy-coords-btn');
     if (mainCopyBtn) {
+        // Сохраняем исходный текст
+        mainCopyBtn.dataset.originalText = mainCopyBtn.textContent;
         mainCopyBtn.removeEventListener('click', copyHandler);
         mainCopyBtn.addEventListener('click', copyHandler);
     }
@@ -814,10 +819,13 @@ function setupCopyCoordsButton() {
     // Для кнопки в дартс-меню
     const cloneCopyBtn = document.getElementById('copy-coords-btn-clone');
     if (cloneCopyBtn) {
+        // Сохраняем исходный текст
+        cloneCopyBtn.dataset.originalText = cloneCopyBtn.textContent;
         cloneCopyBtn.removeEventListener('click', copyHandler);
         cloneCopyBtn.addEventListener('click', copyHandler);
     }
 }
+
 
 async function init() {
   try {
@@ -1244,13 +1252,14 @@ function copyToClipboard(text, button) {
         document.body.removeChild(textArea);
         
         // Показываем обратную связь
-        const originalText = button.textContent;
         const t = translations[currentLang];
         button.textContent = t ? t.copiedText : '✓';
         button.classList.add('copied');
         
         setTimeout(() => {
-            button.textContent = originalText;
+            if (button.dataset.originalText) {
+                button.textContent = button.dataset.originalText;
+            }
             button.classList.remove('copied');
         }, 2000);
         
@@ -1262,7 +1271,9 @@ function copyToClipboard(text, button) {
         console.error('Ошибка копирования:', err);
         button.textContent = translations[currentLang]?.copyError || "Ошибка";
         setTimeout(() => {
-            button.textContent = originalText;
+            if (button.dataset.originalText) {
+                button.textContent = button.dataset.originalText;
+            }
             button.classList.remove('copied');
         }, 2000);
     }
