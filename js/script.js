@@ -771,20 +771,36 @@ function setupCopyCoordsButton() {
         const t = translations[currentLang];
         
         try {
-            navigator.clipboard.writeText(coords).then(() => {
-                // Визуальная обратная связь
-                button.textContent = t ? t.copiedText : '✓ Скопировано!';
-                button.classList.add('copied');
-                
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.classList.remove('copied');
-                }, 2000);
-            });
+            // Создаем временный элемент для копирования
+            const textArea = document.createElement('textarea');
+            textArea.value = coords;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = 0;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            // Визуальная обратная связь
+            button.textContent = t ? t.copiedText : '✓ Скопировано!';
+            button.classList.add('copied');
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('copied');
+            }, 2000);
+            
+            if (!successful) {
+                throw new Error('Copy command failed');
+            }
         } catch (err) {
             console.error('Ошибка копирования:', err);
             button.textContent = t ? t.copyError : 'Ошибка!';
-            setTimeout(() => button.textContent = originalText, 2000);
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('copied');
+            }, 2000);
         }
     }
 
@@ -802,7 +818,6 @@ function setupCopyCoordsButton() {
         cloneCopyBtn.addEventListener('click', copyHandler);
     }
 }
-
 
 async function init() {
   try {
@@ -1232,9 +1247,11 @@ function copyToClipboard(text, button) {
         const originalText = button.textContent;
         const t = translations[currentLang];
         button.textContent = t ? t.copiedText : '✓';
+        button.classList.add('copied');
         
         setTimeout(() => {
             button.textContent = originalText;
+            button.classList.remove('copied');
         }, 2000);
         
         if (!successful) {
@@ -1243,7 +1260,11 @@ function copyToClipboard(text, button) {
         }
     } catch (err) {
         console.error('Ошибка копирования:', err);
-        alert(`${translations[currentLang]?.copyError || "Ошибка копирования"}: ${text}`);
+        button.textContent = translations[currentLang]?.copyError || "Ошибка";
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.classList.remove('copied');
+        }, 2000);
     }
 }
 
