@@ -15,6 +15,17 @@
     margin-top: 5px;
 }
 
+@media (max-width: 480px) {
+    .view-dropdown {
+        width: 100vw;
+        left: 0 !important;
+        right: auto !important;
+        top: 40px !important;
+        border-radius: 0;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+}
+
 .view-btn {
   /* Убираем стандартные стили кнопки */
   background: none;

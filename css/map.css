@@ -136,19 +136,6 @@
     color: white !important;
 }
 
-@media (max-width: 768px) {
-  .top-bar {
-    padding: 6px 10px;
-  }
-  
-  .nav-bar {
-    padding: 6px 10px;
-  }
-  
-  #map {
-    height: calc(100vh - 100px); /* Корректируем высоту для мобильных */
-  }
-}
 
 @media (max-width: 480px) {
   .top-bar {
@@ -244,7 +231,7 @@
 
 
 /* Для мобильной адаптации */
-@media (max-width: 1799px) {
+@media (max-width: 1799px) { /* Когда схлопываем в дартс-меню */
     #nav-menu-toggle {
         display: flex !important;
     }
