@@ -137,25 +137,8 @@
 }
 
 
-@media (max-width: 480px) {
-  .top-bar {
-    padding: 4px 8px;
-  }
-  
-  .nav-bar {
-    padding: 4px 8px;
-  }
-  
-  #map {
-    height: calc(100vh - 90px); /* Дополнительная корректировка */
-  }
-}
 
-
-
-
-
-/* Для скрытия элементов в лупу */
+/* Для скрытия элементов в дартс */
 
 #nav-menu-toggle {
     display: none;
@@ -185,9 +168,9 @@
     background: white;
     border: 1px solid #ddd;
     border-radius: 4px;
-    padding: 10px;
-    z-index: 3000;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    padding: 15px;
+    z-index: 2000;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     min-width: 250px;
     flex-direction: column;
     gap: 10px;
@@ -213,7 +196,7 @@
 .nav-dropdown .current-center {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    /* gap: 5px; */
     align-items: center;
 }
 
@@ -225,7 +208,7 @@
 .dropdown-items-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
     padding: 10px;
 }
 
@@ -239,61 +222,19 @@
     .hideable-nav-item:not(.keep-visible) {
         display: none !important;
     }
+    
+    .hideable-nav-item {
+        display: none !important;
+    }
+    
+    .nav-dropdown {
+        min-width: 300px;
+        width: auto;
+    }
 }
 
-/* @media (min-width: 1800px) { */
-    /* .hideable-nav-item { */
-        /* display: flex !important; */
-    /* } */
-    
-    /* .nav-dropdown .dropdown-item { */
-        /* display: none !important; */
-    /* } */
-/* } */
-
-
-/* Переопределение стилей для дартс-меню */
-
-/* #nav-dropdown.dropdown-item, */
-/* #nav-dropdown .dropdown-item { */
-    /* display: flex !important; */
-    /* visibility: visible !important; */
-    /* opacity: 1 !important; */
-    /* position: static !important; */
-    /* width: 100% !important; */
-    /* height: auto !important; */
-    /* flex-direction: column; */
-    /* gap: 10px; */
-    /* padding: 10px; */
-    /* box-sizing: border-box; */
-/* } */
-
-/* #nav-dropdown .dropdown-item label, */
-/* #nav-dropdown .dropdown-item input, */
-/* #nav-dropdown .dropdown-item select, */
-/* #nav-dropdown .dropdown-item div { */
-    /* display: block !important; */
-    /* width: 100% !important; */
-    /* height: auto !important; */
-    /* font-size: 1rem !important; */
-    /* padding: 8px !important; */
-    /* box-sizing: border-box; */
-/* } */
-
-/* #nav-dropdown .city-coord-group { */
-    /* display: flex !important; */
-    /* flex-direction: column !important; */
-    /* gap: 10px !important; */
-/* } */
-
-/* #nav-dropdown .current-center { */
-    /* display: flex !important; */
-    /* flex-wrap: wrap !important; */
-    /* gap: 5px !important; */
-    /* align-items: center !important; */
-/* } */
-
-/* #nav-dropdown #copy-coords-btn { */
-    /* display: inline-flex !important; */
-    /* width: auto !important; */
-/* } */
+@media (min-width: 1800px) {
+    #nav-menu-toggle {
+        display: none !important;
+    }
+}

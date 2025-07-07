@@ -45,6 +45,10 @@ body {
   margin-right: 0px;
 }
 
+.mobile-title {
+    display: none;
+}
+
 /* Новый контейнер для навигации */
 .nav-wrapper {
     flex: 1;
@@ -112,7 +116,7 @@ body {
   min-height: 60px; /* Фиксированная минимальная высота */
   position: relative;
   z-index: 1001; /* наложение */
-  flex-wrap: nowrap;
+  /* flex-wrap: nowrap; */
 }
 
 /* Убираем отступы у навигационной панели */
@@ -238,63 +242,111 @@ body {
 
 /* Адаптивные стили */
 
-@media (max-width: 825px) {
+@media (max-width: 825px) { /* Когда перестаёт помещаться в одну строку */
   .header-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* width: 50%; */
-    /* gap: 10px; */
-    /* height: 60px; */
 }
 
-  .title-section {
-    /* width: 100%; */
-    /* justify-content: space-between; */
-    /* margin-bottom: 10px; */
-  }
+  .title-section h1 {
+    display: none;
+}
+    
+  .mobile-title {
+    display: inline;
+    font-family: 'Wallpoet', monospace;
+    color: #F51F0F;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    margin: 0;
+    margin-right: 0px;
+    margin-left: 5px;
+}
   
-.header-container {
+  .header-container {
     flex-direction: column;
     align-items: flex-start;
 }
   
   .view-switcher {
-    margin-right: 0;
+    /* margin-right: 0; */
   }
   
   .date-navigator {
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
   }
   
   .city-coord-group {
     /* flex-wrap: wrap; */
     /* margin-top: 10px; */
   }
+
 }
 
-@media (max-width: 576px) {
-  .top-bar {
-    padding: 8px 10px;
-  }
-  
-  .title-section h1 {
-    font-size: 1.8rem;
-  }
-  
-  .view-btn {
-    padding: 0 8px;
-    font-size: 0.9rem;
-  }
-  
-  .date-navigator {
-    gap: 5px;
-  }
-  
-  .date-selector {
-    width: 100px;
-  }
-}
+/* @media (max-width: 825px) { */
+    /* .header-container { */
+        /* display: flex; */
+        /* flex-direction: column; */
+        /* align-items: stretch; */
+        /* gap: 10px; */
+    /* } */
+    
+    /* .top-row { */
+        /* display: flex; */
+        /* justify-content: space-between; */
+        /* align-items: center; */
+        /* width: 100%; */
+    /* } */
+    
+    /* .view-menu-container { */
+        /* order: 1; */
+        /* margin-right: 0; */
+    /* } */
+    
+    /* .title-section { */
+        /* order: 2; */
+        /* margin-right: 0; */
+        /* display: flex; */
+        /* justify-content: center; */
+    /* } */
+    
+    /* .title-section h1 { */
+        /* display: none; */
+    /* } */
+    
+    /* .mobile-title { */
+        /* display: inline; */
+        /* font-family: 'Wallpoet', monospace; */
+        /* color: #F51F0F; */
+        /* font-size: 1.5rem; */
+        /* letter-spacing: 1px; */
+        /* margin: 0; */
+    /* } */
+    
+    /* .language-switcher { */
+        /* order: 3; */
+        /* margin-left: 0; */
+    /* } */
+    
+    /* .nav-wrapper { */
+        /* order: 4; */
+        /* width: 100%; */
+        /* margin: 0; */
+    /* } */
+    
+    /* .date-navigator { */
+        /* flex-wrap: wrap; */
+        /* justify-content: center; */
+        /* gap: 5px; */
+    /* } */
+    
+    /* .date-navigator > * { */
+        /* flex: 0 0 auto; */
+    /* } */
+/* } */
+
+
 
 /* Стили для лого */
 
@@ -399,111 +451,12 @@ body {
     background: rgba(0,0,0,0.1);
 }
 
-
-/* Для мобильных */
-@media (max-width: 770px) {
-    .view-menu-container {
-        /* position: relative; */
-        /* top: auto; */
-        /* left: auto; */
-        z-index: 1002;
-        /* margin-bottom: 10px;  Добавляем отступ вместо позиционирования */
-    }
-    
-    .view-menu-btn {
-    }
-    
-    .header-container {
-        padding-left: 0;
-        /* flex-wrap: wrap; /* Разрешаем перенос элементов */ */
-    }
-    
-    .title-section {
-        order: 1; /* Заголовок первым */
-        /* width: 100%; */
-        /* margin-bottom: 10px; */
-    }
-    
-    .view-menu-container {
-        order:2; /* Кнопка меню второй */
-    }
-    
-    .nav-wrapper {
-        order: 3; /* Навигация третьей */
-        /* width: 100%; */
-    }
-    
-    .language-switcher {
-        order: 4; /* Переключатель языка последним */
-        /* margin-left: 0; */
-        /* margin-top: 10px; */
-    }
-}
-
-
 /* Навигация по дате */
 
 .date-navigator-wrapper {
     display: block;
     width: 100%;
     order: 3; /* Располагаем после заголовка и кнопок */
-    margin-top: 10px;
+    margin-top: 0;
 }
 
-@media (min-width: 992px) {
-    .date-navigator-wrapper {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 0;
-    }
-}
-
-
-
-@media (max-width: 768px) {
-    .date-navigator-wrapper {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .date-navigator {
-        flex-wrap: wrap;
-    }
-    
-    .city-coord-group {
-        flex-wrap: wrap;
-    }
-}
-
-@media (max-width: 563px) {
-    .date-navigator {
-        gap: 5px;
-    }
-    
-    .date-selector {
-        width: 100px;
-    }
-}
-
-
-
-
-
-.mobile-title {
-    display: none;
-}
-
-@media (max-width: 563px) {
-    .title-section h1 {
-        display: none;
-    }
-    
-    .mobile-title {
-        display: inline;
-        font-size: 1.5rem;
-        margin-left: 5px;
-    }
-}
