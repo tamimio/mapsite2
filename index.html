@@ -23,17 +23,10 @@
 <body>
     <div class="top-bar">
 		<div class="header-container">
-        <!-- <div class="top-row"> -->
-            <!-- Лого -->
-<!--
-            <div class="title-section">
-                <a href="/" id="logo-link">
-                    <img id="site-logo" src="img/logo.png" alt="dataviewer">
-                </a>
-            </div>
--->
+        <!-- Мобильная строка (остается только для мобильных) -->
+        <div class="mobile-top-row">
 			<!-- Переключатель видов в гамбургере -->
-            <div class="view-menu-container">
+            <div class="view-menu-container mobile">
                 <button class="view-menu-btn">☰</button>
                 <div class="view-dropdown">
                     <button id="map-btn" class="view-btn active">Карта</button>
@@ -43,11 +36,35 @@
             </div>
             
 			<!-- Заголовок -->
-			<div class="title-section">
+			<div class="title-section mobile">
+<!--
 				<h1 id="page-title">My dataviewer</h1>
+-->
                 <span class="mobile-title">MD</span>
 			</div>
+
+            <!-- Переключатель языка -->
+			<div class="language-switcher mobile">
+				<button id="lang-ru" class="lang-btn" title="Переключить на Русский">🇷🇺</button>
+				<button id="lang-en" class="lang-btn" title="Switch to English">🇬🇧</button>
+			</div>
+            
+        </div> <!-- mobile-top-row -->
 			
+        <!-- Десктопные элементы -->
+        <div class="view-menu-container desktop-visible">
+            <button class="view-menu-btn">☰</button>
+            <div class="view-dropdown">
+                <button id="map-btn-desktop" class="view-btn active">Карта</button>
+                <button id="stats1-btn-desktop" class="view-btn">Статистика1</button>
+                <button id="stats2-btn-desktop" class="view-btn">Статистика2</button>
+            </div>
+        </div>
+        
+        <div class="title-section desktop-visible">
+            <h1 id="page-title">My dataviewer</h1>
+        </div>
+        
 			<!-- Навигация по дате -->
             <div class="nav-wrapper">
                 <div class="date-navigator-wrapper">
@@ -87,13 +104,12 @@
                 </div>
 			</div>
 			
-            <!-- Переключатель языка -->
-			<div class="language-switcher">
-				<button id="lang-ru" class="lang-btn" title="Переключить на Русский">🇷🇺</button>
-				<button id="lang-en" class="lang-btn" title="Switch to English">🇬🇧</button>
-			</div>
+        <div class="language-switcher desktop-visible">
+            <button id="lang-ru-desktop" class="lang-btn" title="Переключить на Русский">🇷🇺</button>
+            <button id="lang-en-desktop" class="lang-btn" title="Switch to English">🇬🇧</button>
+        </div>
+            
 			
-        <!-- </div> top-row -->
 		</div> <!-- header-container -->
 	</div>
     <div id="map-container" class="content-section active">

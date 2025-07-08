@@ -238,3 +238,40 @@
         display: none !important;
     }
 }
+
+
+
+@media (max-width: 825px) {
+    .date-navigator {
+        gap: 5px;
+    }
+    
+    .nav-btn {
+        flex: 1;
+        min-width: 22%;
+        max-width: 23%;
+        min-width: 40px;
+        flex-shrink: 0;
+    }
+    
+    .coord-input,
+    #cities-dropdown {
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .city-coord-group {
+/*
+        flex-direction: column;
+*/
+        flex-direction: row;
+        flex-wrap: nowrap;
+        width: 100%;
+        gap: 5px;
+    }
+    
+    #nav-menu-toggle {
+        margin-top: 5px;
+        flex-shrink: 0;
+    }
+}

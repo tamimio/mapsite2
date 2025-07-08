@@ -937,6 +937,16 @@ document.addEventListener('DOMContentLoaded', function() {
     mapBtn.addEventListener('click', () => switchView(mapBtn, mapContainer));
     stats1Btn.addEventListener('click', () => switchView(stats1Btn, stats1Container));
     stats2Btn.addEventListener('click', () => switchView(stats2Btn, stats2Container));
+    
+        // Обработчики для десктопных кнопок
+    //document.getElementById('map-btn-desktop')?.addEventListener('click', switchToMap);
+    //document.getElementById('stats1-btn-desktop')?.addEventListener('click', switchToStats1);
+    //document.getElementById('stats2-btn-desktop')?.addEventListener('click', switchToStats2);
+
+    //document.getElementById('map-btn-desktop')?.addEventListener('click', () => switchView(mapBtn, mapContainer));
+    //document.getElementById('stats1-btn-desktop')?.addEventListener('click', () => switchView(stats1Btn, stats1Container));
+    //document.getElementById('stats2-btn-desktop')?.addEventListener('click', () => switchView(stats2Btn, stats2Container));
+    
 });
 
 // Обработчик изменения языка
@@ -1028,36 +1038,59 @@ coordsInput.addEventListener('keypress', function(e) {
 
 // Гамбургер переключатель видов
 
-document.addEventListener('DOMContentLoaded', function() {
-    const viewMenuBtn = document.querySelector('.view-menu-btn');
-    const viewMenuContainer = document.querySelector('.view-menu-container');
+//document.addEventListener('DOMContentLoaded', function() {
+    //const viewMenuBtn = document.querySelector('.view-menu-btn');
+    //const viewMenuContainer = document.querySelector('.view-menu-container');
     
-    if (viewMenuBtn && viewMenuContainer) {
-        // Обработчик открытия/закрытия меню видов
-        viewMenuBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            viewMenuContainer.classList.toggle('active');
-        });
+    //if (viewMenuBtn && viewMenuContainer) {
+        //// Обработчик открытия/закрытия меню видов
+        //viewMenuBtn.addEventListener('click', function(e) {
+            //e.stopPropagation();
+            //viewMenuContainer.classList.toggle('active');
+        //});
         
-        // Закрытие меню при клике вне его
-        document.addEventListener('click', function(e) {
-            if (!viewMenuContainer.contains(e.target)) {
-                viewMenuContainer.classList.remove('active');
+        //// Закрытие меню при клике вне его
+        //document.addEventListener('click', function(e) {
+            //if (!viewMenuContainer.contains(e.target)) {
+                //viewMenuContainer.classList.remove('active');
+            //}
+        //});
+        
+        //// Закрытие меню при выборе вида
+        //document.querySelectorAll('.view-dropdown .view-btn').forEach(btn => {
+            //btn.addEventListener('click', function() {
+                //viewMenuContainer.classList.remove('active');
+                
+                //// Перерисовываем карту при необходимости
+                //if (map && this.id === 'map-btn') {
+                    //setTimeout(() => map.invalidateSize(), 100);
+                //}
+            //});
+        //});
+    //}
+//});
+document.querySelectorAll('.view-menu-container').forEach(container => {
+    const viewMenuBtn = container.querySelector('.view-menu-btn');
+    
+    viewMenuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        container.classList.toggle('active');
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!container.contains(e.target)) {
+            container.classList.remove('active');
+        }
+    });
+
+    container.querySelectorAll('.view-dropdown .view-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            container.classList.remove('active');
+            if (map && this.id.includes('map-btn')) {
+                setTimeout(() => map.invalidateSize(), 100);
             }
         });
-        
-        // Закрытие меню при выборе вида
-        document.querySelectorAll('.view-dropdown .view-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                viewMenuContainer.classList.remove('active');
-                
-                // Перерисовываем карту при необходимости
-                if (map && this.id === 'map-btn') {
-                    setTimeout(() => map.invalidateSize(), 100);
-                }
-            });
-        });
-    }
+    });
 });
 
 

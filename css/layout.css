@@ -15,15 +15,17 @@ body {
 
 .header-container {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    padding: 5px 10px;
     /* gap: 10px; */
     /* height: 60px; */
 }
 
 /* Для всех непосредственных детей header-container */
-.header-container > * {
+.header-container > :not(.mobile-top-row) {
     display: flex;
     align-items: center; /* Центрируем содержимое каждого элемента */
     min-height: 40px; /* Минимальная высота для выравнивания */
@@ -52,6 +54,7 @@ body {
 /* Новый контейнер для навигации */
 .nav-wrapper {
     flex: 1;
+    flex-grow: 1;
     min-width: 0; /* Важно для правильного сжатия */
     margin: 0 10px;
     display: flex;
@@ -241,8 +244,11 @@ body {
 }
 
 /* Адаптивные стили */
+/* Когда перестаёт помещаться в одну строку */
 
-@media (max-width: 825px) { /* Когда перестаёт помещаться в одну строку */
+/*Вот это куда ни шло версия*/
+/*
+@media (max-width: 825px) {
   .header-container {
     display: flex;
     align-items: center;
@@ -268,116 +274,165 @@ body {
     flex-direction: column;
     align-items: flex-start;
 }
-  
-  .view-switcher {
-    /* margin-right: 0; */
-  }
-  
-  .date-navigator {
-    /* flex-wrap: wrap; */
-  }
-  
-  .city-coord-group {
-    /* flex-wrap: wrap; */
-    /* margin-top: 10px; */
-  }
 
 }
+*/
 
-/* @media (max-width: 825px) { */
-    /* .header-container { */
-        /* display: flex; */
-        /* flex-direction: column; */
-        /* align-items: stretch; */
-        /* gap: 10px; */
-    /* } */
-    
-    /* .top-row { */
-        /* display: flex; */
-        /* justify-content: space-between; */
-        /* align-items: center; */
-        /* width: 100%; */
-    /* } */
-    
-    /* .view-menu-container { */
-        /* order: 1; */
-        /* margin-right: 0; */
-    /* } */
-    
-    /* .title-section { */
-        /* order: 2; */
-        /* margin-right: 0; */
-        /* display: flex; */
-        /* justify-content: center; */
-    /* } */
-    
-    /* .title-section h1 { */
-        /* display: none; */
-    /* } */
-    
-    /* .mobile-title { */
-        /* display: inline; */
-        /* font-family: 'Wallpoet', monospace; */
-        /* color: #F51F0F; */
-        /* font-size: 1.5rem; */
-        /* letter-spacing: 1px; */
-        /* margin: 0; */
-    /* } */
-    
-    /* .language-switcher { */
-        /* order: 3; */
-        /* margin-left: 0; */
-    /* } */
-    
-    /* .nav-wrapper { */
-        /* order: 4; */
-        /* width: 100%; */
-        /* margin: 0; */
-    /* } */
-    
-    /* .date-navigator { */
-        /* flex-wrap: wrap; */
-        /* justify-content: center; */
-        /* gap: 5px; */
-    /* } */
-    
-    /* .date-navigator > * { */
-        /* flex: 0 0 auto; */
-    /* } */
-/* } */
-
-
-
-/* Стили для лого */
-
-/* .title-section { */
-    /* display: flex; */
-    /* align-items: center; */
-    /* height: 100%; /* Занимает всю высоту контейнера */ */
-    /* max-height: 60px; /* Ограничиваем высоту логотипа */ */
-/* } */
-
-/* #site-logo { */
-    /* height: auto; /* Сохраняем пропорции */ */
-    /* max-height: 100%; /* Максимальная высота = высоте контейнера */ */
-    /* width: auto; /* Автоматическая ширина */ */
-    /* max-width: 300px; /* Максимальная ширина для больших экранов */ */
-    /* object-fit: contain; /* Гарантируем, что изображение полностью помещается */ */
-    /* transition: opacity 0.3s ease; */
-/* } */
-
-/* #site-logo:hover { */
-    /* opacity: 0.8; */
-/* } */
-
-
-
-.link-icon[rel="icon"] {
-    border-radius: 4px; /* Слегка скруглить углы */
-    background-color: #ffffff; /* Белый фон для прозрачных иконок */
-    padding: 2px; /* Небольшой отступ */
+/* Стили для двухстрочного макета */
+.mobile-top-row {
+    display: none;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
+@media (max-width: 825px) {
+    .header-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .mobile-top-row {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    /* Скрываем оригинальные элементы */
+    .view-menu-container:not(.mobile),
+    .title-section:not(.mobile),
+    .language-switcher:not(.mobile) {
+        display: none !important;
+    }
+    
+    /* Отображаем элементы в мобильной строке */
+    .mobile-top-row > .view-menu-container,
+    .mobile-top-row > .title-section,
+    .mobile-top-row > .language-switcher {
+        display: flex !important;
+        flex-shrink: 0;
+    }
+    
+/*
+    .mobile-top-row > .title-section {
+        flex-grow: 1;
+        justify-content: center;
+        margin: 0 10px;
+    }
+*/
+    
+/*
+    .view-menu-container, 
+    .title-section, 
+    .language-switcher {
+        flex-shrink: 0;
+    }
+*/
+    
+    .title-section h1 {
+        display: none;
+    }
+    
+    .mobile-title {
+        display: inline !important;
+        font-size: 1.5rem;
+        
+        font-family: 'Wallpoet', monospace;
+        color: #F51F0F;
+        font-size: 2.0rem;
+        letter-spacing: 1px;
+        margin: 0;
+        margin-right: 0px;
+    }
+    
+    .nav-wrapper {
+    }
+    
+    .date-navigator {
+
+    display: content;
+    align-items: center;
+    gap: 0;
+    
+    
+        flex-wrap: nowrap; /* Запрещаем перенос элементов */
+        overflow-x: auto; /* Добавляем горизонтальную прокрутку если не помещается */
+        padding-bottom: 5px; /* Пространство для скроллбара */
+    
+    }
+        /* Скрываем скроллбар для эстетики, но функционал остается */
+    .date-navigator::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .date-navigator::-webkit-scrollbar-thumb {
+        background: #888; 
+        border-radius: 2px;
+    }
+    
+    .date-navigator > * {
+        flex-shrink: 0; /* Запрещаем сжатие элементов */
+    }
+}
+
+
+/* Стили для широких экранов - показываем оригинальные элементы */
+@media (min-width: 826px) {    
+    .mobile-title {
+        display: none !important;
+    }
+    
+    .title-section h1 {
+        display: block !important;
+    }
+    
+    .mobile-top-row {
+        display: none !important;
+    }
+    
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        width: 100%;
+    }
+    
+    .view-menu-container.desktop-visible,
+    .title-section.desktop-visible,
+    .language-switcher.desktop-visible {
+        display: flex !important;
+        flex-shrink: 0;
+    }
+    
+    .view-menu-container.desktop-visible {
+        margin-right: 15px;
+    }
+    
+    .title-section.desktop-visible {
+        margin-right: 20px;
+        flex-shrink: 0;
+    }
+    
+    .nav-wrapper {
+        flex-grow: 1;
+        min-width: 0; /* Важно для правильной работы flex */
+        margin: 0 15px;
+    }
+    
+    .language-switcher.desktop-visible {
+        margin-left: 15px;
+        flex-shrink: 0;
+    }
+    
+    /* Скрываем мобильный заголовок на десктопе */
+    .mobile-title {
+        display: none !important;
+    }
+}
 
 
 /* Гамбургер с переключателем видов */
@@ -460,3 +515,9 @@ body {
     margin-top: 0;
 }
 
+
+.link-icon[rel="icon"] {
+    border-radius: 4px; /* Слегка скруглить углы */
+    background-color: #ffffff; /* Белый фон для прозрачных иконок */
+    padding: 2px; /* Небольшой отступ */
+}

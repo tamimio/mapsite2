@@ -59,6 +59,29 @@ function setLanguage(lang) {
     currentLang = lang;
     const t = translations[lang];
     
+    
+    //// Внутри функции setLanguage(lang)
+//// Обновление классов активности для всех языковых кнопок
+//document.querySelectorAll('.lang-btn').forEach(btn => {
+    //btn.classList.remove('active');
+//});
+
+//// Для мобильных кнопок
+//document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
+//document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+
+//// Для десктопных кнопок
+//document.getElementById('lang-ru-desktop')?.classList.toggle('active', lang === 'ru');
+//document.getElementById('lang-en-desktop')?.classList.toggle('active', lang === 'en');
+
+//// Обновление тайтлов
+//document.getElementById('lang-ru').title = lang === 'ru' ? "Уже Русский" : "Переключить на Русский";
+//document.getElementById('lang-en').title = lang === 'en' ? "Already English" : "Switch to English";
+//document.getElementById('lang-ru-desktop')?.title = lang === 'ru' ? "Уже Русский" : "Переключить на Русский";
+//document.getElementById('lang-en-desktop')?.title = lang === 'en' ? "Already English" : "Switch to English";
+    
+    
+    
     // Сохраняем текущие координаты перед обновлением текста
     const coordsElement = document.getElementById('current-center-coords');
     const currentText = coordsElement.textContent;
@@ -174,5 +197,18 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('lang-en').addEventListener('click', () => {
         if (currentLang !== 'en') setLanguage('en');
     });
+    
+    
+    // Обработчики для языковых кнопок
+    document.getElementById('lang-ru-desktop')?.addEventListener('click', () => switchLanguage('ru'));
+    document.getElementById('lang-en-desktop')?.addEventListener('click', () => switchLanguage('en'));
 });
 
+
+//document.getElementById('lang-ru-desktop')?.addEventListener('click', () => {
+    //if (currentLang !== 'ru') setLanguage('ru');
+//});
+
+//document.getElementById('lang-en-desktop')?.addEventListener('click', () => {
+    //if (currentLang !== 'en') setLanguage('en');
+//});
