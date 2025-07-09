@@ -31,6 +31,15 @@
   cursor: pointer;
   transition: color 0.2s;
 }
+.modal-content .close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1001; /* Убедимся, что крестик поверх контента */
+}
 
 .close-modal:hover {
   color: #333;

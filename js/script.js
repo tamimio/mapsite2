@@ -1416,35 +1416,54 @@ document.addEventListener('DOMContentLoaded', function() {
 // Обработчик кнопки Инфо info-btn
 
 document.addEventListener('DOMContentLoaded', function() {
-
-      
-  fetch('info.html')  // Загрузка контента для модального окна
+  // Загрузка контента для модального окна
+  fetch('info.html')
     .then(response => response.text())
     .then(html => {
       document.getElementById('info-content').innerHTML = html;
+      
+      // Вешаем обработчик закрытия ПОСЛЕ загрузки контента
+      document.querySelector('#info-content .close-modal').addEventListener('click', function() {
+        document.getElementById('info-modal').style.display = 'none';
+      });
     })
     .catch(error => {
       console.error('Ошибка загрузки контента:', error);
       document.getElementById('info-content').innerHTML = '<p>Не удалось загрузить информацию</p>';
-    });
-
-  document.querySelectorAll('.info-btn').forEach(btn => {  // Обработчики для кнопки "Инфо"
-    btn.addEventListener('click', function() {
-      this.closest('.view-menu-container').classList.remove('active');      
-      document.getElementById('info-modal').style.display = 'block';      
       
+      // Создаем fallback обработчик
+      document.querySelector('.close-modal')?.addEventListener('click', function() {
+        document.getElementById('info-modal').style.display = 'none';
+      });
+    });
+
+  // Обработчики для кнопок "Инфо"
+  document.querySelectorAll('.info-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      this.closest('.view-menu-container')?.classList.remove('active');
+      document.getElementById('info-modal').style.display = 'block';
     });
   });
 
-
-  document.querySelector('.close-modal').addEventListener('click', function() {  // Закрытие модального окна
-    document.getElementById('info-modal').style.display = 'none';
+  // Универсальный обработчик закрытия
+  document.addEventListener('click', function(event) {
+    const modal = document.getElementById('info-modal');
+    
+    // Закрытие по клику на крестик
+    if (event.target.classList.contains('close-modal')) {
+      modal.style.display = 'none';
+    }
+    
+    // Закрытие при клике вне окна
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
   });
 
-
-  window.addEventListener('click', function(event) {  // Закрытие при клике вне окна
+  // Закрытие по клавише Esc
+  document.addEventListener('keydown', function(event) {
     const modal = document.getElementById('info-modal');
-    if (event.target === modal) {
+    if (event.key === 'Escape' && modal.style.display === 'block') {
       modal.style.display = 'none';
     }
   });
