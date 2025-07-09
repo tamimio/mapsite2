@@ -117,6 +117,9 @@ function setLanguage(lang) {
     document.getElementById('map-btn').textContent = t.viewSwitchMap;
     document.getElementById('stats1-btn').textContent = t.viewSwitchSt1;
     document.getElementById('stats2-btn').textContent = t.viewSwitchSt2;
+    document.getElementById('map-btn-desktop').textContent = t.viewSwitchMap;
+    document.getElementById('stats1-btn-desktop').textContent = t.viewSwitchSt1;
+    document.getElementById('stats2-btn-desktop').textContent = t.viewSwitchSt2;
     
     // Обновляем кнопки навигации
     document.getElementById('first-btn').title = t.firstBtnTitle;
@@ -127,19 +130,27 @@ function setLanguage(lang) {
     // Обновляем кнопки языка
     document.getElementById('lang-ru').title = lang === 'ru' ? "Уже Русский" : "Переключить на Русский";
     document.getElementById('lang-en').title = lang === 'en' ? "Already English" : "Switch to English";
-    
+    document.getElementById('lang-ru-desktop').title = lang === 'ru' ? "Уже Русский" : "Переключить на Русский";
+    document.getElementById('lang-en-desktop').title = lang === 'en' ? "Already English" : "Switch to English";
+        
     // Обновляем классы активности
     document.getElementById('lang-ru').classList.toggle('active', lang === 'ru');
     document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+    document.getElementById('lang-ru-desktop').classList.toggle('active', lang === 'ru');
+    document.getElementById('lang-en-desktop').classList.toggle('active', lang === 'en');
     
     // Обновляем список городов
     populateCitiesDropdown();
 	    
+    // const currentDateStr = datePicker && datePicker.selectedDates.length > 0
+    // ? `${String(datePicker.selectedDates[0].getDate()).padStart(2, '0')}.${String(datePicker.selectedDates[0].getMonth() + 1).padStart(2, '0')}.${String(datePicker.selectedDates[0].getFullYear()).slice(-2)}`
+    // : null;
+    
     // Пересоздаем календарь с новым языком
     if (datePicker) {
         datePicker.destroy();
     }
-    initDatePicker();
+    initDatePicker(); // Передаем сохраненную дату
     
     // Если координаты не определены, обновляем текст
     if (document.getElementById('current-center-coords').textContent === 'не определен' || 
@@ -154,9 +165,13 @@ function setLanguage(lang) {
     // Инициируем событие, что язык изменён
     const event = new CustomEvent('languageChanged', { detail: lang });
     document.dispatchEvent(event);
+    
+    // Обновляем состояние кнопок
+    // updateButtons();
 }
 
 // Обработчики кнопок переключения языка
+// мобильный
 document.getElementById('lang-ru').addEventListener('click', () => {
     if (currentLang !== 'ru') setLanguage('ru');
 });
@@ -176,6 +191,34 @@ document.getElementById('lang-ru').addEventListener('click', function() {
 });
 
 document.getElementById('lang-en').addEventListener('click', function() {
+    if (currentLang !== 'en') {
+        setLanguage('en');
+    } else {
+        // Обновляем title для текущего языка
+        const t = translations[currentLang];
+        this.title = t.enBtnTitle;
+    }
+});
+// десктопный
+document.getElementById('lang-ru-desktop').addEventListener('click', () => {
+    if (currentLang !== 'ru') setLanguage('ru');
+});
+
+document.getElementById('lang-en-desktop').addEventListener('click', () => {
+    if (currentLang !== 'en') setLanguage('en');
+});
+
+document.getElementById('lang-ru-desktop').addEventListener('click', function() {
+    if (currentLang !== 'ru') {
+        setLanguage('ru');
+    } else {
+        // Обновляем title для текущего языка
+        const t = translations[currentLang];
+        this.title = t.ruBtnTitle;
+    }
+});
+
+document.getElementById('lang-en-desktop').addEventListener('click', function() {
     if (currentLang !== 'en') {
         setLanguage('en');
     } else {

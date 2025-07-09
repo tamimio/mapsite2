@@ -15,6 +15,8 @@ coordsInput = document.getElementById('coords-input');
 currentCenterCoordsElement = document.getElementById('current-center-coords');
 copyCoordsBtn = document.getElementById('copy-coords-btn');
 
+let selectedDate = null; // Глобальная переменная для хранения текущей даты
+
 // Глобальный флаг для логгирования стилей временных файлов
 const LOG_TEMPORARY_STYLES = true; // Можно менять на false для отключения
 
@@ -30,12 +32,14 @@ function parseCustomDate(dateStr) {
 // Инициализация календаря с ограничением доступных дат
 let datePicker;
 function initDatePicker() {
+    // Используем сохраненную дату или последнюю доступную
+    const defaultDate = selectedDate || kmlFiles[kmlFiles.length - 1].name;
+    
     datePicker = flatpickr("#date-picker", {
-		locale: currentLang === 'ru' ? 'ru' : 'default',
+        locale: currentLang === 'ru' ? 'ru' : 'default',
         dateFormat: "d.m.y",
         allowInput: true,
-        locale: currentLang, // Используем текущий язык
-        defaultDate: kmlFiles[kmlFiles.length - 1].name,
+        defaultDate: defaultDate, // Используем сохраненную дату
         enable: [
             function(date) {
                 const dateStr = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth()+1).toString().padStart(2, '0')}.${date.getFullYear().toString().slice(-2)}`;
@@ -642,9 +646,11 @@ async function navigateTo(index) {
     try {
         currentIndex = index;
         const file = kmlFiles[currentIndex];
+        selectedDate = file.name; // Сохраняем выбранную дату
         
         if (datePicker) {
-            datePicker.setDate(file.name, false);
+            // Обновляем дату без триггера события onChange
+            datePicker.setDate(selectedDate, false);
         }
         
         await loadKmlFile(file);
@@ -833,7 +839,8 @@ async function init() {
     await loadPermanentKmlLayers();
     
     // Шаг 2: Инициализируем основные компоненты UI
-    initDatePicker();
+    initDatePicker();    
+    selectedDate = kmlFiles[kmlFiles.length - 1].name; // Инициализируем selectedDate последней доступной датой
     populateCitiesDropdown();
     document.querySelector('.date-navigator-wrapper').style.display = 'block';
         
@@ -892,9 +899,12 @@ function waitForUIElements() {
 document.addEventListener('DOMContentLoaded', init);
 
 document.addEventListener('DOMContentLoaded', function() {
-    const mapBtn = document.getElementById('map-btn');
-    const stats1Btn = document.getElementById('stats1-btn');
-    const stats2Btn = document.getElementById('stats2-btn');
+    // const mapBtn = document.getElementById('map-btn');
+    // const stats1Btn = document.getElementById('stats1-btn');
+    // const stats2Btn = document.getElementById('stats2-btn');    
+    const mapBtn = document.getElementById('map-btn-desktop');
+    const stats1Btn = document.getElementById('stats1-btn-desktop');
+    const stats2Btn = document.getElementById('stats2-btn-desktop');
     
     const mapContainer = document.getElementById('map-container');
     const stats1Container = document.getElementById('stats1-container');
@@ -954,8 +964,8 @@ document.addEventListener('languageChanged', function(event) {
     currentLang = event.detail;
     if (datePicker) {
         datePicker.destroy();
-        initDatePicker();
     }
+        initDatePicker();
 	
     populateCitiesDropdown(); // Обновляем основной список
     initDartMenu(); // Перестраиваем дартс-меню
@@ -964,7 +974,7 @@ document.addEventListener('languageChanged', function(event) {
 // Закрываем меню при клике на карту
 document.getElementById('map').addEventListener('click', function() {
     if (window.innerWidth <= 768) {
-        document.querySelector('.nav-bar').classList.remove('active');
+        document.querySelector('.nav-wrapper').classList.remove('active');
     }
 });
 
