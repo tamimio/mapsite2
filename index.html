@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="css/calendar.css">
     <link rel="stylesheet" href="css/language.css">
     <link rel="stylesheet" href="css/view-switcher.css">
+    <link rel="stylesheet" href="css/info.css">
 </head>
 <body>
     <div class="top-bar">
@@ -32,14 +33,15 @@
                     <button id="map-btn" class="view-btn active">Карта</button>
                     <button id="stats1-btn" class="view-btn">Статистика1</button>
                     <button id="stats2-btn" class="view-btn">Статистика2</button>
+                    
+                    <button id="tlg-btn" class="view-btn tlg-btn">Ссылка</button>
+                    <button id="donate-btn" class="view-btn donate-btn">Поддержать</button>
+                    <button id="info-btn" class="view-btn info-btn">Инфо</button>
                 </div>
             </div>
             
 			<!-- Заголовок -->
 			<div class="title-section mobile">
-<!--
-				<h1 id="page-title">My dataviewer</h1>
--->
                 <span class="mobile-title">MD</span>
 			</div>
 
@@ -58,6 +60,10 @@
                 <button id="map-btn-desktop" class="view-btn active">Карта</button>
                 <button id="stats1-btn-desktop" class="view-btn">Статистика1</button>
                 <button id="stats2-btn-desktop" class="view-btn">Статистика2</button>
+                
+                <button id="tlg-btn-desktop" class="view-btn tlg-btn">Ссылка</button>
+                <button id="donate-btn-desktop" class="view-btn donate-btn">Поддержать</button>
+                <button id="info-btn-desktop" class="view-btn info-btn">Инфо</button>
             </div>
         </div>
         
@@ -112,6 +118,7 @@
 			
 		</div> <!-- header-container -->
 	</div>
+    
     <div id="map-container" class="content-section active">
         <div id="map"></div>
     </div>
@@ -143,46 +150,6 @@
     <script>
         // Делаем доступные даты глобально доступными
         window.availableDates = kmlFiles.map(file => file.name);
-        
-        // Добавляем функционал переключения видов
-        document.addEventListener('DOMContentLoaded', function() {
-            const mapBtn = document.getElementById('map-btn');
-            const stats1Btn = document.getElementById('stats1-btn');
-            const stats2Btn = document.getElementById('stats2-btn');
-            
-            const mapContainer = document.getElementById('map-container');
-            const stats1Container = document.getElementById('stats1-container');
-            const stats2Container = document.getElementById('stats2-container');
-            
-            // Функция переключения активного вида
-            function switchView(activeBtn, activeContainer) {
-                // Убираем активные классы у всех
-                mapBtn.classList.remove('active');
-                stats1Btn.classList.remove('active');
-                stats2Btn.classList.remove('active');
-                
-                mapContainer.classList.remove('active');
-                stats1Container.classList.remove('active');
-                stats2Container.classList.remove('active');
-                
-                // Добавляем активный класс выбранному
-                activeBtn.classList.add('active');
-                activeContainer.classList.add('active');
-            }
-            
-            // Обработчики кнопок
-            mapBtn.addEventListener('click', function() {
-                switchView(this, mapContainer);
-            });
-            
-            stats1Btn.addEventListener('click', function() {
-                switchView(this, stats1Container);
-            });
-            
-            stats2Btn.addEventListener('click', function() {
-                switchView(this, stats2Container);
-            });
-        });
     </script>
 </body>
 </html>

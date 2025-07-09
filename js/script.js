@@ -898,14 +898,8 @@ function waitForUIElements() {
 
 document.addEventListener('DOMContentLoaded', init);
 
-document.addEventListener('DOMContentLoaded', function() {
-    // const mapBtn = document.getElementById('map-btn');
-    // const stats1Btn = document.getElementById('stats1-btn');
-    // const stats2Btn = document.getElementById('stats2-btn');    
-    const mapBtn = document.getElementById('map-btn-desktop');
-    const stats1Btn = document.getElementById('stats1-btn-desktop');
-    const stats2Btn = document.getElementById('stats2-btn-desktop');
-    
+function switchMapStatViewByBtn(mapBtn, stats1Btn, stats2Btn)
+{
     const mapContainer = document.getElementById('map-container');
     const stats1Container = document.getElementById('stats1-container');
     const stats2Container = document.getElementById('stats2-container');
@@ -947,15 +941,22 @@ document.addEventListener('DOMContentLoaded', function() {
     mapBtn.addEventListener('click', () => switchView(mapBtn, mapContainer));
     stats1Btn.addEventListener('click', () => switchView(stats1Btn, stats1Container));
     stats2Btn.addEventListener('click', () => switchView(stats2Btn, stats2Container));
-    
-        // Обработчики для десктопных кнопок
-    //document.getElementById('map-btn-desktop')?.addEventListener('click', switchToMap);
-    //document.getElementById('stats1-btn-desktop')?.addEventListener('click', switchToStats1);
-    //document.getElementById('stats2-btn-desktop')?.addEventListener('click', switchToStats2);
+}
 
-    //document.getElementById('map-btn-desktop')?.addEventListener('click', () => switchView(mapBtn, mapContainer));
-    //document.getElementById('stats1-btn-desktop')?.addEventListener('click', () => switchView(stats1Btn, stats1Container));
-    //document.getElementById('stats2-btn-desktop')?.addEventListener('click', () => switchView(stats2Btn, stats2Container));
+document.addEventListener('DOMContentLoaded', function() {
+    const mapBtn = document.getElementById('map-btn');
+    const stats1Btn = document.getElementById('stats1-btn');
+    const stats2Btn = document.getElementById('stats2-btn');
+    
+    switchMapStatViewByBtn(mapBtn, stats1Btn, stats2Btn);
+    
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const mapBtn = document.getElementById('map-btn-desktop');
+    const stats1Btn = document.getElementById('stats1-btn-desktop');
+    const stats2Btn = document.getElementById('stats2-btn-desktop');
+    
+    switchMapStatViewByBtn(mapBtn, stats1Btn, stats2Btn);
     
 });
 
@@ -1382,3 +1383,76 @@ function setupDropdownListeners() {
         });
     }
 }
+
+
+// Обработчик кнопки tlg-btn
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.tlg-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Закрываем меню
+            this.closest('.view-menu-container').classList.remove('active');
+            
+            // Открываем ссылку в новом окне
+            window.open('https://ru.wikipedia.org/wiki/Telegram', '_blank');
+        });
+    });
+});
+
+// Обработчик кнопки Поддержать donate-btn
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.donate-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Закрываем меню
+            this.closest('.view-menu-container').classList.remove('active');
+            
+            // Открываем ссылку в новом окне
+            window.open('https://ru.wikipedia.org/wiki/%D0%94%D0%BE%D0%BD%D0%B0%D1%82%D0%B5%D0%BB%D0%BB%D0%BE', '_blank');
+        });
+    });
+});
+
+// Обработчик кнопки Инфо info-btn
+
+document.addEventListener('DOMContentLoaded', function() {
+
+      
+  fetch('info.html')  // Загрузка контента для модального окна
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('info-content').innerHTML = html;
+    })
+    .catch(error => {
+      console.error('Ошибка загрузки контента:', error);
+      document.getElementById('info-content').innerHTML = '<p>Не удалось загрузить информацию</p>';
+    });
+
+  document.querySelectorAll('.info-btn').forEach(btn => {  // Обработчики для кнопки "Инфо"
+    btn.addEventListener('click', function() {
+      this.closest('.view-menu-container').classList.remove('active');
+      
+      
+      
+      
+      
+      document.getElementById('info-modal').style.display = 'block';
+      
+      
+    });
+  });
+
+
+  document.querySelector('.close-modal').addEventListener('click', function() {  // Закрытие модального окна
+    document.getElementById('info-modal').style.display = 'none';
+  });
+
+
+  window.addEventListener('click', function(event) {  // Закрытие при клике вне окна
+    const modal = document.getElementById('info-modal');
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+});
+

@@ -23,7 +23,11 @@ const translations = {
         
         viewSwitchMap: "Карта",
         viewSwitchSt1: "Статистика1",
-        viewSwitchSt2: "Статистика2"  
+        viewSwitchSt2: "Статистика2",
+        
+        viewSwitchTlg:  "Ссылка",
+        viewSwitchDon:  "Поддержать",
+        viewSwitchInfo: "Инфо"
     },
     en: {
         title: "  dataviewer",
@@ -48,7 +52,11 @@ const translations = {
         
         viewSwitchMap: "Map",
         viewSwitchSt1: "Statistics1",
-        viewSwitchSt2: "Statistics2"
+        viewSwitchSt2: "Statistics2",
+        
+        viewSwitchTlg:  "Link",
+        viewSwitchDon:  "Donate",
+        viewSwitchInfo: "Info"
     }
 };
 
@@ -114,12 +122,18 @@ function setLanguage(lang) {
     
     document.getElementById('copy-coords-btn').title = t.copyTooltip;
 	
-    document.getElementById('map-btn').textContent = t.viewSwitchMap;
+    document.getElementById('map-btn'   ).textContent = t.viewSwitchMap;
     document.getElementById('stats1-btn').textContent = t.viewSwitchSt1;
     document.getElementById('stats2-btn').textContent = t.viewSwitchSt2;
-    document.getElementById('map-btn-desktop').textContent = t.viewSwitchMap;
+    document.getElementById('tlg-btn'   ).textContent = t.viewSwitchTlg;
+    document.getElementById('donate-btn').textContent = t.viewSwitchDon;
+    document.getElementById('info-btn'  ).textContent = t.viewSwitchInfo;
+    document.getElementById('map-btn-desktop'   ).textContent = t.viewSwitchMap;
     document.getElementById('stats1-btn-desktop').textContent = t.viewSwitchSt1;
     document.getElementById('stats2-btn-desktop').textContent = t.viewSwitchSt2;
+    document.getElementById('tlg-btn-desktop'   ).textContent = t.viewSwitchTlg;
+    document.getElementById('donate-btn-desktop').textContent = t.viewSwitchDon;
+    document.getElementById('info-btn-desktop'  ).textContent = t.viewSwitchInfo;
     
     // Обновляем кнопки навигации
     document.getElementById('first-btn').title = t.firstBtnTitle;
