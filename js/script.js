@@ -1430,14 +1430,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.querySelectorAll('.info-btn').forEach(btn => {  // Обработчики для кнопки "Инфо"
     btn.addEventListener('click', function() {
-      this.closest('.view-menu-container').classList.remove('active');
-      
-      
-      
-      
-      
-      document.getElementById('info-modal').style.display = 'block';
-      
+      this.closest('.view-menu-container').classList.remove('active');      
+      document.getElementById('info-modal').style.display = 'block';      
       
     });
   });
