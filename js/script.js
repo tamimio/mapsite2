@@ -1416,45 +1416,24 @@ document.addEventListener('DOMContentLoaded', function() {
 // Обработчик кнопки Инфо info-btn
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Загрузка контента для модального окна
-  fetch('info.html')
-    .then(response => response.text())
-    .then(html => {
-      document.getElementById('info-content').innerHTML = html;
-      
-      // Вешаем обработчик закрытия ПОСЛЕ загрузки контента
-      document.querySelector('#info-content .close-modal').addEventListener('click', function() {
-        document.getElementById('info-modal').style.display = 'none';
-      });
-    })
-    .catch(error => {
-      console.error('Ошибка загрузки контента:', error);
-      document.getElementById('info-content').innerHTML = '<p>Не удалось загрузить информацию</p>';
-      
-      // Создаем fallback обработчик
-      document.querySelector('.close-modal')?.addEventListener('click', function() {
-        document.getElementById('info-modal').style.display = 'none';
-      });
-    });
+  const modal = document.getElementById('info-modal');
+  const closeBtn = modal.querySelector('.close-modal');
+  
+  // Обработчик для кнопки закрытия
+  closeBtn.addEventListener('click', function() {
+    modal.style.display = 'none';
+  });
 
   // Обработчики для кнопок "Инфо"
   document.querySelectorAll('.info-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       this.closest('.view-menu-container')?.classList.remove('active');
-      document.getElementById('info-modal').style.display = 'block';
+      modal.style.display = 'block';
     });
   });
 
-  // Универсальный обработчик закрытия
+  // Закрытие при клике вне окна
   document.addEventListener('click', function(event) {
-    const modal = document.getElementById('info-modal');
-    
-    // Закрытие по клику на крестик
-    if (event.target.classList.contains('close-modal')) {
-      modal.style.display = 'none';
-    }
-    
-    // Закрытие при клике вне окна
     if (event.target === modal) {
       modal.style.display = 'none';
     }
@@ -1462,10 +1441,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Закрытие по клавише Esc
   document.addEventListener('keydown', function(event) {
-    const modal = document.getElementById('info-modal');
     if (event.key === 'Escape' && modal.style.display === 'block') {
       modal.style.display = 'none';
     }
   });
+
+  // Загрузка контента (после инициализации обработчиков)
+  fetch('info.html')
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('info-content').innerHTML = html;
+    })
+    .catch(error => {
+      console.error('Ошибка загрузки контента:', error);
+      document.getElementById('info-content').innerHTML = '<p>Не удалось загрузить информацию</p>';
+    });
 });
 
