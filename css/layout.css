@@ -1,10 +1,4 @@
 body {
-  /* font-family: Arial, sans-serif; */
-  /* font-family: 'MOSCOW2024', monospace; */
-  /* font-family: 'VT323', monospace; */
-    /* font-family: "Press Start 2P", system-ui; */
-  /* font-weight: 400; */
-  /* font-style: normal; */
   margin: 0; /* Убираем все отступы */
   padding: 0; /* Убираем все внутренние отступы */
   height: 100vh;
@@ -122,24 +116,7 @@ body {
   /* flex-wrap: nowrap; */
 }
 
-/* Убираем отступы у навигационной панели */
-/* .nav-bar { */
-  /* background: #f0f0f0; */
-  /* padding: 8px 15px; */
-  /* display: flex; */
-  /* justify-content: space-between; */
-  /* align-items: center; */
-  /* margin: 0; */
-/* } */
 
-/* Стили для кнопок-ссылок */
-/* .view-btn, .nav-btn, .lang-btn, .date-selector input, */
-/* .coord-input, #cities-dropdown, .current-center { */
-  /* height: 40px; */
-  /* display: flex; */
-  /* align-items: center; */
-  /* box-sizing: border-box; */
-/* } */
 /* Стили для кнопок */
 .view-btn, .nav-btn, .lang-btn {
   padding: 0 12px;
@@ -245,38 +222,6 @@ body {
 
 /* Адаптивные стили */
 /* Когда перестаёт помещаться в одну строку */
-
-/*Вот это куда ни шло версия*/
-/*
-@media (max-width: 825px) {
-  .header-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-  .title-section h1 {
-    display: none;
-}
-    
-  .mobile-title {
-    display: inline;
-    font-family: 'Wallpoet', monospace;
-    color: #F51F0F;
-    font-size: 1.5rem;
-    letter-spacing: 1px;
-    margin: 0;
-    margin-right: 0px;
-    margin-left: 5px;
-}
-  
-  .header-container {
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-}
-*/
 
 /* Стили для двухстрочного макета */
 .mobile-top-row {
