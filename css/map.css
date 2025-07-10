@@ -286,7 +286,7 @@
     box-sizing: border-box; /* Учитываем padding в общей ширине */
     max-width: 100vw; /* Ограничиваем ширину экраном */
     /* overflow: hidden; Скрываем выходящие за пределы элементы */
-    margin-right: 5px;
+    /* margin-right: 5px; */
 }
 
 .dropdown-items-container {
