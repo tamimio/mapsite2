@@ -1334,6 +1334,8 @@ function setupDropdownListeners() {
                 const lng = parseFloat(coords[1]);
                 if (!isNaN(lat) && !isNaN(lng)) {
                     centerMap(lat, lng);
+                    // Закрываем меню после центрирования
+                    navDropdown.classList.remove('active');
                 }
             }
         });
@@ -1341,6 +1343,8 @@ function setupDropdownListeners() {
         coordsClone.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 this.dispatchEvent(new Event('change'));
+                // Дополнительно закрываем меню
+                navDropdown.classList.remove('active');
             }
         });
     }
@@ -1366,6 +1370,8 @@ function setupDropdownListeners() {
                 if (coordsClone) coordsClone.value = `${city.lat}, ${city.lng}`;
                 
                 centerMap(city.lat, city.lng);
+                // Закрываем меню после выбора города
+                navDropdown.classList.remove('active');
                 this.value = "";
             }
         });
