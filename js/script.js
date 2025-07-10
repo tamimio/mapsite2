@@ -1405,26 +1405,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Обработчик кнопки Поддержать donate-btn
-
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.donate-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Закрываем меню
-            this.closest('.view-menu-container').classList.remove('active');
-            
-            // Открываем ссылку в новом окне
-            window.open('https://ru.wikipedia.org/wiki/%D0%94%D0%BE%D0%BD%D0%B0%D1%82%D0%B5%D0%BB%D0%BB%D0%BE', '_blank');
-        });
-    });
-});
-
-// Обработчик кнопки Инфо info-btn
-
 // Функция загрузки контента для модального окна
-function loadInfoContent() {
-    const infoFile = currentLang === 'ru' ? 'info_ru.html' : 'info_en.html';
-    fetch(infoFile)
+function loadInfoContent(filename) {
+    fetch(filename)
         .then(response => response.text())
         .then(html => {
             document.getElementById('info-content').innerHTML = html;
@@ -1438,6 +1421,8 @@ function loadInfoContent() {
         });
 }
 
+// Обработчик кнопки Инфо info-btn и Поддержать donate-btn
+
 document.addEventListener('DOMContentLoaded', function() {
   const modal = document.getElementById('info-modal');
   const closeBtn = modal.querySelector('.close-modal');
@@ -1447,12 +1432,23 @@ document.addEventListener('DOMContentLoaded', function() {
     modal.style.display = 'none';
   });
 
-  // Обработчики для кнопок "Инфо"
+  // Обработчики для кнопки "Инфо"
   document.querySelectorAll('.info-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       this.closest('.view-menu-container')?.classList.remove('active');
       modal.style.display = 'block';
-      loadInfoContent(); // Загружаем контент при открытии
+      const infoFile = currentLang === 'ru' ? 'content/info_ru.html' : 'content/info_en.html';
+      loadInfoContent(infoFile); // Загружаем контент при открытии
+    });
+  });
+
+  // Обработчики для кнопки "Поддержать"
+  document.querySelectorAll('.donate-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      this.closest('.view-menu-container')?.classList.remove('active');
+      modal.style.display = 'block';
+      const infoFile = currentLang === 'ru' ? 'content/donate_smo_ru.html' : 'content/donate_smo_en.html';
+      loadInfoContent(infoFile); // Загружаем контент при открытии
     });
   });
 
