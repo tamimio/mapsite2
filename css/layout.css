@@ -132,18 +132,13 @@ body {
 }
 
 /* Стили для полей ввода */
-.date-selector input, .coord-input, #cities-dropdown {
+.date-selector input, #cities-dropdown {
   height: 40px;
   padding: 0 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background: #fff;
   width: auto;
-}
-
-/* Специально для поля координат */
-.coord-input {
-  width: 150px; /* Уже чем было */
 }
 
 /* Для выпадающего списка городов */
@@ -192,7 +187,7 @@ body {
 }
 
 /* Стили для полей ввода */
-.date-selector input, .coord-input, #cities-dropdown {
+.date-selector input, #cities-dropdown {
   padding: 0 10px;
   border: 1px solid #ccc;
   border-radius: 4px;

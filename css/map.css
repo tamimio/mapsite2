@@ -72,8 +72,9 @@
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: 300px; 
-    height: 30px;
+    width: 175px; 
+    /* width: auto; */
+    height: 16px;
 }
 
 #cities-dropdown {
@@ -229,6 +230,13 @@
     .nav-dropdown {
         min-width: 300px;
         width: auto;
+    }
+    
+    .coord-input,
+    #cities-dropdown {
+        width: 100%;
+        max-width: 200px;
+        height: 22px;
     }
 }
 
