@@ -141,11 +141,6 @@ body {
   width: auto;
 }
 
-/* Для выпадающего списка городов */
-#cities-dropdown {
-  width: 150px; /* Уже чем было */
-}
-
 /* Специальные стили для кнопок */
 .view-btn, .nav-btn, .lang-btn {
   padding: 0 12px;
