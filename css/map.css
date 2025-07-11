@@ -6,10 +6,7 @@
 }
 
 .date-navigator {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* ??? */
 }
 
 .date-selector {
@@ -29,7 +26,7 @@
 }
 
 .nav-btn {
-    padding: 5px 8px;
+    padding: 5px 5px;
     background: #f0f0f0;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -41,6 +38,14 @@
     text-align: center;
     height: 30px;
     font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	
+    position: relative;
+    font-family: Arial, sans-serif; /* Более предсказуемый шрифт */
+    line-height: 1; /* Сбрасываем высоту строки */
+    /* top: -1px; /* Искусственное смещение вверх */ */
 }
 
 .nav-btn:hover {
