@@ -4,6 +4,23 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap'
 }).addTo(map);
 
+map.whenReady(function() {
+    // Изменение SVG-флага в атрибуции
+    const newSvgString = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" width="12" height="8"><rect fill="#fff" width="9" height="3"/><rect fill="#d52b1e" y="3" width="9" height="3"/><rect fill="#0039a6" y="2" width="9" height="2"/></svg>';
+
+    const linkElement = document.querySelector('.leaflet-control-attribution a');
+
+    if (linkElement) {
+      const oldSvgElement = linkElement.querySelector('svg');
+      if (oldSvgElement) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = newSvgString;
+        const newSvgElement = tempDiv.firstChild;
+        linkElement.replaceChild(newSvgElement, oldSvgElement);
+      }
+    }
+});
+
 let currentLayer = null;
 let permanentLayer = null;
 let currentIndex = kmlFiles.length - 1;
