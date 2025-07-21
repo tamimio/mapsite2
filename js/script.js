@@ -21,6 +21,33 @@ map.whenReady(function() {
     }
 });
 
+// Управление слоями карты
+const baseLayers = {
+    "OpenStreetMap": osm,
+    "CyclOSM": cyclosm,
+    "OpenTopoMap": topo,
+    "ESRI World Imagery": esri,
+    "CartoDB Voyager": carto,
+    "RU Army": ru
+};
+
+// Создаем контрол переключения слоев
+const layerControl = L.control.layers(baseLayers, null, {
+    collapsed: false,
+    position: 'topright'
+}).addTo(map);
+
+// Активируем OSM по умолчанию
+osm.addTo(map);
+
+// Показать/скрыть контрол слоев
+document.getElementById('layer-toggle-btn').addEventListener('click', () => {
+    const control = document.querySelector('.leaflet-control-layers');
+    control.style.display = control.style.display === 'none' ? 'block' : 'none';
+});
+
+/////////////////////////////////////////
+
 let currentLayer = null;
 let permanentLayer = null;
 let currentIndex = kmlFiles.length - 1;
