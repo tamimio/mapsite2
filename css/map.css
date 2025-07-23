@@ -336,3 +336,84 @@
      /* max-width: calc(100% - 30px);Оставляем место для кнопки */
     box-sizing: border-box;
 }
+
+
+
+/* Слои карты */
+
+.leaflet-control-layers-toggle {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 36px;
+    height: 36px;
+    display: block;
+}
+
+.leaflet-control-layers {
+    /* display: none; */
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    background: #fff;
+    border-radius: 5px;
+    padding: 10px;
+}
+.leaflet-control-layers:not(.leaflet-control-layers-expanded) {
+    display: none !important;
+}
+
+.leaflet-control-layers-expanded {
+    display: block!important;
+	pointer-events: auto !important;
+    position: absolute;
+    top: 45px;
+    right: 0;
+    width: 250px;
+    z-index: 2000;
+	    opacity: 1 !important; /* Гарантируем видимость */
+    visibility: visible !important; /* Гарантируем видимость */
+}
+
+.leaflet-control-layers-list {
+    margin: 0;
+    padding: 0;
+}
+
+.leaflet-control-layers-base {
+    margin-bottom: 10px;
+}
+
+.leaflet-top.leaflet-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    z-index: 2000;
+}
+
+.leaflet-control-layers-toggle {
+    margin-bottom: 10px;
+    background-color: white;
+    border-radius: 4px;
+    width: 36px;
+    height: 36px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+}
+
+/* Добавьте эти стили в конец файла */
+.leaflet-control-layers-toggle {
+    cursor: pointer;
+    position: relative;
+}
+
+.leaflet-control-layers-toggle a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.leaflet-control-layers-toggle.active {
+    background-color: #e6f2ff;
+    box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+}

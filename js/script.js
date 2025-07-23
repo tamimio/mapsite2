@@ -31,20 +31,237 @@ const baseLayers = {
     "RU Army": ru
 };
 
-// Создаем контрол переключения слоев
-const layerControl = L.control.layers(baseLayers, null, {
-    collapsed: false,
+// Создаем кастомный контрол слоев
+const customLayerControl = L.control.layers(baseLayers, null, {
+    collapsed: true,
     position: 'topright'
 }).addTo(map);
 
-// Активируем OSM по умолчанию
-osm.addTo(map);
+// setTimeout(() => {
+    ////////Находим радио-кнопку для активного слоя
+    // const activeLayerName = Object.keys(baseLayers).find(name => 
+        // map.hasLayer(baseLayers[name])
+    // );
+    
+    // if (activeLayerName) {
+        // const inputId = `leaflet-base-layers-${activeLayerName.replace(/\s+/g, '-').toLowerCase()}`;
+        // const radioInput = document.querySelector(`#${inputId}`);
+        // if (radioInput) {
+            // radioInput.checked = true;
+        // }
+    // }
+// }, 100);
 
-// Показать/скрыть контрол слоев
-document.getElementById('layer-toggle-btn').addEventListener('click', () => {
-    const control = document.querySelector('.leaflet-control-layers');
-    control.style.display = control.style.display === 'none' ? 'block' : 'none';
+
+// Скрываем стандартный контрол
+const layerControlContainer = customLayerControl.getContainer();
+layerControlContainer.style.display = 'none';
+
+// Создаем кнопку-иконку
+const layersToggle = L.control({position: 'topright'});
+layersToggle.onAdd = function(map) {
+    this._div = L.DomUtil.create('div', 'leaflet-control-layers-toggle');
+    this._div.innerHTML = '<a href="#" title="Слои карты"></a>';
+    return this._div;
+};
+layersToggle.addTo(map);
+
+
+
+
+const layersToggleContainer = layersToggle.getContainer();
+
+// Добавим логирование событий
+console.log("Инициализация панели слоев...");
+
+// Флаг для отслеживания нахождения курсора над панелью
+let isHoveringPanel = false;
+
+// Флаг для отслеживания состояния панели
+let isPanelOpen = false;
+let panelHovered = false;
+// Флаг для отслеживания открытого состояния панели
+let isLayerPanelOpen = false;
+// Предотвращаем закрытие при взаимодействии с панелью
+// Обработчики для отслеживания состояния наведения
+// layerControlContainer.addEventListener('mouseenter', function() {
+    // console.log("Курсор вошел в панель слоев");
+    // isHoveringPanel = true;
+// });
+
+// layerControlContainer.addEventListener('mouseleave', function() {
+    // console.log("Курсор вышел из панели слоев");
+    // isHoveringPanel = false;
+// });
+
+layerControlContainer.addEventListener('mouseenter', () => {
+    console.log("Курсор вошел в панель слоев");
+    // panelHovered = true;
 });
+
+layerControlContainer.addEventListener('mouseleave', () => {
+    console.log("Курсор вышел из панели слоев");
+    // panelHovered = false;
+    
+    // Закрываем панель только если она была открыта и курсор ушел
+    // setTimeout(() => {
+        // if (isPanelOpen && !panelHovered) {
+            // console.log("НЕ Автозакрытие панели после задержки");
+            // closeLayerPanel();
+			openLayerPanel();
+        // }
+    // }, 300); // Задержка перед закрытием
+});
+
+// function toggleLayerPanel() {
+    // const isVisible = layerControlContainer.style.display === 'block';
+    
+    // if (isVisible) {
+        // closeLayerPanel();
+    // } else {
+        // openLayerPanel();
+    // }
+// }
+
+function openLayerPanel() {
+    console.log("Открытие панели слоев");
+    layerControlContainer.style.display = 'block';
+    layerControlContainer.classList.add('leaflet-control-layers-expanded');
+    layersToggleContainer.classList.add('active');
+    isLayerPanelOpen = true;
+}
+
+function closeLayerPanel() {
+    console.log("Закрытие панели слоев");
+    layerControlContainer.style.display = 'none';
+    layerControlContainer.classList.remove('leaflet-control-layers-expanded');
+    layersToggleContainer.classList.remove('active');
+    isLayerPanelOpen = false;
+}
+
+
+// Предотвращаем закрытие при клике внутри панели
+layerControlContainer.addEventListener('click', function(e) {
+    console.log("Клик внутри панели слоев");
+    e.stopPropagation();
+});
+
+// Обработчик клика
+// layersToggle.getContainer().addEventListener('click', function(e) {
+    // e.preventDefault();
+    // e.stopPropagation();
+    
+    // const isVisible = layerControlContainer.style.display === 'block';
+    // layerControlContainer.style.display = isVisible ? 'none' : 'block';
+    // layerControlContainer.classList.toggle('leaflet-control-layers-expanded', !isVisible);
+    
+    // /////Добавляем/убираем класс активности
+    // this.classList.toggle('active', !isVisible);
+// });
+// Обработчик клика по кнопке переключения
+layersToggleContainer.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("Клик по кнопке слоев");
+    
+    if (isLayerPanelOpen) {
+        closeLayerPanel();
+    } else {
+        openLayerPanel();
+    }
+});
+
+// Обработчик закрытия при клике вне панели
+document.addEventListener('click', function(e) {
+    // Пропускаем события, если панель не видима
+    if (layerControlContainer.style.display !== 'block') return;
+    
+    const isClickOnPanel = layerControlContainer.contains(e.target);
+    const isClickOnToggle = layersToggleContainer.contains(e.target);
+    
+    console.log(`Клик вне панели: panel=${isClickOnPanel}, toggle=${isClickOnToggle}, hover=${isHoveringPanel}`);
+    
+    if (!isClickOnPanel && !isClickOnToggle && !isHoveringPanel) {
+        console.log("Закрытие панели слоев");
+        layerControlContainer.style.display = 'none';
+        layersToggleContainer.classList.remove('active');
+    }
+});
+
+// обработчик для закрытия панели при выборе слоя
+// layerControlContainer.addEventListener('click', function(e) {
+    // e.stopPropagation();
+    
+    ///////////Закрываем панель при выборе слоя
+    // if (e.target.tagName === 'INPUT' && e.target.type === 'radio') {
+        // layerControlContainer.style.display = 'none';
+        // layersToggle.getContainer().classList.remove('active');
+    // }
+// });
+
+////// Закрытие при клике вне области
+// map.on('click', function() {
+    // if (layerControlContainer.style.display === 'block') {
+        // layerControlContainer.style.display = 'none';
+    // }
+// });
+// Обработчик клика по документу
+document.addEventListener('click', function(e) {
+    // Если панель не открыта, ничего не делаем
+    if (!isLayerPanelOpen) return;
+    
+    // Проверяем, был ли клик внутри панели или по кнопке переключения
+    const isClickInsidePanel = layerControlContainer.contains(e.target);
+    const isClickOnToggle = layersToggleContainer.contains(e.target);
+    
+    console.log(`Клик вне панели: panel=${isClickInsidePanel}, toggle=${isClickOnToggle}`);
+    
+    // Если клик был вне панели и не по кнопке, закрываем панель
+    if (!isClickInsidePanel && !isClickOnToggle) {
+        closeLayerPanel();
+    }
+});
+// Для RU слоя ограничиваем зум
+map.on('baselayerchange', function(e) {
+    if (e.name === "RU Army") {
+        if (map.getZoom() < 10) map.setZoom(10);
+        if (map.getZoom() > 13) map.setZoom(13);
+    }
+});
+
+// Обработчик для выбора слоя (радио-кнопки)
+layerControlContainer.addEventListener('click', function(e) {
+    if (e.target.tagName === 'INPUT' && e.target.type === 'radio') {
+        console.log("Выбран слой, закрываем панель через 500 мс");
+        setTimeout(closeLayerPanel, 500);
+    }
+});
+// customLayerControl.addTo(map);
+
+//////Явно выбрать активный слой
+// map.on('baselayerchange', function(e) {
+//////Убедитесь, что при инициализации выбран правильный слой
+// if (!window.initialLayerSet) {
+	// window.osm.addTo(map); // Выберите OSM по умолчанию
+	// window.initialLayerSet = true;
+// }
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /////////////////////////////////////////
 
@@ -910,6 +1127,32 @@ async function init() {
     
     // Инициализация дартс-меню
     initDartMenu(); 
+	
+	// Для выпадающего списка слоёв (подложек)
+	// таймаут при инициализации карты, чтобы убедиться, что все элементы созданы
+	setTimeout(() => {
+		if (map) map.invalidateSize();
+		updateCurrentCenterDisplay();
+		
+		// Явно инициализируем обработчик после создания элементов
+		const toggleBtn = document.querySelector('.leaflet-control-layers-toggle');
+		if (toggleBtn) {
+			toggleBtn.addEventListener('click', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				
+				const isVisible = layerControlContainer.style.display === 'block';
+				layerControlContainer.style.display = isVisible ? 'none' : 'block';
+				layerControlContainer.classList.toggle('leaflet-control-layers-expanded', !isVisible);
+			});
+		}
+	}, 300);
+	
+	window.initialLayerSet = false;
+	map.on('load', function() {
+		window.osm.addTo(map); // Активируйте OSM слой
+		window.initialLayerSet = true;
+	});
     
   } catch (error) {
     console.error('Ошибка инициализации:', error);
