@@ -61,7 +61,7 @@ window.esri = L.tileLayer(esriUrl, {
 // });
 
 // Google maps layer
-window.goo = L.tileLayer('http://{s}.google.com/vt/lyrs=h&x={x}&y={y}&z={z}', {
+window.goo = L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
       // maxZoom: 20,
       subdomains:['mt0','mt1','mt2','mt3'],
       name: 'google',
@@ -69,7 +69,7 @@ window.goo = L.tileLayer('http://{s}.google.com/vt/lyrs=h&x={x}&y={y}&z={z}', {
 });
  // lyrs =
     // s: Спутник (Satellite)
-    // h: Гибрид (Hybrid - спутник + названия и дороги)
+    // y: Гибрид (не h)
     // m: Схема (Map)
     // p: Террейн (Terrain)
     // r: Некоторый тип схемы (Altered roadmap)
