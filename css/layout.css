@@ -406,7 +406,7 @@ body {
     background: #fff;
     box-shadow: 0 3px 10px rgba(0,0,0,0.2);
     border-radius: 4px;
-    z-index: 2001; /* Значительно выше элементов карты */
+    z-index: 2000; /* Значительно выше элементов карты */
     min-width: 180px;
     flex-direction: column;
     padding: 5px 0;
