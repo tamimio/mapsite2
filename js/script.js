@@ -1,25 +1,12 @@
 // Инициализация карты
 const map = L.map('map').setView([55.751244, 37.618423], 5);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap'
-}).addTo(map);
+// L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // attribution: '© OpenStreetMap'
+// }).addTo(map);
+window.osm.addTo(map);
 
-map.whenReady(function() {
-    // Изменение SVG-флага в атрибуции
-    const newSvgString = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" width="12" height="8"><rect fill="#fff" width="9" height="3"/><rect fill="#d52b1e" y="3" width="9" height="3"/><rect fill="#0039a6" y="2" width="9" height="2"/></svg>';
-
-    const linkElement = document.querySelector('.leaflet-control-attribution a');
-
-    if (linkElement) {
-      const oldSvgElement = linkElement.querySelector('svg');
-      if (oldSvgElement) {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = newSvgString;
-        const newSvgElement = tempDiv.firstChild;
-        linkElement.replaceChild(newSvgElement, oldSvgElement);
-      }
-    }
-});
+map.whenReady(replaceAttributionFlag);
+map.on('baselayerchange', replaceAttributionFlag);
 
 // Управление слоями карты
 const baseLayers = {
@@ -28,7 +15,8 @@ const baseLayers = {
     "OpenTopoMap": topo,
     "ESRI World Imagery": esri,
     "CartoDB Voyager": carto,
-    "RU Army": ru
+    "RU Army": ru,
+    "??? Google": goo
 };
 
 // Создаем кастомный контрол слоев
@@ -61,7 +49,8 @@ layerControlContainer.style.display = 'none';
 const layersToggle = L.control({position: 'topright'});
 layersToggle.onAdd = function(map) {
     this._div = L.DomUtil.create('div', 'leaflet-control-layers-toggle');
-    this._div.innerHTML = '<a href="#" title="Слои карты"></a>';
+    const t = translations[currentLang];
+    this._div.innerHTML = `<a href="#" title="${t.layersToggleTitle}"></a>`;
     return this._div;
 };
 layersToggle.addTo(map);
@@ -1117,7 +1106,15 @@ async function init() {
     setTimeout(() => {
       if (map) map.invalidateSize();
       updateCurrentCenterDisplay();
+      // replaceAttributionFlag();
     }, 50);
+    
+    const flagInterval = setInterval(() => {
+    if (document.querySelector('.leaflet-control-attribution')) {
+        replaceAttributionFlag();
+        clearInterval(flagInterval);
+        }
+    }, 500);
 	
 	//
 	// Настройка кнопки после инициализации элементов
@@ -1753,4 +1750,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
 
