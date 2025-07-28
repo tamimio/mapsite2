@@ -382,6 +382,62 @@ layerControlContainer.addEventListener('click', function(e) {
 
 //////////////////////////////////////////////////////
 // Линейка
+function initRulerControl() {
+  // Создаем кнопку переключения как стандартный контрол Leaflet
+  rulerToggle = L.control({ position: 'topleft' });
+  
+  rulerToggle.onAdd = function(map) {
+    this._div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-ruler-toggle');
+    const link = L.DomUtil.create('a', 'leaflet-control-ruler-toggle-btn', this._div);
+    link.href = '#';
+    link.title = translations[currentLang].rulerToggleTitle;
+    link.innerHTML = '📏'; // Или использовать SVG
+    return this._div;
+  };
+  
+  rulerToggle.addTo(map);
+
+  // Обработчик клика по кнопке
+  rulerToggle.getContainer().querySelector('a').addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleRulerPanel();
+  });
+}
+
+function toggleRulerPanel() {
+  const isActive = rulerToggle.getContainer().classList.contains('active');
+  
+  if (isActive) {
+    hideRulerPanel();
+  } else {
+    showRulerPanel();
+  }
+}
+
+function showRulerPanel() {
+    if (rulerToggle.getContainer()) {
+        rulerToggle.getContainer().classList.add('active');
+    }
+    
+    const measureContainer = window.measureControl && window.measureControl.getContainer();
+    if (measureContainer) {
+        measureContainer.style.display = 'block';
+    }
+}
+
+function hideRulerPanel() {
+    if (rulerToggle.getContainer()) {
+        rulerToggle.getContainer().classList.remove('active');
+    }
+    
+    const measureContainer = window.measureControl && window.measureControl.getContainer();
+    if (measureContainer) {
+        measureContainer.style.display = 'none';
+    }
+}
+
+
 
 // Функция для обновления текстов линейки при смене языка
 function updateMeasureControlLanguage(lang) {
@@ -390,8 +446,10 @@ function updateMeasureControlLanguage(lang) {
         return;
     }
     
+    // Удаляем старый контрол если существует    
     if (window.measureControl) {
         map.removeControl(window.measureControl);
+        window.measureControl = null;
     }
 
     const options = {
@@ -446,12 +504,38 @@ function updateMeasureControlLanguage(lang) {
 
     window.measureControl = L.control.polylineMeasure(options);
     window.measureControl.addTo(map);
+    
+    // После создания контрола линейки
+    const measureContainer = window.measureControl.getContainer();
+   // Проверяем существование контейнера
+    if (measureContainer) {
+        measureContainer.classList.add('leaflet-control-ruler-panel');
+        
+        // Переносим в нужное место в DOM
+        const rulerToggleContainer = rulerToggle.getContainer();
+        if (rulerToggleContainer && rulerToggleContainer.parentNode) {
+            rulerToggleContainer.parentNode.insertBefore(
+                measureContainer,
+                rulerToggleContainer.nextSibling
+            );
+        }
+    } else {
+        console.error('Failed to get measure control container');
+    }
+    
+    // Скрываем панель при инициализации
+    hideRulerPanel();
+    
 }
 
 // Инициализация после создания карты
 document.addEventListener('DOMContentLoaded', function() {
+    initRulerControl();
     const currentLang = localStorage.getItem('preferredLang') || 'ru';
     updateMeasureControlLanguage(currentLang);
+    
+    // Скрываем панель при старте
+    hideRulerPanel();
 });
 
 // Обновление при смене языка

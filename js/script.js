@@ -895,12 +895,14 @@ async function init() {
 		window.initialLayerSet = true;
 	});
     
-    setTimeout(() => {
-    if (typeof L.control.polylineMeasure === 'function') {
-        const currentLang = localStorage.getItem('preferredLang') || 'ru';
-        updateMeasureControlLanguage(currentLang);
-    }
-  }, 1000);
+    // setTimeout(() => {
+    // if (typeof L.control.polylineMeasure === 'function') {
+        // const currentLang = localStorage.getItem('preferredLang') || 'ru';
+        // updateMeasureControlLanguage(currentLang);
+    // }
+  // }, 1000);
+  
+  // initRulerControl();
     
   } catch (error) {
     console.error('Ошибка инициализации:', error);
