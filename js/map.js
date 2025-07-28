@@ -382,6 +382,7 @@ layerControlContainer.addEventListener('click', function(e) {
 
 //////////////////////////////////////////////////////
 // Линейка
+let rulerToggle;
 function initRulerControl() {
   // Создаем кнопку переключения как стандартный контрол Leaflet
   rulerToggle = L.control({ position: 'topleft' });
@@ -416,7 +417,7 @@ function toggleRulerPanel() {
 }
 
 function showRulerPanel() {
-    if (rulerToggle.getContainer()) {
+    if (rulerToggle && rulerToggle.getContainer) {
         rulerToggle.getContainer().classList.add('active');
     }
     
@@ -427,7 +428,7 @@ function showRulerPanel() {
 }
 
 function hideRulerPanel() {
-    if (rulerToggle.getContainer()) {
+    if (rulerToggle && rulerToggle.getContainer) {
         rulerToggle.getContainer().classList.remove('active');
     }
     
