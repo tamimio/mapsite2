@@ -385,6 +385,11 @@ layerControlContainer.addEventListener('click', function(e) {
 
 // Функция для обновления текстов линейки при смене языка
 function updateMeasureControlLanguage(lang) {
+    if (typeof L.control.polylineMeasure !== 'function') {
+        console.error('PolylineMeasure plugin not loaded!');
+        return;
+    }
+    
     if (window.measureControl) {
         map.removeControl(window.measureControl);
     }
