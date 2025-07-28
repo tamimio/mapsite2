@@ -452,6 +452,7 @@ function updateMeasureControlLanguage(lang) {
         window.measureControl = null;
     }
 
+    const t = translations[lang];
     const options = {
         position: 'topleft',
         unit: 'kilometers',
@@ -461,67 +462,39 @@ function updateMeasureControlLanguage(lang) {
         cursor: 'crosshair',
         showClearControl: true,
         clearControlLabel: '&times;',
-        popupFormat: { number: 2 }
+        popupFormat: { number: 2 },
+        measureControlTitleOn: t.measureControlTitleOn,
+        measureControlTitleOff: t.measureControlTitleOff,
+        clearControlTitle: t.clearControlTitle,
+        unitControlTitle: t.unitControlTitle,
+        bearingText: lang === 'ru' ? 'Азимут' : 'Bearing'
     };
 
-    if (lang === 'ru') {
-        Object.assign(options, {
-            measureControlTitleOn: 'Включить линейку',
-            measureControlTitleOff: 'Выключить линейку',
-            clearControlTitle: 'Очистить измерения',
-            unitControlTitle: {
-                text: 'Изменить единицы',
-                meters: 'Метры',
-                kilometers: 'Километры',
-                miles: 'Мили',
-                nauticalmiles: 'Морские мили',
-                feet: 'Футы'
-            },
-            popupFormat: {
-                template: 'Расстояние: {value} {unit}'
-            },
-            bearingText: 'Азимут'
-        });
-    } else {
-        Object.assign(options, {
-            measureControlTitleOn: 'Turn on measuring tool',
-            measureControlTitleOff: 'Turn off measuring tool',
-            clearControlTitle: 'Clear measurements',
-            unitControlTitle: {
-                text: 'Change units',
-                meters: 'Meters',
-                kilometers: 'Kilometers',
-                miles: 'Miles',
-                nauticalmiles: 'Nautical miles',
-                feet: 'Feet'
-            },
-            popupFormat: {
-                template: 'Distance: {value} {unit}'
-            },
-            bearingText: 'Bearing'
-        });
+    // Добавляем переводы единиц измерения
+    if (t.units) {
+        options.units = t.units;
     }
 
     window.measureControl = L.control.polylineMeasure(options);
     window.measureControl.addTo(map);
     
-    // После создания контрола линейки
-    const measureContainer = window.measureControl.getContainer();
-   // Проверяем существование контейнера
-    if (measureContainer) {
-        measureContainer.classList.add('leaflet-control-ruler-panel');
+    //////////////// После создания контрола линейки
+    // const measureContainer = window.measureControl.getContainer();
+   /////////////// Проверяем существование контейнера
+    // if (measureContainer) {
+        // measureContainer.classList.add('leaflet-control-ruler-panel');
         
-        // Переносим в нужное место в DOM
-        const rulerToggleContainer = rulerToggle.getContainer();
-        if (rulerToggleContainer && rulerToggleContainer.parentNode) {
-            rulerToggleContainer.parentNode.insertBefore(
-                measureContainer,
-                rulerToggleContainer.nextSibling
-            );
-        }
-    } else {
-        console.error('Failed to get measure control container');
-    }
+        /////////////// Переносим в нужное место в DOM
+        // const rulerToggleContainer = rulerToggle.getContainer();
+        // if (rulerToggleContainer && rulerToggleContainer.parentNode) {
+            // rulerToggleContainer.parentNode.insertBefore(
+                // measureContainer,
+                // rulerToggleContainer.nextSibling
+            // );
+        // }
+    // } else {
+        // console.error('Failed to get measure control container');
+    // }
     
     // Скрываем панель при инициализации
     hideRulerPanel();
@@ -532,7 +505,11 @@ function updateMeasureControlLanguage(lang) {
 document.addEventListener('DOMContentLoaded', function() {
     initRulerControl();
     const currentLang = localStorage.getItem('preferredLang') || 'ru';
-    updateMeasureControlLanguage(currentLang);
+    
+    setTimeout(() => {
+        const currentLang = localStorage.getItem('preferredLang') || 'ru';
+        updateMeasureControlLanguage(currentLang);
+    }, 500);
     
     // Скрываем панель при старте
     hideRulerPanel();

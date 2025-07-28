@@ -22,6 +22,19 @@ const translations = {
         
         layersToggleTitle: "Слои карты",
         
+        rulerToggleTitle: "Измерить расстояние",
+        measureControlTitleOn: "Включить линейку",
+        measureControlTitleOff: "Выключить линейку",
+        clearControlTitle: "Очистить измерения",
+        unitControlTitle: "Изменить единицы",
+        units: {
+            meters: "Метры",
+            kilometers: "Километры",
+            miles: "Мили",
+            nauticalmiles: "Морские мили",
+            feet: "Футы"
+        },
+        
         viewSwitchMap: "Карта",
         viewSwitchSt1: "Статистика1",
         viewSwitchSt2: "Статистика2",
@@ -52,6 +65,19 @@ const translations = {
         enBtnTitle: "Current language: English",
         
         layersToggleTitle: "Map layers",
+        
+        rulerToggleTitle: "Measure distance",
+        measureControlTitleOn: "Turn on measuring tool",
+        measureControlTitleOff: "Turn off measuring tool",
+        clearControlTitle: "Clear measurements",
+        unitControlTitle: "Change units",
+        units: {
+            meters: "Meters",
+            kilometers: "Kilometers",
+            miles: "Miles",
+            nauticalmiles: "Nautical miles",
+            feet: "Feet"
+        },
         
         viewSwitchMap: "Map",
         viewSwitchSt1: "Statistics1",
