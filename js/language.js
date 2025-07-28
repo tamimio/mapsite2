@@ -8,7 +8,7 @@ const translations = {
         currentCenter: "Текущий центр: ",
         undefinedCoords: "не определен",
         copyTooltip: "Копировать координаты",
-        copiedText: "Скопировано!",
+        copiedText: "✓",
         copyFallback: "Скопируйте координаты вручную",
         copyError: "Ошибка копирования",
         
@@ -39,7 +39,7 @@ const translations = {
         currentCenter: "Current center: ",
         undefinedCoords: "undefined",
         copyTooltip: "Copy coordinates",
-        copiedText: "Copied!",
+        copiedText: "✓",
         copyFallback: "Copy coordinates manually",
         copyError: "Copy error",
         

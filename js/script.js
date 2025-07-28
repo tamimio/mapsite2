@@ -782,7 +782,7 @@ function setupCopyCoordsButton() {
             document.body.removeChild(textArea);
             
             // Визуальная обратная связь
-            button.textContent = t ? t.copiedText : '✓ Скопировано!';
+            button.textContent = t ? t.copiedText : '✓';
             button.classList.add('copied');
             
             setTimeout(() => {
