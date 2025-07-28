@@ -373,3 +373,83 @@ layerControlContainer.addEventListener('click', function(e) {
 // }
 // });
 
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////
+// Линейка
+
+// Функция для обновления текстов линейки при смене языка
+function updateMeasureControlLanguage(lang) {
+    if (window.measureControl) {
+        map.removeControl(window.measureControl);
+    }
+
+    const options = {
+        position: 'topleft',
+        unit: 'kilometers',
+        clearMeasurementsOnStop: false,
+        showUnitControl: true,
+        backgroundColor: '#f8f8f8',
+        cursor: 'crosshair',
+        showClearControl: true,
+        clearControlLabel: '&times;',
+        popupFormat: { number: 2 }
+    };
+
+    if (lang === 'ru') {
+        Object.assign(options, {
+            measureControlTitleOn: 'Включить линейку',
+            measureControlTitleOff: 'Выключить линейку',
+            clearControlTitle: 'Очистить измерения',
+            unitControlTitle: {
+                text: 'Изменить единицы',
+                meters: 'Метры',
+                kilometers: 'Километры',
+                miles: 'Мили',
+                nauticalmiles: 'Морские мили',
+                feet: 'Футы'
+            },
+            popupFormat: {
+                template: 'Расстояние: {value} {unit}'
+            },
+            bearingText: 'Азимут'
+        });
+    } else {
+        Object.assign(options, {
+            measureControlTitleOn: 'Turn on measuring tool',
+            measureControlTitleOff: 'Turn off measuring tool',
+            clearControlTitle: 'Clear measurements',
+            unitControlTitle: {
+                text: 'Change units',
+                meters: 'Meters',
+                kilometers: 'Kilometers',
+                miles: 'Miles',
+                nauticalmiles: 'Nautical miles',
+                feet: 'Feet'
+            },
+            popupFormat: {
+                template: 'Distance: {value} {unit}'
+            },
+            bearingText: 'Bearing'
+        });
+    }
+
+    window.measureControl = L.control.polylineMeasure(options);
+    window.measureControl.addTo(map);
+}
+
+// Инициализация после создания карты
+document.addEventListener('DOMContentLoaded', function() {
+    const currentLang = localStorage.getItem('preferredLang') || 'ru';
+    updateMeasureControlLanguage(currentLang);
+});
+
+// Обновление при смене языка
+document.addEventListener('languageChanged', function(e) {
+    updateMeasureControlLanguage(e.detail);
+});
