@@ -73,7 +73,7 @@ const translations = {
         unitControlTitle: "Change units",
         units: {
             meters: "Meters",
-            kilometers: "Kilometers",
+            kilometers: "Kilometres",
             miles: "Miles",
             nauticalmiles: "Nautical miles",
             feet: "Feet"

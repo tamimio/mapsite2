@@ -456,7 +456,7 @@ function updateMeasureControlLanguage(lang) {
     const t = translations[lang];
     const options = {
         position: 'topleft',
-        unit: 'kilometers',
+        unit: 'kilometres',
         clearMeasurementsOnStop: false,
         showUnitControl: true,
         backgroundColor: '#f8f8f8',
@@ -468,13 +468,15 @@ function updateMeasureControlLanguage(lang) {
         measureControlTitleOff: t.measureControlTitleOff,
         clearControlTitle: t.clearControlTitle,
         unitControlTitle: t.unitControlTitle,
-        bearingText: lang === 'ru' ? 'Азимут' : 'Bearing'
+        bearingText: lang === 'ru' ? 'Азимут' : 'Bearing',
+        units: { // Исправленная структура
+            meters: t.units.meters,
+            kilometers: t.units.kilometers,
+            miles: t.units.miles,
+            nauticalmiles: t.units.nauticalmiles,
+            feet: t.units.feet
+        }
     };
-
-    // Добавляем переводы единиц измерения
-    if (t.units) {
-        options.units = t.units;
-    }
 
     window.measureControl = L.control.polylineMeasure(options);
     window.measureControl.addTo(map);
@@ -520,3 +522,4 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('languageChanged', function(e) {
     updateMeasureControlLanguage(e.detail);
 });
+
