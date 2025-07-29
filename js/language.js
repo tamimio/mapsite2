@@ -26,11 +26,16 @@ const translations = {
         measureControlTitleOn: "Включить линейку",
         measureControlTitleOff: "Выключить линейку",
         clearControlTitle: "Очистить измерения",
-        unitControlTitle: "Изменить единицы",
+        unitControlTitle: { // Title texts to show on the Unit Control
+            text: 'Изменить единицы',
+            kilometres: 'километры',
+            landmiles: "мили",
+            nauticalmiles: 'морские мили'
+        },
         units: {
             meters: "Метры",
-            kilometers: "Километры",
-            miles: "Мили",
+            kilometres: "Километры",
+            landmiles: "Мили",
             nauticalmiles: "Морские мили",
             feet: "Футы"
         },
@@ -70,11 +75,16 @@ const translations = {
         measureControlTitleOn: "Turn on measuring tool",
         measureControlTitleOff: "Turn off measuring tool",
         clearControlTitle: "Clear measurements",
-        unitControlTitle: "Change units",
+        unitControlTitle: { // Title texts to show on the Unit Control
+            text: 'Change Units',
+            kilometres: 'kilometres',
+            landmiles: "miles",
+            nauticalmiles: 'nautical miles'
+        },
         units: {
             meters: "Meters",
-            kilometers: "Kilometres",
-            miles: "Miles",
+            kilometres: "Kilometres",
+            landmiles: "Miles",
             nauticalmiles: "Nautical miles",
             feet: "Feet"
         },

@@ -451,7 +451,7 @@ function updateMeasureControlLanguage(lang) {
     if (window.measureControl) {
         map.removeControl(window.measureControl);
         window.measureControl = null;
-    }
+    }    
 
     const t = translations[lang];
     const options = {
@@ -469,36 +469,12 @@ function updateMeasureControlLanguage(lang) {
         clearControlTitle: t.clearControlTitle,
         unitControlTitle: t.unitControlTitle,
         bearingText: lang === 'ru' ? 'Азимут' : 'Bearing',
-        units: { // Исправленная структура
-            meters: t.units.meters,
-            kilometers: t.units.kilometers,
-            miles: t.units.miles,
-            nauticalmiles: t.units.nauticalmiles,
-            feet: t.units.feet
-        }
+        units: t.units // ?
     };
 
     window.measureControl = L.control.polylineMeasure(options);
     window.measureControl.addTo(map);
-    
-    //////////////// После создания контрола линейки
-    // const measureContainer = window.measureControl.getContainer();
-   /////////////// Проверяем существование контейнера
-    // if (measureContainer) {
-        // measureContainer.classList.add('leaflet-control-ruler-panel');
         
-        /////////////// Переносим в нужное место в DOM
-        // const rulerToggleContainer = rulerToggle.getContainer();
-        // if (rulerToggleContainer && rulerToggleContainer.parentNode) {
-            // rulerToggleContainer.parentNode.insertBefore(
-                // measureContainer,
-                // rulerToggleContainer.nextSibling
-            // );
-        // }
-    // } else {
-        // console.error('Failed to get measure control container');
-    // }
-    
     // Скрываем панель при инициализации
     hideRulerPanel();
     
@@ -520,6 +496,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Обновление при смене языка
 document.addEventListener('languageChanged', function(e) {
-    updateMeasureControlLanguage(e.detail);
+    updateMeasureControlLanguage(e.detail);    
 });
 
