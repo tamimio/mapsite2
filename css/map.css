@@ -449,6 +449,11 @@
     left: 0;
 }
 
+.leaflet-control-ruler-toggle.active a { /* Прожатая кнопка линейки */
+    background-color: #e6f2ff !important;
+    box-shadow: inset 0 0 3px rgba(0,0,0,0.3) !important;
+}
+
 .leaflet-control-ruler-panel {
     position: absolute;
     top: 100%;
