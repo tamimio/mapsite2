@@ -440,20 +440,11 @@ function hideRulerPanel() {
 
 
 
-// Функция для обновления текстов линейки при смене языка
-function updateMeasureControlLanguage(lang) {
-    if (typeof L.control.polylineMeasure !== 'function') {
-        console.error('PolylineMeasure plugin not loaded!');
-        return;
-    }
+// функция для инициализации контрола измерения
+function initMeasureControl() {
+    const currentLang = localStorage.getItem('preferredLang') || 'ru';
+    const t = translations[currentLang];
     
-    // Удаляем старый контрол если существует    
-    if (window.measureControl) {
-        map.removeControl(window.measureControl);
-        window.measureControl = null;
-    }    
-
-    const t = translations[lang];
     const options = {
         position: 'topleft',
         unit: 'kilometres',
@@ -468,34 +459,21 @@ function updateMeasureControlLanguage(lang) {
         measureControlTitleOff: t.measureControlTitleOff,
         clearControlTitle: t.clearControlTitle,
         unitControlTitle: t.unitControlTitle,
-        bearingText: lang === 'ru' ? 'Азимут' : 'Bearing',
-        units: t.units // ?
+        bearingText: currentLang === 'ru' ? 'Азимут' : 'Bearing',
+        units: t.units
     };
 
-    window.measureControl = L.control.polylineMeasure(options);
-    window.measureControl.addTo(map);
-        
-    // Скрываем панель при инициализации
-    hideRulerPanel();
-    
+    // Создаем контрол только если его еще нет
+    if (!window.measureControl) {
+        window.measureControl = L.control.polylineMeasure(options);
+        window.measureControl.addTo(map);
+    }
 }
 
 // Инициализация после создания карты
 document.addEventListener('DOMContentLoaded', function() {
     initRulerControl();
-    const currentLang = localStorage.getItem('preferredLang') || 'ru';
-    
-    setTimeout(() => {
-        const currentLang = localStorage.getItem('preferredLang') || 'ru';
-        updateMeasureControlLanguage(currentLang);
-    }, 500);
-    
-    // Скрываем панель при старте
+    initMeasureControl(); // Инициализация линейки
     hideRulerPanel();
-});
-
-// Обновление при смене языка
-document.addEventListener('languageChanged', function(e) {
-    updateMeasureControlLanguage(e.detail);    
 });
 

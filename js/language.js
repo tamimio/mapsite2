@@ -101,6 +101,60 @@ const translations = {
 
 let currentLang = localStorage.getItem('preferredLang') || 'ru'; // По умолчанию русский
 
+// Функция для обновления текстов линейки при смене языка
+function updateMeasureControlLanguage(lang) {
+    const t = translations[lang];
+    
+    // Гарантируем инициализацию контрола перед обновлением
+    if (!window.measureControl && typeof initMeasureControl === 'function') {
+        initMeasureControl();
+    }
+    
+    if (window.measureControl) {
+        const container = window.measureControl.getContainer();
+        
+        // Если контейнер не найден, добавляем контрол на карту
+        if (!container) {
+            window.measureControl.addTo(map);
+        } else {
+            // Обновление кнопки измерения
+            const measureButton = container.querySelector('#polyline-measure-control');
+            if (measureButton) {
+                const isActive = measureButton.classList.contains('active');
+                measureButton.title = isActive ? t.measureControlTitleOff : t.measureControlTitleOn;
+            }
+            
+            // Обновление кнопки очистки
+            const clearButton = container.querySelector('.polyline-measure-clearControl');
+            if (clearButton) {
+                clearButton.title = t.clearControlTitle;
+            }
+            
+            // Обновление кнопки единиц измерения
+            const unitButton = container.querySelector('#unitControlId');
+            if (unitButton) {
+                // unitButton.title = t.unitControlTitle;
+                // Получаем текущую единицу измерения
+                const currentUnit = window.measureControl._unit || 'kilometres';
+                
+                // Формируем строку вида "Текст [Единица]"
+                let titleText = t.unitControlTitle.text;
+                if (t.unitControlTitle[currentUnit]) {
+                    titleText += ` [${t.unitControlTitle[currentUnit]}]`;
+                }
+                
+                unitButton.title = titleText;
+            }
+        }
+    }
+    
+    // Обновляем title нашей кастомной кнопки
+    if (rulerToggle) {
+        const link = rulerToggle.getContainer().querySelector('a');
+        if (link) link.title = t.rulerToggleTitle;
+    }
+}
+
 // Функция переключения языка
 function setLanguage(lang) {
     currentLang = lang;
@@ -162,6 +216,8 @@ function setLanguage(lang) {
     if (layersToggleLink) {
         layersToggleLink.title = t.layersToggleTitle;
     }
+    
+    updateMeasureControlLanguage(lang); // Обновляем тексты линейки
     
     // Обновляем кнопки языка
     document.getElementById('lang-ru').title = lang === 'ru' ? "Уже Русский" : "Переключить на Русский";
