@@ -580,7 +580,8 @@ async function loadKmlFile(file) {
                     color: style.color || '#3388ff',
                     weight: style.weight || 3,
                     fillColor: style.fillColor || '#3388ff',
-                    fillOpacity: style.fillOpacity || 0.5
+                    fillOpacity: style.fillOpacity || 0.5,
+					interactive: false // Отключаем интерактивность полигонов
                 }).addTo(layerGroup);
 
                 // Логирование информации о полигоне
