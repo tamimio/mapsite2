@@ -74,6 +74,14 @@ window.goo = L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
     // p: Террейн (Terrain)
     // r: Некоторый тип схемы (Altered roadmap)
 
+// Яндекс Карты (схема)
+const yandexUrl = 'https://core-renderer-tiles.maps.yandex.net/tiles?l=map&x={x}&y={y}&z={z}&scale=1&lang=ru_RU';
+const yandexAttrib = 'Яндекс';
+window.yandex = L.tileLayer(yandexUrl, {
+    attribution: yandexAttrib,
+    noWrap: true,
+    name: 'yandex'
+});
 
 
 
@@ -153,7 +161,8 @@ const baseLayers = {
     "ESRI World Imagery": esri,
     // "CartoDB Voyager": carto,
     // "RU Army": ru,
-    "Google Maps": goo
+    "Google Maps": goo,
+    "Yandex Maps": yandex
 };
 
 // Создаем кастомный контрол слоев
