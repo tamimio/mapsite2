@@ -397,7 +397,8 @@ async function loadPermanentKmlLayers() {
                                 color: style.line.color || '#3388ff',
                                 weight: style.line.weight || 0,
                                 fillColor: style.poly.fillColor || '#3388ff',
-                                fillOpacity: style.poly.fillOpacity || 0.5
+                                fillOpacity: style.poly.fillOpacity || 0.5,
+								interactive: false // Отключаем интерактивность полигонов
                             }).addTo(layerGroup);
                             
                             // Обновляем границы СРАЗУ ПОСЛЕ СОЗДАНИЯ
@@ -639,7 +640,7 @@ async function navigateTo(index) {
     
     try {
         // Сохраняем состояние линейки
-        const wasActive = window.measureControl && window.measureControl._measuring;
+        //const wasActive = window.measureControl && window.measureControl._measuring;
         
         currentIndex = index;
         const file = kmlFiles[currentIndex];
@@ -654,13 +655,13 @@ async function navigateTo(index) {
         
         // Костыль
         // Восстанавливаем состояние линейки
-        if (wasActive) {
-            setTimeout(() => {
-                if (window.measureControl) {
-                    window.measureControl.start();
-                }
-            }, 100);
-        }        
+        //if (wasActive) {
+        //    setTimeout(() => {
+        //        if (window.measureControl) {
+        //            window.measureControl.start();
+        //        }
+         //   }, 100);
+        // }        
     } catch (error) {
         console.error("Ошибка навигации:", error);
     } finally {
