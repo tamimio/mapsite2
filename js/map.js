@@ -463,6 +463,13 @@ function initMeasureControl() {
         units: t.units
     };
 
+
+    // Удаляем старый контрол если существует
+    //if (window.measureControl) {
+        //window.measureControl.remove();
+        //window.measureControl = null;
+    //}
+
     // Создаем контрол только если его еще нет
     if (!window.measureControl) {
         window.measureControl = L.control.polylineMeasure(options);

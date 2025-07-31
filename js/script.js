@@ -638,6 +638,9 @@ async function navigateTo(index) {
     if (index < 0 || index >= kmlFiles.length) return;
     
     try {
+        // Сохраняем состояние линейки
+        const wasActive = window.measureControl && window.measureControl._measuring;
+        
         currentIndex = index;
         const file = kmlFiles[currentIndex];
         selectedDate = file.name; // Сохраняем выбранную дату
@@ -648,6 +651,16 @@ async function navigateTo(index) {
         }
         
         await loadKmlFile(file);
+        
+        // Костыль
+        // Восстанавливаем состояние линейки
+        if (wasActive) {
+            setTimeout(() => {
+                if (window.measureControl) {
+                    window.measureControl.start();
+                }
+            }, 100);
+        }        
     } catch (error) {
         console.error("Ошибка навигации:", error);
     } finally {
