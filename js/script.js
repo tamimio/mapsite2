@@ -429,9 +429,9 @@ async function loadPermanentKmlLayers() {
                 window.permanentLayerGroups.push(layerGroup);
                 
                 // Применяем границы только если они валидны
-                if (bounds.isValid()) {
-                    map.fitBounds(bounds);
-                }
+//                if (bounds.isValid()) {
+//                    map.fitBounds(bounds);
+//                }
             } catch (error) {
                 console.error(`Ошибка обработки слоя ${layerData.path}:`, error);
             }
@@ -612,11 +612,11 @@ async function loadKmlFile(file) {
             const ne = bounds.getNorthEast();
             const isNotPoint = sw.lat !== ne.lat || sw.lng !== ne.lng;
             
-            if (!preserveZoom && isNotPoint) {
-                map.fitBounds(bounds);
-            } else {
+//            if (!preserveZoom && isNotPoint) {
+//                map.fitBounds(bounds);
+//            } else {
                 map.setView(currentCenter, currentZoom);
-            }
+//            }
         } else {
             map.setView(currentCenter, currentZoom);
         }
