@@ -82,7 +82,7 @@ window.goo = L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
 
 
 // Инициализация карты
-const map = L.map('map').setView([55.751244, 37.618423], 5);
+const map = L.map('map').setView([48.257381, 37.134785], 11);
 // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     // attribution: '© OpenStreetMap'
 // }).addTo(map);
