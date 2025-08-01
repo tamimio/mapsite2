@@ -234,7 +234,7 @@ function parsePolyStyle(style) {
     };
 }
 
-function parseCoordinates(element) {
+function parseCoordinates(element, crs) {
     const coordinates = element?.querySelector('coordinates')?.textContent;
     if (!coordinates) return [];
     
@@ -243,15 +243,7 @@ function parseCoordinates(element) {
         .split(/\s+/)
         .map(coord => {
             const [lng, lat] = coord.split(',').map(Number);
-            let point = [lat, lng];
-            
-            // Преобразование координат при необходимости
-            if (targetCRS && targetCRS !== L.CRS.EPSG3857) {
-                const projected = targetCRS.projection.project(L.latLng(point));
-                point = targetCRS.projection.unproject(projected);
-            }
-            
-            return point;
+            return [lat, lng];
         });
 }
 
@@ -374,13 +366,7 @@ async function loadPermanentKmlLayers() {
                     // Обработка LineString
                     const lineString = placemark.querySelector('LineString');
                     if (lineString) {
-                        const coords = parseCoordinates(lineString, targetCRS);
-						if (targetCRS && targetCRS !== L.CRS.EPSG3857) {
-							coords = coords.map(coord => {
-								const point = targetCRS.projection.project(L.latLng(coord));
-								return targetCRS.projection.unproject(point);
-							});
-						}
+                        const coords = parseCoordinates(lineString, map.options.crs);
                         if (coords.length >= 2) {
                             const polyline = L.polyline(coords, {
                                 color: style.line.color || '#3388ff',
@@ -405,13 +391,7 @@ async function loadPermanentKmlLayers() {
                     // Обработка Polygon
                     const polygon = placemark.querySelector('Polygon');
                     if (polygon) {
-                        const coords = parseCoordinates(polygon.querySelector('LinearRing'), targetCRS);
-						if (targetCRS && targetCRS !== L.CRS.EPSG3857) {
-							coords = coords.map(coord => {
-								const point = targetCRS.projection.project(L.latLng(coord));
-								return targetCRS.projection.unproject(point);
-							});
-						}
+                        const coords = parseCoordinates(polygon.querySelector('LinearRing'), map.options.crs);
                         if (coords.length >= 3) {
                             const poly = L.polygon(coords, {
                                 color: style.line.color || '#3388ff',
@@ -561,13 +541,7 @@ async function loadKmlFile(file, targetCRS) {
             // Обработка LineString
             const lineString = placemark.querySelector('LineString');
             if (lineString) {
-                const coords = parseCoordinates(lineString, targetCRS);
-				if (targetCRS && targetCRS !== L.CRS.EPSG3857) {
-					coords = coords.map(coord => {
-						const point = targetCRS.projection.project(L.latLng(coord));
-						return targetCRS.projection.unproject(point);
-					});
-				}
+                const coords = parseCoordinates(lineString, map.options.crs);
                 if (coords.length < 2) {
                     if (LOG_TEMPORARY_STYLES) console.groupEnd(); // Закрываем группу Placemark
                     return;
@@ -596,13 +570,7 @@ async function loadKmlFile(file, targetCRS) {
             // Обработка Polygon
             const polygon = placemark.querySelector('Polygon');
             if (polygon) {
-                const coords = parseCoordinates(polygon.querySelector('LinearRing'), targetCRS);
-				if (targetCRS && targetCRS !== L.CRS.EPSG3857) {
-					coords = coords.map(coord => {
-						const point = targetCRS.projection.project(L.latLng(coord));
-						return targetCRS.projection.unproject(point);
-					});
-				}
+                const coords = parseCoordinates(polygon.querySelector('LinearRing'), map.options.crs);
                 if (coords.length < 3) {
                     if (LOG_TEMPORARY_STYLES) console.groupEnd(); // Закрываем группу Placemark
                     return;
@@ -672,11 +640,8 @@ async function reloadKmlForCRS(crs) {
     
     const file = kmlFiles[currentIndex];
     try {
-        // Удаляем текущий слой
         map.removeLayer(currentLayer);
-        
-        // Загружаем заново с преобразованием координат
-        await loadKmlFile(file, crs);
+        await loadKmlFile(file);
     } catch (error) {
         console.error("Ошибка перезагрузки KML:", error);
     }

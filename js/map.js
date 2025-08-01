@@ -371,26 +371,19 @@ document.addEventListener('click', function(e) {
 });
 // Для RU слоя ограничиваем зум
 map.on('baselayerchange', function(e) {
-	const center = map.getCenter();
+    const center = map.getCenter();
     const zoom = map.getZoom();
     
     if (e.name.includes("Yandex")) {
-        // Сохраняем текущее состояние карты
         map.options.crs = L.CRS.EPSG3395;
-        
-        // Перезагружаем KML для новой CRS
-        reloadKmlForCRS(L.CRS.EPSG3395).then(() => {
-            map.setView(center, zoom);
-        });
     } else {
-        // Возвращаемся к стандартной CRS
         map.options.crs = L.CRS.EPSG3857;
-        
-        // Перезагружаем KML для стандартной CRS
-        reloadKmlForCRS(L.CRS.EPSG3857).then(() => {
-            map.setView(center, zoom);
-        });
     }
+    
+    // Упрощенный вызов без параметра
+    reloadKmlForCRS().then(() => {
+        map.setView(center, zoom);
+    });
 	
     // if (e.name === "RU Army") {
         // if (map.getZoom() < 10) map.setZoom(10);
