@@ -638,10 +638,17 @@ async function loadKmlFile(file, targetCRS) {
 async function reloadKmlForCRS(crs) {
     if (!currentLayer) return;
     
+    const center = map.getCenter();
+    const zoom = map.getZoom();
     const file = kmlFiles[currentIndex];
+    
     try {
         map.removeLayer(currentLayer);
         await loadKmlFile(file);
+        
+        // Важно: восстанавливаем позицию и делаем перерисовку
+        map.setView(center, zoom);
+        map.invalidateSize();
     } catch (error) {
         console.error("Ошибка перезагрузки KML:", error);
     }

@@ -374,16 +374,15 @@ map.on('baselayerchange', function(e) {
     const center = map.getCenter();
     const zoom = map.getZoom();
     
+    // Устанавливаем CRS перед перезагрузкой KML
     if (e.name.includes("Yandex")) {
         map.options.crs = L.CRS.EPSG3395;
     } else {
         map.options.crs = L.CRS.EPSG3857;
     }
     
-    // Упрощенный вызов без параметра
-    reloadKmlForCRS().then(() => {
-        map.setView(center, zoom);
-    });
+    // Перезагружаем KML без дополнительного setView
+    reloadKmlForCRS();
 	
     // if (e.name === "RU Army") {
         // if (map.getZoom() < 10) map.setZoom(10);
