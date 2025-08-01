@@ -164,7 +164,7 @@ map.on('baselayerchange', replaceAttributionFlag);
       map.options.crs = L.CRS.EPSG3857;
     }
     map.setView(center);
-    map._resetView(map.getCenter(), map.getZoom(), true);
+    // map._resetView(map.getCenter(), map.getZoom(), true);
   });
 
 // Управление слоями карты
