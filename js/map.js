@@ -76,11 +76,14 @@ window.goo = L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
 
 // Яндекс Карты (схема)
 const yandexUrl = 'https://core-renderer-tiles.maps.yandex.net/tiles?l=map&x={x}&y={y}&z={z}&scale=1&lang=ru_RU';
-const yandexAttrib = 'Яндекс';
+const yandexAttrib = '<a http="https://yandex.ru" target="_blank">Yandex</a>';
 window.yandex = L.tileLayer(yandexUrl, {
     attribution: yandexAttrib,
+    subdomains: ['01','02','03','04'],
     noWrap: true,
-    name: 'yandex'
+    name: 'yandex'//,
+	// crs: L.CRS.EPSG3395,
+    //zoomOffset: 0
 });
 
 
@@ -152,6 +155,17 @@ L.Control.Attribution.prototype.addAttribution = function(text) {
 
 map.whenReady(replaceAttributionFlag);
 map.on('baselayerchange', replaceAttributionFlag);
+
+  map.on('baselayerchange', layer => {
+    const center = map.getCenter();
+    if (layer.name.includes('Yandex')) {
+      map.options.crs = L.CRS.EPSG3395;
+    } else {
+      map.options.crs = L.CRS.EPSG3857;
+    }
+    map.setView(center);
+    map._resetView(map.getCenter(), map.getZoom(), true);
+  });
 
 // Управление слоями карты
 const baseLayers = {
