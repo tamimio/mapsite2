@@ -156,7 +156,7 @@ L.Control.Attribution.prototype.addAttribution = function(text) {
 map.whenReady(replaceAttributionFlag);
 map.on('baselayerchange', replaceAttributionFlag);
 
-  map.on('baselayerchange', layer => {
+map.on('baselayerchange', layer => {
     const center = map.getCenter();
     if (layer.name.includes('Yandex')) {
       map.options.crs = L.CRS.EPSG3395;
@@ -164,7 +164,6 @@ map.on('baselayerchange', replaceAttributionFlag);
       map.options.crs = L.CRS.EPSG3857;
     }
     map.setView(center);
-    // map._resetView(map.getCenter(), map.getZoom(), true);
   });
 
 // Управление слоями карты
@@ -372,10 +371,31 @@ document.addEventListener('click', function(e) {
 });
 // Для RU слоя ограничиваем зум
 map.on('baselayerchange', function(e) {
-    if (e.name === "RU Army") {
-        if (map.getZoom() < 10) map.setZoom(10);
-        if (map.getZoom() > 13) map.setZoom(13);
+	const center = map.getCenter();
+    const zoom = map.getZoom();
+    
+    if (e.name.includes("Yandex")) {
+        // Сохраняем текущее состояние карты
+        map.options.crs = L.CRS.EPSG3395;
+        
+        // Перезагружаем KML для новой CRS
+        reloadKmlForCRS(L.CRS.EPSG3395).then(() => {
+            map.setView(center, zoom);
+        });
+    } else {
+        // Возвращаемся к стандартной CRS
+        map.options.crs = L.CRS.EPSG3857;
+        
+        // Перезагружаем KML для стандартной CRS
+        reloadKmlForCRS(L.CRS.EPSG3857).then(() => {
+            map.setView(center, zoom);
+        });
     }
+	
+    // if (e.name === "RU Army") {
+        // if (map.getZoom() < 10) map.setZoom(10);
+        // if (map.getZoom() > 13) map.setZoom(13);
+    // }
 });
 
 // Обработчик для выбора слоя (радио-кнопки)
