@@ -638,16 +638,19 @@ async function loadKmlFile(file, targetCRS) {
 async function reloadKmlForCRS(crs) {
     if (!currentLayer) return;
     
-    const center = map.getCenter();
-    const zoom = map.getZoom();
     const file = kmlFiles[currentIndex];
-    
     try {
         map.removeLayer(currentLayer);
         await loadKmlFile(file);
         
-        // Важно: восстанавливаем позицию и делаем перерисовку
-        map.setView(center, zoom);
+        // Восстанавливаем позицию с проверкой валидности
+        if (center && zoom && center.lat !== 0 && center.lng !== 0) {
+            map.setView(center, zoom);
+        } else {
+            // Используем центр по умолчанию, если текущий невалиден
+            map.setView([48.257381, 37.134785], 11);
+        }
+        
         map.invalidateSize();
     } catch (error) {
         console.error("Ошибка перезагрузки KML:", error);
