@@ -156,15 +156,15 @@ L.Control.Attribution.prototype.addAttribution = function(text) {
 map.whenReady(replaceAttributionFlag);
 map.on('baselayerchange', replaceAttributionFlag);
 
-map.on('baselayerchange', layer => {
-    const center = map.getCenter();
-    if (layer.name.includes('Yandex')) {
-      map.options.crs = L.CRS.EPSG3395;
-    } else {
-      map.options.crs = L.CRS.EPSG3857;
-    }
-    map.setView(center);
-  });
+// map.on('baselayerchange', layer => {
+    // const center = map.getCenter();
+    // if (layer.name.includes('Yandex')) {
+      // map.options.crs = L.CRS.EPSG3395;
+    // } else {
+      // map.options.crs = L.CRS.EPSG3857;
+    // }
+    // map.setView(center);
+  // });
 
 // Управление слоями карты
 const baseLayers = {
@@ -382,7 +382,7 @@ map.on('baselayerchange', function(e) {
     }
     
     // Перезагружаем KML без дополнительного setView
-    reloadKmlForCRS();
+    reloadKmlForCRS(center, zoom);
 	
     // if (e.name === "RU Army") {
         // if (map.getZoom() < 10) map.setZoom(10);

@@ -635,7 +635,7 @@ async function loadKmlFile(file, targetCRS) {
     }
 }
 
-async function reloadKmlForCRS(crs) {
+async function reloadKmlForCRS(center, zoom) {
     if (!currentLayer) return;
     
     const file = kmlFiles[currentIndex];
