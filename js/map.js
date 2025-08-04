@@ -81,7 +81,8 @@ window.yandex = L.tileLayer(yandexUrl, {
     attribution: yandexAttrib,
     subdomains: ['01','02','03','04'],
     noWrap: true,
-    name: 'yandex'//,
+    name: 'yandex',
+    minZoom: 11
 	// crs: L.CRS.EPSG3395,
     //zoomOffset: 0
 });
