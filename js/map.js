@@ -377,6 +377,7 @@ document.addEventListener('click', function(e) {
 });
 // Для RU слоя ограничиваем зум
 map.on('baselayerchange', function(e) {
+        map.invalidateSize();
     const center = map.getCenter();
     const zoom = map.getZoom();
     
@@ -389,11 +390,11 @@ map.on('baselayerchange', function(e) {
     
     // Перезагружаем KML без дополнительного setView
     reloadKmlForCRS(center, zoom);
-	
-    // if (e.name === "RU Army") {
-        // if (map.getZoom() < 10) map.setZoom(10);
-        // if (map.getZoom() > 13) map.setZoom(13);
-    // }
+        
+    // Добавляем принудительное обновление размера карты
+    // setTimeout(() => {
+        map.invalidateSize();
+    // }, 500);
 });
 
 // Обработчик для выбора слоя (радио-кнопки)
