@@ -371,7 +371,8 @@ async function loadPermanentKmlLayers() {
                             const polyline = L.polyline(coords, {
                                 color: style.line.color || '#3388ff',
                                 weight: style.line.weight || 3,
-                                opacity: style.line.opacity || 1
+                                opacity: style.line.opacity || 1,
+								interactive: false
                             }).addTo(layerGroup);
                             
                             // Обновляем границы СРАЗУ ПОСЛЕ СОЗДАНИЯ
@@ -550,7 +551,8 @@ async function loadKmlFile(file, targetCRS) {
                 const polyline = L.polyline(coords, {
                     color: style.color || '#3388ff',
                     weight: style.weight || 3,
-                    opacity: style.opacity || 1
+                    opacity: style.opacity || 1,
+                    interactive: false
                 }).addTo(layerGroup);
 
                 // Логирование информации о линии
