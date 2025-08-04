@@ -636,8 +636,8 @@ async function loadKmlFile(file, targetCRS) {
 }
 
 async function reloadKmlForCRS(center, zoom) {
-    if (currentLayer){
-        
+    await loadPermanentKmlLayers();
+    if (currentLayer){        
         const file = kmlFiles[currentIndex];
         try {
             map.removeLayer(currentLayer);
