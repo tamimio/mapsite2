@@ -636,25 +636,26 @@ async function loadKmlFile(file, targetCRS) {
 }
 
 async function reloadKmlForCRS(center, zoom) {
-    if (!currentLayer) return;
-    
-    const file = kmlFiles[currentIndex];
-    try {
-        map.removeLayer(currentLayer);
-        await loadKmlFile(file);
+    if (currentLayer){
         
-        // Восстанавливаем позицию с проверкой валидности
-        if (center && zoom && center.lat !== 0 && center.lng !== 0) {
-            map.setView(center, zoom);
-        } else {
-            // Используем центр по умолчанию, если текущий невалиден
-            map.setView([48.257381, 37.134785], 11);
+        const file = kmlFiles[currentIndex];
+        try {
+            map.removeLayer(currentLayer);
+            await loadKmlFile(file);
+        } catch (error) {
+            console.error("Ошибка перезагрузки KML:", error);
         }
-        
-        map.invalidateSize();
-    } catch (error) {
-        console.error("Ошибка перезагрузки KML:", error);
     }
+        
+    // Восстанавливаем позицию с проверкой валидности
+    if (center && zoom && center.lat !== 0 && center.lng !== 0) {
+        map.setView(center, zoom);
+    } else {
+        // Используем центр по умолчанию, если текущий невалиден
+        map.setView([48.257381, 37.134785], 11);
+    }
+    
+    map.invalidateSize();
 }
 
 // Навигация к определенному индексу

@@ -100,6 +100,12 @@ const map = L.map('map').setView([48.257381, 37.134785], 11);
 window.osm.addTo(map);
 
 
+// Добавляем обработчик изменения масштаба
+map.on('zoomend', function() {
+    console.log('Текущий масштаб карты:', map.getZoom());
+});
+
+
 function replaceAttributionFlag() {
     const newSvgString = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" width="12" height="8"><rect fill="#fff" width="9" height="3"/><rect fill="#d52b1e" y="3" width="9" height="3"/><rect fill="#0039a6" y="2" width="9" height="2"/></svg>';
 
