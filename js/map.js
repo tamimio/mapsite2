@@ -378,24 +378,27 @@ document.addEventListener('click', function(e) {
 });
 // Для RU слоя ограничиваем зум
 map.on('baselayerchange', function(e) {
-        map.invalidateSize();
     const center = map.getCenter();
     const zoom = map.getZoom();
     
-    // Устанавливаем CRS перед перезагрузкой KML
+    // Сохраняем текущий CRS перед проверкой
+    const oldCRS = map.options.crs;
+    
+    // Определяем новый CRS
+    let newCRS;
     if (e.name.includes("Yandex")) {
-        map.options.crs = L.CRS.EPSG3395;
+        newCRS = L.CRS.EPSG3395;
     } else {
-        map.options.crs = L.CRS.EPSG3857;
+        newCRS = L.CRS.EPSG3857;
     }
     
-    // Перезагружаем KML без дополнительного setView
-    reloadKmlForCRS(center, zoom);
-        
-    // Добавляем принудительное обновление размера карты
-    // setTimeout(() => {
-        map.invalidateSize();
-    // }, 500);
+    // Сравниваем CRS и меняем только при необходимости
+    if (oldCRS !== newCRS) {
+        map.options.crs = newCRS;
+        // Перезагружаем KML только если CRS изменился
+        reloadKmlForCRS(center, zoom);
+    }
+    map.invalidateSize();
 });
 
 // Обработчик для выбора слоя (радио-кнопки)
