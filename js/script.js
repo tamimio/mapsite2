@@ -1148,42 +1148,35 @@ map.whenReady(function() {
 
 
 // Обработчик для поля ввода координат
-coordsInput.addEventListener('change', function() {
-    const coords = parseCoordinateString(this.value);
-    
-	if ( !coords ){
+document.addEventListener('change', function(event) {
+    const input = event.target;
+    if (!input.matches('#coords-input, #coords-input-clone')) return;
+
+    const coords = parseCoordinateString(input.value);
+
+    if (!coords) {
         alert(translations[currentLang].invalidCoords);
         return;
-    }	
-	
-	const [lat, lng] = coords;
-    
-    // Проверяем валидность координат
+    }
+
+    const [lat, lng] = coords;
+
     if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
         alert(translations[currentLang].invalidCoords);
         return;
-    } 
-    
+    }
+
     centerMap(lat, lng);
-    
-    // Синхронизация между основным полем и полем в меню
-    document.querySelectorAll('#coords-input, #coords-input-clone').forEach(input => {
-        if (input !== this) input.value = this.value;
+
+    // Синхронизация значений между полями
+    document.querySelectorAll('#coords-input, #coords-input-clone').forEach(el => {
+        if (el !== input) el.value = input.value;
     });
 });
 
 // обработчик для нажатия Enter в поле ввода
 coordsInput.addEventListener('keypress', function(e) {
-  // if (e.key === 'Enter') {
-    // const coords = this.value.split(',').map(coord => coord.trim());
-    // if (coords.length === 2) {
-      // const lat = parseFloat(coords[0]);
-      // const lng = parseFloat(coords[1]);
-      // if (!isNaN(lat) && !isNaN(lng)) {
-        // centerMap(lat, lng);
-      // }
-    // }
-  // }
+
 	if (e.key === 'Enter') {
 		this.dispatchEvent(new Event('change'));
     }
