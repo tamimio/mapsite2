@@ -77,7 +77,7 @@ window.goo = L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
 // Яндекс Карты (схема)
 const yandexUrl = 'https://core-renderer-tiles.maps.yandex.net/tiles?l=map&x={x}&y={y}&z={z}&scale=1&lang=ru_RU';
 const yandexAttrib = '<a http="https://yandex.ru" target="_blank">Yandex</a>';
-window.yandex = L.tileLayer(yandexUrl, {
+window.yandexLayer = L.tileLayer(yandexUrl, {
     attribution: yandexAttrib,
     subdomains: ['01','02','03','04'],
     noWrap: true,
@@ -182,7 +182,7 @@ const baseLayers = {
     // "CartoDB Voyager": carto,
     // "RU Army": ru,
     "Google Maps": goo,
-    "Yandex Maps": yandex
+    "Yandex Maps": yandexLayer
 };
 
 // Создаем кастомный контрол слоев
@@ -529,4 +529,5 @@ document.addEventListener('DOMContentLoaded', function() {
     initMeasureControl(); // Инициализация линейки
     hideRulerPanel();
 });
+
 
