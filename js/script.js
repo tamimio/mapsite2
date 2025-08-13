@@ -1148,10 +1148,7 @@ map.whenReady(function() {
 
 
 // Обработчик для поля ввода координат
-document.addEventListener('change', function(event) {
-    const input = event.target;
-    if (!input.matches('#coords-input, #coords-input-clone')) return;
-
+function handleCoordinateInput(input) {
     const coords = parseCoordinateString(input.value);
 
     if (!coords) {
@@ -1172,49 +1169,24 @@ document.addEventListener('change', function(event) {
     document.querySelectorAll('#coords-input, #coords-input-clone').forEach(el => {
         if (el !== input) el.value = input.value;
     });
+}
+
+// Обработчик для ручного ввода + Enter
+document.querySelectorAll('#coords-input, #coords-input-clone').forEach(input => {
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            handleCoordinateInput(this);
+        }
+    });
 });
 
 // обработчик для нажатия Enter в поле ввода
-coordsInput.addEventListener('keypress', function(e) {
+// coordsInput.addEventListener('keypress', function(e) {
+	// if (e.key === 'Enter') {
+		// this.dispatchEvent(new Event('change'));
+    // }
+// });
 
-	if (e.key === 'Enter') {
-		this.dispatchEvent(new Event('change'));
-    }
-});
-
-// Гамбургер переключатель видов
-
-//document.addEventListener('DOMContentLoaded', function() {
-    //const viewMenuBtn = document.querySelector('.view-menu-btn');
-    //const viewMenuContainer = document.querySelector('.view-menu-container');
-    
-    //if (viewMenuBtn && viewMenuContainer) {
-        //// Обработчик открытия/закрытия меню видов
-        //viewMenuBtn.addEventListener('click', function(e) {
-            //e.stopPropagation();
-            //viewMenuContainer.classList.toggle('active');
-        //});
-        
-        //// Закрытие меню при клике вне его
-        //document.addEventListener('click', function(e) {
-            //if (!viewMenuContainer.contains(e.target)) {
-                //viewMenuContainer.classList.remove('active');
-            //}
-        //});
-        
-        //// Закрытие меню при выборе вида
-        //document.querySelectorAll('.view-dropdown .view-btn').forEach(btn => {
-            //btn.addEventListener('click', function() {
-                //viewMenuContainer.classList.remove('active');
-                
-                //// Перерисовываем карту при необходимости
-                //if (map && this.id === 'map-btn') {
-                    //setTimeout(() => map.invalidateSize(), 100);
-                //}
-            //});
-        //});
-    //}
-//});
 document.querySelectorAll('.view-menu-container').forEach(container => {
     const viewMenuBtn = container.querySelector('.view-menu-btn');
     
