@@ -1148,19 +1148,23 @@ map.whenReady(function() {
 
 
 // Обработчик для поля ввода координат
-function handleCoordinateInput(input) {
+function centerMapFromInput(input, showAlert = false) {
     const coords = parseCoordinateString(input.value);
 
     if (!coords) {
-        alert(translations[currentLang].invalidCoords);
-        return;
+        if (showAlert) {
+            alert(translations[currentLang].invalidCoords);
+        }
+        return false;
     }
 
     const [lat, lng] = coords;
 
     if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-        alert(translations[currentLang].invalidCoords);
-        return;
+        if (showAlert) {
+            alert(translations[currentLang].invalidCoords);
+        }
+        return false;
     }
 
     centerMap(lat, lng);
@@ -1169,13 +1173,21 @@ function handleCoordinateInput(input) {
     document.querySelectorAll('#coords-input, #coords-input-clone').forEach(el => {
         if (el !== input) el.value = input.value;
     });
+    
+    return true;
 }
 
-// Обработчик для ручного ввода + Enter
+// Обработчик для ввода
 document.querySelectorAll('#coords-input, #coords-input-clone').forEach(input => {
+    // Автоматическое центрирование при вставке (без ошибок)
+    input.addEventListener('input', function() {
+        centerMapFromInput(this, false);
+    });
+    
+    // Обработка Enter с показом ошибок
     input.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            handleCoordinateInput(this);
+            centerMapFromInput(this, true);
         }
     });
 });
@@ -1434,24 +1446,17 @@ function setupDropdownListeners() {
     // Обработчик для поля ввода координат в меню
     const coordsClone = document.getElementById('coords-input-clone');
     if (coordsClone) {
-        coordsClone.addEventListener('change', function() {
-            const coords = this.value.split(',').map(coord => coord.trim());
-            if (coords.length === 2) {
-                const lat = parseFloat(coords[0]);
-                const lng = parseFloat(coords[1]);
-                if (!isNaN(lat) && !isNaN(lng)) {
-                    centerMap(lat, lng);
-                    // Закрываем меню после центрирования
-                    navDropdown.classList.remove('active');
-                }
-            }
+        // Автоматическое центрирование при вставке
+        coordsClone.addEventListener('input', function() {
+            centerMapFromInput(this, false);
         });
         
+        // Обработка Enter с показом ошибок и закрытием меню
         coordsClone.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                this.dispatchEvent(new Event('change'));
-                // Дополнительно закрываем меню
-                navDropdown.classList.remove('active');
+                if (centerMapFromInput(this, true)) {
+                    navDropdown.classList.remove('active');
+                }
             }
         });
     }
