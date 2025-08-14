@@ -1639,28 +1639,39 @@ document.addEventListener('DOMContentLoaded', function() {
   const mo = new MutationObserver(ensureAll);
   mo.observe(document.documentElement, { childList: true, subtree: true });
 
-  // Live-парсинг: центрируем сразу, молчим на невалидных
-  document.addEventListener('input', (e) => {
-    const el = e.target;
-    if (!isCoordsInput(el)) return;
+  //// Live-парсинг: центрируем сразу, молчим на невалидных
+  //document.addEventListener('input', (e) => {
+    //const el = e.target;
+    //if (!isCoordsInput(el)) return;
 
-    // синхронизация второго поля + обновление кнопок
-    IDS.forEach(id => {
-      const other = document.getElementById(id);
-      if (other && other !== el) other.value = el.value;
-      if (other) updateClearButton(other);
+    //// синхронизация второго поля + обновление кнопок
+    //IDS.forEach(id => {
+      //const other = document.getElementById(id);
+      //if (other && other !== el) other.value = el.value;
+      //if (other) updateClearButton(other);
+    //});
+
+    //const value = (el.value || '').trim();
+    //if (!value) return;
+
+    //const coords = parseCoordinateString(value);
+    //if (!coords) return;
+    //const [lat, lng] = coords;
+    //if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return;
+
+    //centerMap(lat, lng);
+  //});
+    
+    document.addEventListener('input', (e) => {
+      if (e.target.id === 'coords-input' || e.target.id === 'coords-input-clone') {
+        const otherId = e.target.id === 'coords-input' ? 'coords-input-clone' : 'coords-input';
+        const otherInput = document.getElementById(otherId);
+        if (otherInput) {
+          otherInput.value = e.target.value;
+          updateClearButton(otherInput);
+        }
+      }
     });
-
-    const value = (el.value || '').trim();
-    if (!value) return;
-
-    const coords = parseCoordinateString(value);
-    if (!coords) return;
-    const [lat, lng] = coords;
-    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return;
-
-    centerMap(lat, lng);
-  });
 
   // Enter: только валидация с алертом
   document.addEventListener('keydown', (e) => {
