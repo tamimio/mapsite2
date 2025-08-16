@@ -1581,7 +1581,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // === Clear button for coords inputs: show when not empty, supports dynamic clone ===
-(function () {
+
   const IDS = ['coords-input', 'coords-input-clone'];
 
   const isCoordsInput = el => el && IDS.includes(el.id);
@@ -1664,5 +1664,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // фокус обратно в поле (события валидации не трогаем)
     input.focus();
   });
-})();
 

@@ -506,6 +506,9 @@ body {
 	padding: 0 2px;
     display: none;
   }
+  .date-navigator > .input-with-clear {
+    display: none;
+  }
 }
 @media (max-width: 825px) {
   .input-with-clear {
@@ -521,6 +524,9 @@ body {
   .clear-input-btn {
     top: 0;
 	padding: 0 2px;
+    display: none;
+  }
+  .date-navigator > .input-with-clear {
     display: none;
   }
 }
