@@ -478,13 +478,11 @@ body {
 .clear-input-btn {
   position: absolute;
   right: .5rem;
-  /* top: 0; */
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 16px;
   color: #666;
-  padding: 0 2px;
+  /* padding: 0 2px; */
   z-index: 3;
 }
 
@@ -503,7 +501,7 @@ body {
   }
   .clear-input-btn {
     top: 0;
-	padding: 0 2px;
+	/* padding: 0 2px; */
     display: none;
   }
   .date-navigator > .input-with-clear {
@@ -523,7 +521,7 @@ body {
   
   .clear-input-btn {
     top: 0;
-	padding: 0 2px;
+	/* padding: 0 2px; */
     display: none;
   }
   .date-navigator > .input-with-clear {
