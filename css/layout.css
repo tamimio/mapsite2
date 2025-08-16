@@ -467,47 +467,30 @@ body {
 /* === Clear button for coords inputs === */
 .input-with-clear {
   position: relative;
-  display: inline-flex;     /* не ломаем поток в навбаре */
+  display: inline-flex;
   align-items: center;
 }
 
 .input-with-clear > input {
-  padding-right: 2rem;
+  padding-right: 2rem;       /* место под крестик */
 }
 
 .clear-input-btn {
   position: absolute;
   right: .5rem;
-/*
-  top: 50%;
-*/
-/*
-  transform: translateY(-50%);
-*/
+  /* top: 0; */
   background: transparent;
   border: none;
   cursor: pointer;
   font-size: 16px;
-/*
-  line-height: 1;
-*/
   color: #666;
-/*
   padding: 0 2px;
-*/
-  display: none;            /* показываем, когда есть текст */
+  z-index: 3;
 }
 
 .clear-input-btn:hover { color: #000; }
 
-/* На узких экранах растягиваем обёртку на всю ширину,
-   чтобы крестик точно оказался «рядом с полем» */
-/*
-@media (max-width: 825px) {
-  .input-with-clear { display: block; width: 100%; }
-  .input-with-clear > input { width: 100%; }
-*/
-}
+/* Мобильная версия:  */
 
 @media (max-width: 1599px) {
   .nav-dropdown .input-with-clear {
@@ -517,17 +500,10 @@ body {
   
   .nav-dropdown {
     right: 10px;
-/*
-    top: 50%;
-    transform: translateY(-50%);
-*/
   }
   .clear-input-btn {
-/*
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-*/
+    top: 0;
+	padding: 0 2px;
     display: none;
   }
 }
@@ -540,18 +516,11 @@ body {
   
   .input-with-clear > input {
     width: 100%;
-/*
-    box-sizing: border-box;
-*/
   }
   
   .clear-input-btn {
-/*
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-*/
+    top: 0;
+	padding: 0 2px;
     display: none;
   }
 }

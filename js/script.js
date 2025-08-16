@@ -1580,34 +1580,25 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// === Coords input: clear button + live centering + Enter-only errors (robust for clones/moves) ===
+// === Clear button for coords inputs: show when not empty, supports dynamic clone ===
 (function () {
   const IDS = ['coords-input', 'coords-input-clone'];
 
   const isCoordsInput = el => el && IDS.includes(el.id);
 
-  function cleanupOrphanWrappers() {
-    document.querySelectorAll('.input-with-clear').forEach(w => {
-      if (!w.querySelector('input')) w.remove();
-    });
-  }
-
   function ensureWrapped(input) {
     if (!input) return;
-
-    // если уже обёрнут — только обновим видимость кнопки
+    // если уже обёрнуто — просто обновим видимость кнопки
     if (input.parentElement && input.parentElement.classList.contains('input-with-clear')) {
       updateClearButton(input);
       return;
     }
-
-    // создать новую обёртку ровно в том месте DOM, где сейчас input
-    const wrapper = document.createElement('div'); // div стабильнее, чем span, в адаптиве
+    // создать обёртку на месте current input
+    const wrapper = document.createElement('div');
     wrapper.className = 'input-with-clear';
     input.parentNode.insertBefore(wrapper, input);
     wrapper.appendChild(input);
 
-    // создать кнопку
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'clear-input-btn';
@@ -1622,107 +1613,56 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateClearButton(input) {
     const btn = input?.parentElement?.querySelector('.clear-input-btn');
     if (!btn) return;
-    btn.style.display = (input.value || '').trim() ? 'inline-flex' : 'none';
+    const hasText = !!(input.value && input.value.trim());
+    btn.style.display = hasText ? 'inline-flex' : 'none';
   }
 
   function ensureAll() {
     IDS.forEach(id => ensureWrapped(document.getElementById(id)));
-    cleanupOrphanWrappers(); // если поле переехало, старую пустую обёртку удалим
   }
 
-  // Инициализация и слежение: клон может появиться/переехать
+  // init
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', ensureAll, { once: true });
   } else {
     ensureAll();
   }
+
+  // наблюдаем DOM: клон может появиться позже (переключение ширины/меню)
   const mo = new MutationObserver(ensureAll);
   mo.observe(document.documentElement, { childList: true, subtree: true });
 
-  //// Live-парсинг: центрируем сразу, молчим на невалидных
-  //document.addEventListener('input', (e) => {
-    //const el = e.target;
-    //if (!isCoordsInput(el)) return;
+  // показываем/скрываем крестик при любом обновлении текста
+  ['input', 'change', 'paste', 'keyup'].forEach(evt => {
+    document.addEventListener(evt, (e) => {
+      const el = e.target;
+      if (!isCoordsInput(el)) return;
 
-    //// синхронизация второго поля + обновление кнопок
-    //IDS.forEach(id => {
-      //const other = document.getElementById(id);
-      //if (other && other !== el) other.value = el.value;
-      //if (other) updateClearButton(other);
-    //});
-
-    //const value = (el.value || '').trim();
-    //if (!value) return;
-
-    //const coords = parseCoordinateString(value);
-    //if (!coords) return;
-    //const [lat, lng] = coords;
-    //if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return;
-
-    //centerMap(lat, lng);
-  //});
-    
-    document.addEventListener('input', (e) => {
-      if (e.target.id === 'coords-input' || e.target.id === 'coords-input-clone') {
-        const otherId = e.target.id === 'coords-input' ? 'coords-input-clone' : 'coords-input';
-        const otherInput = document.getElementById(otherId);
-        if (otherInput) {
-          otherInput.value = e.target.value;
-          updateClearButton(otherInput);
-        }
-      }
-    });
-
-  // Enter: только валидация с алертом
-  document.addEventListener('keydown', (e) => {
-    const el = e.target;
-    if (!isCoordsInput(el) || e.key !== 'Enter') return;
-
-    const value = (el.value || '').trim();
-    if (!value) return;
-
-    const coords = parseCoordinateString(value);
-    if (!coords) {
-      alert(translations[currentLang].invalidCoords);
-      return;
-    }
-    const [lat, lng] = coords;
-    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-      alert(translations[currentLang].invalidCoords);
-      return;
-    }
-    // при валидном вводе карта уже центрирована на 'input'
+      // обновим видимость у обоих полей (на случай синхронизации значений)
+      IDS.forEach(id => {
+        const field = document.getElementById(id);
+        if (field) updateClearButton(field);
+      });
+    }, { capture: false });
   });
 
-  // Change: только синхронизация и обновление кнопок (без алертов)
-  document.addEventListener('change', (e) => {
-    const el = e.target;
-    if (!isCoordsInput(el)) return;
-    IDS.forEach(id => {
-      const other = document.getElementById(id);
-      if (other && other !== el) other.value = el.value;
-      if (other) updateClearButton(other);
-    });
-  });
-
-  // Клик по крестику: очистка без ошибок
+  // клик по крестику — очистка без побочных алертов
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.clear-input-btn');
     if (!btn) return;
-
     const input = btn.parentElement?.querySelector('input');
     if (!isCoordsInput(input)) return;
 
+    input.value = '';
+    // если нужно, синхронизируйте второе поле
     IDS.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.value = '';
-        updateClearButton(el);
-      }
+      const field = document.getElementById(id);
+      if (field && field !== input) field.value = '';
+      if (field) updateClearButton(field);
     });
 
-    // Тригерим 'change' (у нас без алертов) и возвращаем фокус
-    input.dispatchEvent(new Event('change', { bubbles: true }));
+    // фокус обратно в поле (события валидации не трогаем)
     input.focus();
   });
 })();
+
